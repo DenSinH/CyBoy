@@ -8,19 +8,6 @@ cdef class GBCPU
 
 ctypedef int (*instruction)(GBCPU)
 
-DEF REG_B = 0
-DEF REG_C = 1
-DEF REG_D = 2
-DEF REG_E = 3
-DEF REG_H = 4
-DEF REG_L = 5
-DEF REG_A = 7
-
-DEF FLAG_Z = 0x80
-DEF FLAG_N = 0x40
-DEF FLAG_H = 0x20
-DEF FLAG_C = 0x10
-
 @cython.final
 cdef class GBCPU:
     cdef public: 
@@ -36,11 +23,12 @@ cdef class GBCPU:
 
     cdef inline int step(self):
         cdef unsigned char opcode = self.mem.read8(self.PC)
-        print(f"instruction {opcode:02x}")
+        self.PC += 1
+        # print(f"instruction {opcode:02x}")
         cdef instruction instr = self.instructions[opcode]
         
         if instr is NULL:
-            print(f"Unimplemented opcode: {opcode:02x}")
+            print(f"Unimplemented opcode: {opcode:02x} at {self.PC:04x}")
             quit(opcode)
         return instr(self)
 

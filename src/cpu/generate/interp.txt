@@ -1,0 +1,8 @@
+cdef int XOR_A_B(GBCPU)
+cdef int XOR_A_C(GBCPU)
+cdef int XOR_A_D(GBCPU)
+cdef int XOR_A_E(GBCPU)
+cdef int XOR_A_H(GBCPU)
+cdef int XOR_A_L(GBCPU)
+cdef int XOR_A_A(GBCPU)
+cdef int XOR_A_HL(GBCPU)

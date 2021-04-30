@@ -5,5 +5,5 @@ cpdef main():
     gb = GB()
     gb.load_bootrom("files/DMG_ROM.bin")
 
-    print("starting")
+    print("Starting")
     gb.run()
