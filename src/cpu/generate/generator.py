@@ -35,3 +35,22 @@ class generator:
             self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(bit=bit, hex=hex(1 << bit), r8="HL"))
             self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(bit=bit, hex=hex(1 << bit), r8="HL"))
             self.impl.write("    " + "\n    ".join(code_HL.format(bit=bit, hex=hex(1 << bit)).strip().split("\n")) + "\n\n")
+
+    def generate_cond(self, name, code, *conds):
+        for cond in conds:
+            print(cond)
+            cond_code = "True"
+            if cond == "Z":
+                cond_code = "cpu.F & FLAG_Z"
+            elif cond == "NZ":
+                cond_code = "not (cpu.F & FLAG_Z)"
+            elif cond == "C":
+                cond_code = "cpu.F & FLAG_C"
+            elif cond == "NC":
+                cond_code = "not (cpu.F & FLAG_C)"
+
+            self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(cond=cond, code=cond_code))
+            self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(cond=cond, code=cond_code, if_cond=f"if {cond_code}:"))
+            self.impl.write("    " + "\n    ".join(code.strip().format(cond=cond, code=cond_code, if_cond=f"if {cond_code}:").split("\n")) + "\n\n")
+            
+

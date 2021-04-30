@@ -7,23 +7,23 @@ cdef class GBCPU:
     def __cinit__(self, MEM mem):
         
         self.instructions = [
-        # + 0     1          2            3     4     5     6     7     8        9        A        B        C        D        E         F
-            NULL, LD_BC_u16, LD_atBC_A,   NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 00
-            NULL, LD_DE_u16, LD_atDE_A,   NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 10
-            NULL, LD_HL_u16, LD_atHL_Apl, NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 20
-            NULL, LD_SP_u16, LD_atHL_Amn, NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 30
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 40
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 50
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 60
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 70
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 80
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 90
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, XOR_A_B, XOR_A_C, XOR_A_D, XOR_A_E, XOR_A_H, XOR_A_L, XOR_A_HL, XOR_A_A, # A0
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # B0
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    pref,    NULL,    NULL,    NULL,     NULL,    # C0
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # D0
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # E0
-            NULL, NULL,      NULL,        NULL, NULL, NULL, NULL, NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # F0
+        # + 0         1          2            3     4     5     6         7     8        9        A        B        C        D        E         F
+            NULL,     LD_BC_u16, LD_atBC_A,   NULL, NULL, NULL, LD_B_u8,  NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    LD_C_u8,  NULL,    # 00
+            NULL,     LD_DE_u16, LD_atDE_A,   NULL, NULL, NULL, LD_D_u8,  NULL, JR__i8,  NULL,    NULL,    NULL,    NULL,    NULL,    LD_E_u8,  NULL,    # 10
+            JR_NZ_i8, LD_HL_u16, LD_atHL_Apl, NULL, NULL, NULL, LD_H_u8,  NULL, JR_Z_i8, NULL,    NULL,    NULL,    NULL,    NULL,    LD_L_u8,  NULL,    # 20
+            JR_NC_i8, LD_SP_u16, LD_atHL_Amn, NULL, NULL, NULL, LD_HL_u8, NULL, JR_C_i8, NULL,    NULL,    NULL,    NULL,    NULL,    LD_A_u8,  NULL,    # 30
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 40
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 50
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 60
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 70
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 80
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 90
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, XOR_A_B, XOR_A_C, XOR_A_D, XOR_A_E, XOR_A_H, XOR_A_L, XOR_A_HL, XOR_A_A, # A0
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # B0
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    pref,    NULL,    NULL,    NULL,     NULL,    # C0
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # D0
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # E0
+            NULL,     NULL,      NULL,        NULL, NULL, NULL, NULL,     NULL, NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # F0
         ]
 
         self.extended_instructions = [

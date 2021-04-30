@@ -1,0 +1,5 @@
+cdef int JR_NZ_i8(GBCPU cpu)
+cdef int JR_NC_i8(GBCPU cpu)
+cdef int JR_Z_i8(GBCPU cpu)
+cdef int JR_C_i8(GBCPU cpu)
+cdef int JR__i8(GBCPU cpu)

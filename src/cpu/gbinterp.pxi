@@ -12,3 +12,5 @@ cdef int LD_atHL_Amn(GBCPU cpu)
 
 include "arithmeticinterp.pxi"
 include "bitopinterp.pxi"
+include "branchinterp.pxi"
+include "loadinterp.pxi"

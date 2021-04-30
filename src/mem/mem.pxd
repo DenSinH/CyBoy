@@ -3,8 +3,8 @@ from libcpp cimport bool
 
 cdef class MEM
 
-ctypedef unsigned char (*read_callback)(MEM mem)
-ctypedef void (*write_callback)(MEM mem, unsigned char value)
+ctypedef unsigned char (*read_callback)(MEM mem, unsigned short address)
+ctypedef void (*write_callback)(MEM mem, unsigned short address, unsigned char value)
 
 
 cdef union read_ptr_t:
@@ -46,7 +46,7 @@ cdef class MEM:
         if entry.read:
             return entry.read_ptr.data[0]
         elif entry.read_ptr.callback is not NULL:
-            return entry.read_ptr.callback(self)
+            return entry.read_ptr.callback(self, address)  # todo: address is for debugging
         return 0xff  # default for bad reads
 
     cdef inline unsigned short read16(MEM self, unsigned short address):
@@ -60,8 +60,9 @@ cdef class MEM:
         if entry.write:
             entry.write_ptr.data[0] = value
         elif entry.write_ptr.callback is not NULL:
-            entry.write_ptr.callback(self, value)
+            entry.write_ptr.callback(self, address, value)  # todo: address is for debugging
 
     cdef inline void write16(MEM self, unsigned short address, unsigned short value):
+        print(f"address {address:04x} / {value:04x}")
         self.write8(address, <unsigned char>value)
         self.write8(address, <unsigned char>(value >> 8))

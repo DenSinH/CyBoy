@@ -52,3 +52,5 @@ cdef int LD_atHL_Amn(GBCPU cpu):
 
 include "arithmeticimpl.pxi"
 include "bitopimpl.pxi"
+include "branchimpl.pxi"
+include "loadimpl.pxi"

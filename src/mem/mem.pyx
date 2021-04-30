@@ -22,12 +22,12 @@ cdef inline MemoryEntry MakeUnused():
     entry.write = False
     return entry
 
-cdef unsigned char read_unimplemented(MEM mem):
-    print("read from unimplemented address")
+cdef unsigned char read_unimplemented(MEM mem, unsigned short address):
+    print(f"read from unimplemented address {address:04x}")
     quit(-1)
 
-cdef void write_unimplemented(MEM mem, unsigned char value):
-    print("write to unimplemented address")
+cdef void write_unimplemented(MEM mem, unsigned short address, unsigned char value):
+    print(f"write to unimplemented address {address:04x}")
     quit(-2)
 
 cdef inline MemoryEntry MakeUnimplemented():
