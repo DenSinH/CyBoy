@@ -1,6 +1,9 @@
 cimport cython 
 
 
+cdef inline unsigned short read16(unsigned char* ptr):
+    return (<unsigned short*>ptr)[0]
+
 @cython.final
 cdef class MEM:
     cdef public:
@@ -9,5 +12,16 @@ cdef class MEM:
         unsigned char ROM1[0x4000]
         unsigned char VRAM[0x1000]
 
-    cdef public unsigned char read8(MEM self, unsigned short address)
-    cdef public void write8(MEM self, unsigned short address, unsigned char value)
+    cdef inline unsigned char read8(MEM self, unsigned short address):
+        if address < 0x100:
+            return self.BOOT[address]
+        return 0
+
+    cdef inline unsigned short read16(MEM self, unsigned short address):
+        cdef unsigned short value
+        if address < 0x100:
+            return read16(&self.BOOT[address])
+        return 0
+
+    cdef inline void write8(MEM self, unsigned short address, unsigned char value):
+        pass

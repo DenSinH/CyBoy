@@ -13,6 +13,12 @@ cdef class GB:
         fread(&self.mem.BOOT, 0x100, 1, bootrom)
         fclose(bootrom)
 
-    cdef public int run(GB self):
+    cpdef public int run(GB self):
+        # cdef int i
+        # cdef unsigned short value = 0x4209
+        # for i in range(0xf000_0000):
+        #     self.cpu.set_BC(value)
+        #     if (i & 0x0fff_0000) == 0:
+        #         print(hex(i))
         while True:
             self.cpu.step()

@@ -1,5 +1,6 @@
 {
     "files.exclude": {
         "**/__pycache__": true
-    }
+    },
+    "discord.enabled": false
 }
