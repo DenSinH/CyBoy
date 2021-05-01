@@ -29,6 +29,10 @@ cdef int DAA(GBCPU cpu)
 cdef int CPL(GBCPU cpu)
 
 cdef int POP_AF(GBCPU cpu)  # special case
+cdef int LD_u16_SP(GBCPU cpu)
+cdef int LD_SP_HL(GBCPU cpu)
+cdef int ADD_SP_i8(GBCPU cpu)
+cdef int LD_HL_SP_i8(GBCPU cpu)
 
 cdef int RLA(GBCPU cpu)
 cdef int RRA(GBCPU cpu)

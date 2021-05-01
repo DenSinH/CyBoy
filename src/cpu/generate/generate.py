@@ -197,6 +197,16 @@ return 8
     "BC", "DE", "HL", "SP"
     )
 
+    g.generate_r16(
+        "DEC_{r16}",
+        """
+cpu.{set_r16}(cpu.{get_r16} - 1)
+return 8
+""",
+    "BC", "DE", "HL", "SP"
+    )
+
+
 with generator("src/cpu/bitopinterp.pxi", "src/cpu/bitopimpl.pxi") as g:
     g.generate_bitop(
         "BIT_{bit}_{r8}",

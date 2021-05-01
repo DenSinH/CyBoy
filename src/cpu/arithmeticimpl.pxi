@@ -609,3 +609,19 @@ cdef int INC_SP(GBCPU cpu):
     cpu.SP = (cpu.SP + 1)
     return 8
 
+cdef int DEC_BC(GBCPU cpu):
+    cpu.set_BC(cpu.get_BC() - 1)
+    return 8
+
+cdef int DEC_DE(GBCPU cpu):
+    cpu.set_DE(cpu.get_DE() - 1)
+    return 8
+
+cdef int DEC_HL(GBCPU cpu):
+    cpu.set_HL(cpu.get_HL() - 1)
+    return 8
+
+cdef int DEC_SP(GBCPU cpu):
+    cpu.SP = (cpu.SP - 1)
+    return 8
+

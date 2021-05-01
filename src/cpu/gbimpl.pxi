@@ -131,6 +131,42 @@ cdef int POP_AF(GBCPU cpu):
     cpu.SP += 2
     return 12
 
+cdef int LD_u16_SP(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    cpu.mem.write16(addr, cpu.SP)
+    return 20
+
+cdef int LD_SP_HL(GBCPU cpu):
+    cpu.SP = cpu.get_HL()
+    return 8
+
+cdef int ADD_SP_i8(GBCPU cpu):
+    cdef char offs = <char>cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    cpu.F &= ~(FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD(<unsigned char>cpu.SP, offs):
+        cpu.F |= FLAG_H
+
+    if (cpu.SP & 0xff) + <unsigned char>offs > 0xff:
+        cpu.F |= FLAG_C
+
+    cpu.SP += offs
+    return 16
+
+cdef int LD_HL_SP_i8(GBCPU cpu):
+    cdef char offs = <char>cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    cpu.F &= ~(FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD(<unsigned char>cpu.SP, offs):
+        cpu.F |= FLAG_H
+
+    if (cpu.SP & 0xff) + <unsigned char>offs > 0xff:
+        cpu.F |= FLAG_C
+
+    cpu.set_HL(cpu.SP + offs)
+    return 12
+
 cdef int RLA(GBCPU cpu):
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
