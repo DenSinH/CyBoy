@@ -553,3 +553,260 @@ cdef int RL_atHL(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 16
 
+cdef int SWAP_B(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.registers[REG_B] = (cpu.registers[REG_B] >> 4) | (cpu.registers[REG_B] << 4)
+    
+    if cpu.registers[REG_B] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SWAP_C(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.registers[REG_C] = (cpu.registers[REG_C] >> 4) | (cpu.registers[REG_C] << 4)
+    
+    if cpu.registers[REG_C] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SWAP_D(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.registers[REG_D] = (cpu.registers[REG_D] >> 4) | (cpu.registers[REG_D] << 4)
+    
+    if cpu.registers[REG_D] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SWAP_E(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.registers[REG_E] = (cpu.registers[REG_E] >> 4) | (cpu.registers[REG_E] << 4)
+    
+    if cpu.registers[REG_E] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SWAP_H(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.registers[REG_H] = (cpu.registers[REG_H] >> 4) | (cpu.registers[REG_H] << 4)
+    
+    if cpu.registers[REG_H] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SWAP_L(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.registers[REG_L] = (cpu.registers[REG_L] >> 4) | (cpu.registers[REG_L] << 4)
+    
+    if cpu.registers[REG_L] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SWAP_A(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.registers[REG_A] = (cpu.registers[REG_A] >> 4) | (cpu.registers[REG_A] << 4)
+    
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SWAP_atHL(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    value = (value >> 4) | (value << 4)
+    cpu.mem.write8(HL, value)
+    
+    if value == 0:
+        cpu.F |= FLAG_Z
+    return 16
+
+cdef int SRL_B(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_B] & 1:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_B] >>= 1
+    
+    if cpu.registers[REG_B] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SRL_C(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_C] & 1:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_C] >>= 1
+    
+    if cpu.registers[REG_C] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SRL_D(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_D] & 1:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_D] >>= 1
+    
+    if cpu.registers[REG_D] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SRL_E(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_E] & 1:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_E] >>= 1
+    
+    if cpu.registers[REG_E] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SRL_H(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_H] & 1:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_H] >>= 1
+    
+    if cpu.registers[REG_H] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SRL_L(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_L] & 1:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_L] >>= 1
+    
+    if cpu.registers[REG_L] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SRL_A(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_A] & 1:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] >>= 1
+    
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SRL_atHL(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    if value & 1:
+        cpu.F |= FLAG_C
+    value >>= 1
+    cpu.mem.write8(HL, value)
+    
+    if value == 0:
+        cpu.F |= FLAG_Z
+    return 16
+
+cdef int RR_B(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_B] & 1:
+        cpu.F |= FLAG_C
+        cpu.registers[REG_B] >>= 1
+        cpu.registers[REG_B] |= 0x80
+    else:
+        cpu.registers[REG_B] >>= 1
+    
+    if cpu.registers[REG_B] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int RR_C(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_C] & 1:
+        cpu.F |= FLAG_C
+        cpu.registers[REG_C] >>= 1
+        cpu.registers[REG_C] |= 0x80
+    else:
+        cpu.registers[REG_C] >>= 1
+    
+    if cpu.registers[REG_C] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int RR_D(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_D] & 1:
+        cpu.F |= FLAG_C
+        cpu.registers[REG_D] >>= 1
+        cpu.registers[REG_D] |= 0x80
+    else:
+        cpu.registers[REG_D] >>= 1
+    
+    if cpu.registers[REG_D] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int RR_E(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_E] & 1:
+        cpu.F |= FLAG_C
+        cpu.registers[REG_E] >>= 1
+        cpu.registers[REG_E] |= 0x80
+    else:
+        cpu.registers[REG_E] >>= 1
+    
+    if cpu.registers[REG_E] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int RR_H(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_H] & 1:
+        cpu.F |= FLAG_C
+        cpu.registers[REG_H] >>= 1
+        cpu.registers[REG_H] |= 0x80
+    else:
+        cpu.registers[REG_H] >>= 1
+    
+    if cpu.registers[REG_H] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int RR_L(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_L] & 1:
+        cpu.F |= FLAG_C
+        cpu.registers[REG_L] >>= 1
+        cpu.registers[REG_L] |= 0x80
+    else:
+        cpu.registers[REG_L] >>= 1
+    
+    if cpu.registers[REG_L] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int RR_A(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_A] & 1:
+        cpu.F |= FLAG_C
+        cpu.registers[REG_A] >>= 1
+        cpu.registers[REG_A] |= 0x80
+    else:
+        cpu.registers[REG_A] >>= 1
+    
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int RR_atHL(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    if value & 1:
+        cpu.F |= FLAG_C
+        value >>= 1
+        value |= 0x80
+    else:
+        value >>= 1
+    cpu.mem.write8(HL, value)
+    
+    if value == 0:
+        cpu.F |= FLAG_Z
+    return 16
+

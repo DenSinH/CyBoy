@@ -22,8 +22,14 @@ cdef packed struct MemoryEntry:
     bool read
     bool write
 
-cdef inline unsigned short read16(unsigned char* ptr):
-    return (<unsigned short*>ptr)[0]
+cdef MemoryEntry MakeRW(unsigned char* data)
+cdef MemoryEntry MakeROM(unsigned char* data)
+cdef MemoryEntry MakeUnused()
+cdef MemoryEntry MakeIO(read_callback read, write_callback write)
+
+
+cdef struct IO_REGS:
+    unsigned char SCY, SCX
 
 @cython.final
 cdef class MEM:
@@ -40,6 +46,8 @@ cdef class MEM:
         unsigned char[0x7f] HRAM
 
         MemoryEntry[0x10000] MMAP
+
+        IO_REGS IO
 
     cdef inline unsigned char read8(MEM self, unsigned short address):
         cdef MemoryEntry entry = self.MMAP[address]
@@ -63,6 +71,5 @@ cdef class MEM:
             entry.write_ptr.callback(self, address, value)  # todo: address is for debugging
 
     cdef inline void write16(MEM self, unsigned short address, unsigned short value):
-        print(f"address {address:04x} / {value:04x}")
         self.write8(address, <unsigned char>value)
         self.write8(address + 1, <unsigned char>(value >> 8))

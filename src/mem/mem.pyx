@@ -1,6 +1,6 @@
 from src.mem.IO cimport *
 
-cdef inline MemoryEntry MakeRW(unsigned char* data):
+cdef MemoryEntry MakeRW(unsigned char* data):
     cdef MemoryEntry entry 
     entry.read_ptr.data = data
     entry.read = True
@@ -8,7 +8,7 @@ cdef inline MemoryEntry MakeRW(unsigned char* data):
     entry.write = True
     return entry
 
-cdef inline MemoryEntry MakeROM(unsigned char* data):
+cdef MemoryEntry MakeROM(unsigned char* data):
     cdef MemoryEntry entry 
     entry.read_ptr.data = data
     entry.read = True
@@ -16,7 +16,7 @@ cdef inline MemoryEntry MakeROM(unsigned char* data):
     entry.write = False
     return entry
 
-cdef inline MemoryEntry MakeUnused():
+cdef MemoryEntry MakeUnused():
     cdef MemoryEntry entry 
     entry.read_ptr.data = NULL
     entry.read = False
@@ -24,7 +24,7 @@ cdef inline MemoryEntry MakeUnused():
     entry.write = False
     return entry
 
-cdef inline MemoryEntry MakeIO(read_callback read, write_callback write):
+cdef MemoryEntry MakeIO(read_callback read, write_callback write):
     cdef MemoryEntry entry 
     entry.read_ptr.callback = read
     entry.read = False
@@ -45,6 +45,14 @@ cdef inline MemoryEntry MakeUnimplemented():
     entry.read_ptr.callback = read_unimplemented
     entry.read = False
     entry.write_ptr.callback = write_unimplemented
+    entry.write = False
+    return entry
+
+cdef inline MemoryEntry MakeUnimpIO():
+    cdef MemoryEntry entry 
+    entry.read_ptr.callback = read_unimpIO
+    entry.read = False
+    entry.write_ptr.callback = write_unimpIO
     entry.write = False
     return entry
 
@@ -87,20 +95,26 @@ cdef class MEM:
         for i in range(0x80):   # IO
             self.MMAP[0xff00 + i] = MakeUnimplemented()
 
-        # accessed in bootrom
-        self.MMAP[0xff11] = MakeUnused()
-        self.MMAP[0xff12] = MakeUnused()
-        self.MMAP[0xff13] = MakeUnused()
-        self.MMAP[0xff14] = MakeUnused()
-        self.MMAP[0xff24] = MakeUnused()
-        self.MMAP[0xff25] = MakeUnused()
-        self.MMAP[0xff26] = MakeUnused()
-        self.MMAP[0xff40] = MakeUnused()
-        self.MMAP[0xff42] = MakeUnused()
+        self.MMAP[0xff01] = MakeIO(NULL, write_SB)
+        self.MMAP[0xff02] = MakeIO(NULL, NULL)  # todo
+        self.MMAP[0xff07] = MakeUnimpIO()
+        self.MMAP[0xff0f] = MakeUnimpIO()
+        self.MMAP[0xff11] = MakeUnimpIO()
+        self.MMAP[0xff12] = MakeUnimpIO()
+        self.MMAP[0xff13] = MakeUnimpIO()
+        self.MMAP[0xff14] = MakeUnimpIO()
+        self.MMAP[0xff24] = MakeUnimpIO()
+        self.MMAP[0xff25] = MakeUnimpIO()
+        self.MMAP[0xff26] = MakeUnimpIO()
+        self.MMAP[0xff40] = MakeUnimpIO()
+        self.MMAP[0xff42] = MakeRW(&self.IO.SCY)
+        self.MMAP[0xff43] = MakeRW(&self.IO.SCX)
         self.MMAP[0xff44] = MakeIO(read_LY, NULL)
-        self.MMAP[0xff47] = MakeUnused()
+        self.MMAP[0xff47] = MakeUnimpIO()
+        self.MMAP[0xff50] = MakeIO(NULL, write_UnmapBoot)
 
         for i in range(0x7f):
             self.MMAP[0xff80 + i] = MakeRW(&self.HRAM[i])
-        self.MMAP[0xffff] = MakeUnimplemented()  # IE
+
+        self.MMAP[0xffff] = MakeUnimpIO()  # IE
             

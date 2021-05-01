@@ -89,6 +89,15 @@ cdef int LD_A_ffu8(GBCPU cpu):
     cpu.PC += 1
     cpu.registers[REG_A] = cpu.mem.read8(0xff00 + offs)
 
+cdef int NOP(GBCPU cpu):
+    return 4
+
+cdef int DI(GBCPU cpu):
+    cpu.IME = 0
+
+cdef int EI(GBCPU cpu):
+    cpu.IME = 1
+
 cdef int RLA(GBCPU cpu):
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
@@ -98,6 +107,17 @@ cdef int RLA(GBCPU cpu):
 
     cpu.registers[REG_A] <<= 1
     cpu.registers[REG_A] |= old_carry
+    return 8
+
+cdef int RRA(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if cpu.registers[REG_A] & 1:
+        cpu.F |= FLAG_C
+        cpu.registers[REG_A] >>= 1
+        cpu.registers[REG_A] |= 0x80
+    else:
+        cpu.registers[REG_A] >>= 1
+
     return 8
 
 cdef int CP_A_u8(GBCPU cpu):
@@ -112,6 +132,67 @@ cdef int CP_A_u8(GBCPU cpu):
     if (<int>cpu.registers[REG_A]) - (<int>value) < 0:
         cpu.F |= FLAG_C
     return 8
+    
+cdef int AND_A_u8(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    cdef unsigned char value = cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    cpu.registers[REG_A] &= value
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int XOR_A_u8(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned char value = cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    cpu.registers[REG_A] ^= value
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int ADD_A_u8(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned char value = cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], value):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>value) > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += value
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int ADC_A_u8(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned char value = cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], value, old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>value) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += value + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SUB_A_u8(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    cdef unsigned char value = cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], value):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>value) < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= value
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
 
 cdef int LD_u16_A(GBCPU cpu):
     cdef unsigned short address = cpu.mem.read16(cpu.PC)

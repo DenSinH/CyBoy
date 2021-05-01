@@ -113,3 +113,43 @@ cdef int RET_(GBCPU cpu):
         return 20
     return 8
 
+cdef int JP_NZ_u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if not (cpu.F & FLAG_Z):
+        cpu.PC = addr
+        return 16
+    return 12
+
+cdef int JP_NC_u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if not (cpu.F & FLAG_C):
+        cpu.PC = addr
+        return 16
+    return 12
+
+cdef int JP_Z_u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if cpu.F & FLAG_Z:
+        cpu.PC = addr
+        return 16
+    return 12
+
+cdef int JP_C_u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if cpu.F & FLAG_C:
+        cpu.PC = addr
+        return 16
+    return 12
+
+cdef int JP__u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if True:
+        cpu.PC = addr
+        return 16
+    return 12
+

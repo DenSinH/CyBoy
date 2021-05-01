@@ -21,9 +21,19 @@ cdef int LD_A_ff00(GBCPU cpu)
 cdef int LD_ffu8_A(GBCPU cpu)
 cdef int LD_A_ffu8(GBCPU cpu)
 
+cdef int NOP(GBCPU cpu)
+cdef int DI(GBCPU cpu)
+cdef int EI(GBCPU cpu)
+
 cdef int RLA(GBCPU cpu)
+cdef int RRA(GBCPU cpu)
 
 cdef int CP_A_u8(GBCPU cpu)
+cdef int AND_A_u8(GBCPU cpu)
+cdef int XOR_A_u8(GBCPU cpu)
+cdef int ADD_A_u8(GBCPU cpu)
+cdef int ADC_A_u8(GBCPU cpu)
+cdef int SUB_A_u8(GBCPU cpu)
 
 cdef int LD_u16_A(GBCPU cpu)
 cdef int LD_A_u16(GBCPU cpu)

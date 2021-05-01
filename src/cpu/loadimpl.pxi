@@ -316,48 +316,40 @@ cdef int LD_SP_u16(GBCPU cpu):
 
 cdef int PUSH_BC(GBCPU cpu):
     cpu.SP -= 2
-    print(f"writing to {cpu.SP:04x}")
     cpu.mem.write16(cpu.SP, cpu.get_BC())
     return 16
 
 cdef int PUSH_DE(GBCPU cpu):
     cpu.SP -= 2
-    print(f"writing to {cpu.SP:04x}")
     cpu.mem.write16(cpu.SP, cpu.get_DE())
     return 16
 
 cdef int PUSH_HL(GBCPU cpu):
     cpu.SP -= 2
-    print(f"writing to {cpu.SP:04x}")
     cpu.mem.write16(cpu.SP, cpu.get_HL())
     return 16
 
 cdef int PUSH_AF(GBCPU cpu):
     cpu.SP -= 2
-    print(f"writing to {cpu.SP:04x}")
     cpu.mem.write16(cpu.SP, cpu.get_AF())
     return 16
 
 cdef int POP_BC(GBCPU cpu):
-    print(f"reading from {cpu.SP:04x}")
     cpu.set_BC(cpu.mem.read16(cpu.SP))
     cpu.SP += 2
     return 12
 
 cdef int POP_DE(GBCPU cpu):
-    print(f"reading from {cpu.SP:04x}")
     cpu.set_DE(cpu.mem.read16(cpu.SP))
     cpu.SP += 2
     return 12
 
 cdef int POP_HL(GBCPU cpu):
-    print(f"reading from {cpu.SP:04x}")
     cpu.set_HL(cpu.mem.read16(cpu.SP))
     cpu.SP += 2
     return 12
 
 cdef int POP_AF(GBCPU cpu):
-    print(f"reading from {cpu.SP:04x}")
     cpu.set_AF(cpu.mem.read16(cpu.SP))
     cpu.SP += 2
     return 12
