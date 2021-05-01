@@ -38,6 +38,26 @@ return 8
     )
 
     g.generate_r8(
+        "AND_A_{r8}",
+        """
+cpu.registers[REG_A] &= cpu.registers[REG_{r8}]
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+cpu.F |= FLAG_H
+if cpu.registers[REG_A] == 0:
+    cpu.F |= FLAG_Z
+return 4
+""",
+        """
+cpu.registers[REG_A] |= cpu.mem.read8(cpu.get_HL())
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+cpu.F |= FLAG_H
+if cpu.registers[REG_A] == 0:
+    cpu.F &= FLAG_Z
+return 8
+""",
+    )
+
+    g.generate_r8(
         "SUB_A_{r8}",
         """
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
@@ -89,6 +109,66 @@ if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], value):
 if (<int>cpu.registers[REG_A]) + (<int>value) > 0xff:
     cpu.F |= FLAG_C
 cpu.registers[REG_A] += value
+if cpu.registers[REG_A] == 0:
+    cpu.F |= FLAG_Z
+return 8
+""",
+    )
+
+    g.generate_r8(
+        "ADC_A_{r8}",
+        """
+cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_{r8}], old_carry):
+    cpu.F |= FLAG_H
+if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_{r8}]) + old_carry > 0xff:
+    cpu.F |= FLAG_C
+cpu.registers[REG_A] += cpu.registers[REG_{r8}] + old_carry
+if cpu.registers[REG_A] == 0:
+    cpu.F |= FLAG_Z
+return 4
+""",
+        """
+cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
+if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], value, old_carry):
+    cpu.F |= FLAG_H
+if (<int>cpu.registers[REG_A]) + (<int>value) + old_carry > 0xff:
+    cpu.F |= FLAG_C
+cpu.registers[REG_A] += value + old_carry
+if cpu.registers[REG_A] == 0:
+    cpu.F |= FLAG_Z
+return 8
+""",
+    )
+
+    g.generate_r8(
+        "SBC_A_{r8}",
+        """
+cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+cpu.F |= FLAG_N
+if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], cpu.registers[REG_{r8}], old_carry):
+    cpu.F |= FLAG_H
+if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_{r8}]) - old_carry < 0:
+    cpu.F |= FLAG_C
+cpu.registers[REG_A] -= cpu.registers[REG_{r8}] + old_carry
+if cpu.registers[REG_A] == 0:
+    cpu.F |= FLAG_Z
+return 4
+""",
+        """
+cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+cpu.F |= FLAG_N
+cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
+if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], value, old_carry):
+    cpu.F |= FLAG_H
+if (<int>cpu.registers[REG_A]) - (<int>value) - old_carry < 0:
+    cpu.F |= FLAG_C
+cpu.registers[REG_A] -= value + old_carry
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
 return 8
@@ -391,6 +471,15 @@ return 12
 """,
     "NZ", "NC", "Z", "C", ""
     )
+    for vec in [0, 8, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38]:
+        g.generate_manual(
+            f"RST_{vec:02x}",
+            f"""
+cpu.PUSH_PC()
+cpu.PC = 0x{vec:02x}
+return 16
+"""
+        )
 
 with generator("src/cpu/loadinterp.pxi", "src/cpu/loadimpl.pxi") as g:
     g.generate_r8(

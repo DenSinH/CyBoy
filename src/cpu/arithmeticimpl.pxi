@@ -110,6 +110,70 @@ cdef int OR_A_atHL(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 8
 
+cdef int AND_A_B(GBCPU cpu):
+    cpu.registers[REG_A] &= cpu.registers[REG_B]
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int AND_A_C(GBCPU cpu):
+    cpu.registers[REG_A] &= cpu.registers[REG_C]
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int AND_A_D(GBCPU cpu):
+    cpu.registers[REG_A] &= cpu.registers[REG_D]
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int AND_A_E(GBCPU cpu):
+    cpu.registers[REG_A] &= cpu.registers[REG_E]
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int AND_A_H(GBCPU cpu):
+    cpu.registers[REG_A] &= cpu.registers[REG_H]
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int AND_A_L(GBCPU cpu):
+    cpu.registers[REG_A] &= cpu.registers[REG_L]
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int AND_A_A(GBCPU cpu):
+    cpu.registers[REG_A] &= cpu.registers[REG_A]
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int AND_A_atHL(GBCPU cpu):
+    cpu.registers[REG_A] |= cpu.mem.read8(cpu.get_HL())
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_H
+    if cpu.registers[REG_A] == 0:
+        cpu.F &= FLAG_Z
+    return 8
+
 cdef int SUB_A_B(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
@@ -300,6 +364,208 @@ cdef int ADD_A_atHL(GBCPU cpu):
     if (<int>cpu.registers[REG_A]) + (<int>value) > 0xff:
         cpu.F |= FLAG_C
     cpu.registers[REG_A] += value
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int ADC_A_B(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_B], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_B]) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += cpu.registers[REG_B] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int ADC_A_C(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_C], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_C]) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += cpu.registers[REG_C] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int ADC_A_D(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_D], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_D]) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += cpu.registers[REG_D] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int ADC_A_E(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_E], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_E]) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += cpu.registers[REG_E] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int ADC_A_H(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_H], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_H]) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += cpu.registers[REG_H] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int ADC_A_L(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_L], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_L]) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += cpu.registers[REG_L] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int ADC_A_A(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_A], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_A]) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += cpu.registers[REG_A] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int ADC_A_atHL(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
+    if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], value, old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) + (<int>value) + old_carry > 0xff:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] += value + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
+cdef int SBC_A_B(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], cpu.registers[REG_B], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_B]) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= cpu.registers[REG_B] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int SBC_A_C(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], cpu.registers[REG_C], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_C]) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= cpu.registers[REG_C] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int SBC_A_D(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], cpu.registers[REG_D], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_D]) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= cpu.registers[REG_D] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int SBC_A_E(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], cpu.registers[REG_E], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_E]) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= cpu.registers[REG_E] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int SBC_A_H(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], cpu.registers[REG_H], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_H]) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= cpu.registers[REG_H] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int SBC_A_L(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], cpu.registers[REG_L], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_L]) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= cpu.registers[REG_L] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int SBC_A_A(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], cpu.registers[REG_A], old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_A]) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= cpu.registers[REG_A] + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int SBC_A_atHL(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], value, old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>value) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= value + old_carry
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 8

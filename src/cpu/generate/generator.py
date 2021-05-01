@@ -15,6 +15,11 @@ class generator:
         self.interp.close()
         self.impl.close()
 
+    def generate_manual(self, name, code):
+        self.interp.write((f"cdef int {name}(GBCPU cpu)\n"))
+        self.impl.write((f"cdef int {name}(GBCPU cpu):\n"))
+        self.impl.write("    " + "\n    ".join(code.strip().split("\n")) + "\n\n")
+
     def generate_r8(self, name, code, code_HL):
         for r8 in ["B", "C", "D", "E", "H", "L", "A"]:
             self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(r8=r8))

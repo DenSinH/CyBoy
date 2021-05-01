@@ -100,6 +100,11 @@ cdef int EI(GBCPU cpu):
     cpu.IME = 1
     return 4
 
+cdef int RETI(GBCPU cpu):
+    cpu.IME = 1
+    cpu.POP_PC()
+    return 16
+
 cdef int DAA(GBCPU cpu):
     # https://ehaskins.com/2018-01-30%20Z80%20DAA
     cdef unsigned char correction = 0
@@ -120,6 +125,14 @@ cdef int DAA(GBCPU cpu):
     cpu.F |= carry
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
+    return 4
+
+cdef int SCF(GBCPU cpu):
+    cpu.F |= FLAG_C 
+    return 4
+
+cdef int CCF(GBCPU cpu):
+    cpu.F &= ~FLAG_C
     return 4
 
 cdef int CPL(GBCPU cpu):
@@ -220,6 +233,15 @@ cdef int XOR_A_u8(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 8
 
+cdef int OR_A_u8(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned char value = cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    cpu.registers[REG_A] ^= value
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
 cdef int ADD_A_u8(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cdef unsigned char value = cpu.mem.read8(cpu.PC)
@@ -246,6 +268,22 @@ cdef int ADC_A_u8(GBCPU cpu):
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 8
+
+cdef int SBC_A_u8(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    cdef unsigned char value = cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], value, old_carry):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>value) - old_carry < 0:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] -= value + old_carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 8
+
 
 cdef int SUB_A_u8(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)

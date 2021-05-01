@@ -11,19 +11,19 @@ cdef class GBCPU:
             NOP,       LD_BC_u16, LD_atBC_A,   INC_BC,    INC_B,       DEC_B,     LD_B_u8,    NULL,      LD_u16_SP,   ADD_HL_BC, LD_A_atBC,   DEC_BC,  INC_C,      DEC_C,     LD_C_u8,    NULL,    # 00
             NULL,      LD_DE_u16, LD_atDE_A,   INC_DE,    INC_D,       DEC_D,     LD_D_u8,    RLA,       JR__i8,      ADD_HL_DE, LD_A_atDE,   DEC_DE,  INC_E,      DEC_E,     LD_E_u8,    RRA,     # 10
             JR_NZ_i8,  LD_HL_u16, LD_atHL_Apl, INC_HL,    INC_H,       DEC_H,     LD_H_u8,    DAA,       JR_Z_i8,     ADD_HL_HL, LD_A_atHLpl, DEC_HL,  INC_L,      DEC_L,     LD_L_u8,    CPL,     # 20
-            JR_NC_i8,  LD_SP_u16, LD_atHL_Amn, INC_SP,    INC_atHL,    DEC_atHL,  LD_atHL_u8, NULL,      JR_C_i8,     ADD_HL_SP, LD_A_atHLmn, DEC_SP,  INC_A,      DEC_A,     LD_A_u8,    NULL,    # 30
+            JR_NC_i8,  LD_SP_u16, LD_atHL_Amn, INC_SP,    INC_atHL,    DEC_atHL,  LD_atHL_u8, SCF,       JR_C_i8,     ADD_HL_SP, LD_A_atHLmn, DEC_SP,  INC_A,      DEC_A,     LD_A_u8,    CCF,     # 30
             LD_B_B,    LD_B_C,    LD_B_D,      LD_B_E,    LD_B_H,      LD_B_L,    LD_B_atHL,  LD_B_A,    LD_C_B,      LD_C_C,    LD_C_D,      LD_C_E,  LD_C_H,     LD_C_L,    LD_C_atHL,  LD_C_A,  # 40
             LD_B_B,    LD_D_C,    LD_D_D,      LD_D_E,    LD_D_H,      LD_D_L,    LD_D_atHL,  LD_D_A,    LD_E_B,      LD_E_C,    LD_E_D,      LD_E_E,  LD_E_H,     LD_E_L,    LD_E_atHL,  LD_E_A,  # 50
             LD_B_B,    LD_H_C,    LD_H_D,      LD_H_E,    LD_H_H,      LD_H_L,    LD_H_atHL,  LD_H_A,    LD_L_B,      LD_L_C,    LD_L_D,      LD_L_E,  LD_L_H,     LD_L_L,    LD_L_atHL,  LD_L_A,  # 60
             LD_B_B,    LD_atHL_C, LD_atHL_D,   LD_atHL_E, LD_atHL_H,   LD_atHL_L, NULL,       LD_atHL_A, LD_A_B,      LD_A_C,    LD_A_D,      LD_A_E,  LD_A_H,     LD_A_L,    LD_A_atHL,  LD_A_A,  # 70
-            ADD_A_B,   ADD_A_C,   ADD_A_D,     ADD_A_E,   ADD_A_H,     ADD_A_L,   ADD_A_atHL, ADD_A_A,   NULL,        NULL,      NULL,        NULL,    NULL,       NULL,      NULL,       NULL,    # 80
-            SUB_A_B,   SUB_A_C,   SUB_A_D,     SUB_A_E,   SUB_A_H,     SUB_A_L,   SUB_A_atHL, SUB_A_A,   NULL,        NULL,      NULL,        NULL,    NULL,       NULL,      NULL,       NULL,    # 90
-            NULL,      NULL,      NULL,        NULL,      NULL,        NULL,      NULL,       NULL,      XOR_A_B,     XOR_A_C,   XOR_A_D,     XOR_A_E, XOR_A_H,    XOR_A_L,   XOR_A_atHL, XOR_A_A, # A0
+            ADD_A_B,   ADD_A_C,   ADD_A_D,     ADD_A_E,   ADD_A_H,     ADD_A_L,   ADD_A_atHL, ADD_A_A,   ADC_A_B,     ADC_A_C,   ADC_A_D,     ADC_A_E, ADC_A_H,    ADC_A_L,   ADC_A_atHL, ADC_A_A, # 80
+            SUB_A_B,   SUB_A_C,   SUB_A_D,     SUB_A_E,   SUB_A_H,     SUB_A_L,   SUB_A_atHL, SUB_A_A,   SBC_A_B,     SBC_A_C,   SBC_A_D,     SBC_A_E, SBC_A_H,    SBC_A_L,   SBC_A_atHL, SBC_A_A, # 90
+            AND_A_B,   AND_A_C,   AND_A_D,     AND_A_E,   AND_A_H,     AND_A_L,   AND_A_atHL, AND_A_A,   XOR_A_B,     XOR_A_C,   XOR_A_D,     XOR_A_E, XOR_A_H,    XOR_A_L,   XOR_A_atHL, XOR_A_A, # A0
             OR_A_B,    OR_A_C,    OR_A_D,      OR_A_E,    OR_A_H,      OR_A_L,    OR_A_atHL,  OR_A_A,    CP_A_B,      CP_A_C,    CP_A_D,      CP_A_E,  CP_A_H,     CP_A_L,    CP_A_atHL,  CP_A_A,  # B0
-            RET_NZ,    POP_BC,    JP_NZ_u16,   JP__u16,   CALL_NZ_u16, PUSH_BC,   ADD_A_u8,   NULL,      RET_Z,       RET_,      JP_Z_u16,    pref,    CALL_Z_u16, CALL__u16, ADC_A_u8,   NULL,    # C0
-            RET_NC,    POP_DE,    JP_NC_u16,   NULL,      CALL_NC_u16, PUSH_DE,   SUB_A_u8,   NULL,      RET_C,       NULL,      JP_C_u16,    NULL,    CALL_C_u16, NULL,      NULL,       NULL,    # D0
-            LD_ffu8_A, POP_HL,    LD_ff00_A,   NULL,      NULL,        PUSH_HL,   AND_A_u8,   NULL,      ADD_SP_i8,   JP_HL,     LD_u16_A,    NULL,    NULL,       NULL,      XOR_A_u8,   NULL,    # E0
-            LD_A_ffu8, POP_AF,    LD_A_ff00,   DI,        NULL,        PUSH_AF,   NULL,       NULL,      LD_HL_SP_i8, LD_SP_HL,  LD_A_u16,    EI,      NULL,       NULL,      CP_A_u8,    NULL,    # F0
+            RET_NZ,    POP_BC,    JP_NZ_u16,   JP__u16,   CALL_NZ_u16, PUSH_BC,   ADD_A_u8,   RST_00,    RET_Z,       RET_,      JP_Z_u16,    pref,    CALL_Z_u16, CALL__u16, ADC_A_u8,   RST_08,  # C0
+            RET_NC,    POP_DE,    JP_NC_u16,   NULL,      CALL_NC_u16, PUSH_DE,   SUB_A_u8,   RST_10,    RET_C,       RETI,      JP_C_u16,    NULL,    CALL_C_u16, NULL,      SBC_A_u8,   RST_18,  # D0
+            LD_ffu8_A, POP_HL,    LD_ff00_A,   NULL,      NULL,        PUSH_HL,   AND_A_u8,   RST_20,    ADD_SP_i8,   JP_HL,     LD_u16_A,    NULL,    NULL,       NULL,      XOR_A_u8,   RST_28,  # E0
+            LD_A_ffu8, POP_AF,    LD_A_ff00,   DI,        NULL,        PUSH_AF,   OR_A_u8,    RST_30,    LD_HL_SP_i8, LD_SP_HL,  LD_A_u16,    EI,      NULL,       NULL,      CP_A_u8,    RST_38,  # F0
         ]
 
         self.extended_instructions = [

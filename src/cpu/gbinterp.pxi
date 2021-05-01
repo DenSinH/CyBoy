@@ -24,8 +24,11 @@ cdef int LD_A_ffu8(GBCPU cpu)
 cdef int NOP(GBCPU cpu)
 cdef int DI(GBCPU cpu)
 cdef int EI(GBCPU cpu)
+cdef int RETI(GBCPU cpu)
 
 cdef int DAA(GBCPU cpu)
+cdef int SCF(GBCPU cpu)
+cdef int CCF(GBCPU cpu)
 cdef int CPL(GBCPU cpu)
 
 cdef int POP_AF(GBCPU cpu)  # special case
@@ -40,8 +43,10 @@ cdef int RRA(GBCPU cpu)
 cdef int CP_A_u8(GBCPU cpu)
 cdef int AND_A_u8(GBCPU cpu)
 cdef int XOR_A_u8(GBCPU cpu)
+cdef int OR_A_u8(GBCPU cpu)
 cdef int ADD_A_u8(GBCPU cpu)
 cdef int ADC_A_u8(GBCPU cpu)
+cdef int SBC_A_u8(GBCPU cpu)
 cdef int SUB_A_u8(GBCPU cpu)
 
 cdef int LD_u16_A(GBCPU cpu)

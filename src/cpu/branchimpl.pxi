@@ -153,3 +153,43 @@ cdef int JP__u16(GBCPU cpu):
         return 16
     return 12
 
+cdef int RST_00(GBCPU cpu):
+    cpu.PUSH_PC()
+    cpu.PC = 0x00
+    return 16
+
+cdef int RST_08(GBCPU cpu):
+    cpu.PUSH_PC()
+    cpu.PC = 0x08
+    return 16
+
+cdef int RST_10(GBCPU cpu):
+    cpu.PUSH_PC()
+    cpu.PC = 0x10
+    return 16
+
+cdef int RST_18(GBCPU cpu):
+    cpu.PUSH_PC()
+    cpu.PC = 0x18
+    return 16
+
+cdef int RST_20(GBCPU cpu):
+    cpu.PUSH_PC()
+    cpu.PC = 0x20
+    return 16
+
+cdef int RST_28(GBCPU cpu):
+    cpu.PUSH_PC()
+    cpu.PC = 0x28
+    return 16
+
+cdef int RST_30(GBCPU cpu):
+    cpu.PUSH_PC()
+    cpu.PC = 0x30
+    return 16
+
+cdef int RST_38(GBCPU cpu):
+    cpu.PUSH_PC()
+    cpu.PC = 0x38
+    return 16
+
