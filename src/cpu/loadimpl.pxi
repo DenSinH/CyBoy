@@ -33,7 +33,7 @@ cdef int LD_A_u8(GBCPU cpu):
     cpu.PC += 1
     return 8
 
-cdef int LD_HL_u8(GBCPU cpu):
+cdef int LD_atHL_u8(GBCPU cpu):
     cpu.set_HL(cpu.mem.read8(cpu.PC))
     cpu.PC += 1
     return 12
@@ -66,7 +66,7 @@ cdef int LD_A_B(GBCPU cpu):
     cpu.registers[REG_A] = cpu.registers[REG_B]
     return 4
 
-cdef int LD_HL_B(GBCPU cpu):
+cdef int LD_atHL_B(GBCPU cpu):
     cpu.mem.write8(cpu.get_HL(), cpu.registers[REG_B])
     return 8
 
@@ -98,7 +98,7 @@ cdef int LD_A_C(GBCPU cpu):
     cpu.registers[REG_A] = cpu.registers[REG_C]
     return 4
 
-cdef int LD_HL_C(GBCPU cpu):
+cdef int LD_atHL_C(GBCPU cpu):
     cpu.mem.write8(cpu.get_HL(), cpu.registers[REG_C])
     return 8
 
@@ -130,7 +130,7 @@ cdef int LD_A_D(GBCPU cpu):
     cpu.registers[REG_A] = cpu.registers[REG_D]
     return 4
 
-cdef int LD_HL_D(GBCPU cpu):
+cdef int LD_atHL_D(GBCPU cpu):
     cpu.mem.write8(cpu.get_HL(), cpu.registers[REG_D])
     return 8
 
@@ -162,7 +162,7 @@ cdef int LD_A_E(GBCPU cpu):
     cpu.registers[REG_A] = cpu.registers[REG_E]
     return 4
 
-cdef int LD_HL_E(GBCPU cpu):
+cdef int LD_atHL_E(GBCPU cpu):
     cpu.mem.write8(cpu.get_HL(), cpu.registers[REG_E])
     return 8
 
@@ -194,7 +194,7 @@ cdef int LD_A_H(GBCPU cpu):
     cpu.registers[REG_A] = cpu.registers[REG_H]
     return 4
 
-cdef int LD_HL_H(GBCPU cpu):
+cdef int LD_atHL_H(GBCPU cpu):
     cpu.mem.write8(cpu.get_HL(), cpu.registers[REG_H])
     return 8
 
@@ -226,7 +226,7 @@ cdef int LD_A_L(GBCPU cpu):
     cpu.registers[REG_A] = cpu.registers[REG_L]
     return 4
 
-cdef int LD_HL_L(GBCPU cpu):
+cdef int LD_atHL_L(GBCPU cpu):
     cpu.mem.write8(cpu.get_HL(), cpu.registers[REG_L])
     return 8
 
@@ -258,39 +258,39 @@ cdef int LD_A_A(GBCPU cpu):
     cpu.registers[REG_A] = cpu.registers[REG_A]
     return 4
 
-cdef int LD_HL_A(GBCPU cpu):
+cdef int LD_atHL_A(GBCPU cpu):
     cpu.mem.write8(cpu.get_HL(), cpu.registers[REG_A])
     return 8
 
-cdef int LD_B_HL(GBCPU cpu):
+cdef int LD_B_atHL(GBCPU cpu):
     cpu.registers[REG_B] = cpu.mem.read8(cpu.get_HL())
     return 4
 
-cdef int LD_C_HL(GBCPU cpu):
+cdef int LD_C_atHL(GBCPU cpu):
     cpu.registers[REG_C] = cpu.mem.read8(cpu.get_HL())
     return 4
 
-cdef int LD_D_HL(GBCPU cpu):
+cdef int LD_D_atHL(GBCPU cpu):
     cpu.registers[REG_D] = cpu.mem.read8(cpu.get_HL())
     return 4
 
-cdef int LD_E_HL(GBCPU cpu):
+cdef int LD_E_atHL(GBCPU cpu):
     cpu.registers[REG_E] = cpu.mem.read8(cpu.get_HL())
     return 4
 
-cdef int LD_H_HL(GBCPU cpu):
+cdef int LD_H_atHL(GBCPU cpu):
     cpu.registers[REG_H] = cpu.mem.read8(cpu.get_HL())
     return 4
 
-cdef int LD_L_HL(GBCPU cpu):
+cdef int LD_L_atHL(GBCPU cpu):
     cpu.registers[REG_L] = cpu.mem.read8(cpu.get_HL())
     return 4
 
-cdef int LD_A_HL(GBCPU cpu):
+cdef int LD_A_atHL(GBCPU cpu):
     cpu.registers[REG_A] = cpu.mem.read8(cpu.get_HL())
     return 4
 
-cdef int LD_HL_HL(GBCPU cpu):
+cdef int LD_atHL_atHL(GBCPU cpu):
     print("This is HALT!")
     quit(-69)
 
@@ -316,40 +316,48 @@ cdef int LD_SP_u16(GBCPU cpu):
 
 cdef int PUSH_BC(GBCPU cpu):
     cpu.SP -= 2
+    print(f"writing to {cpu.SP:04x}")
     cpu.mem.write16(cpu.SP, cpu.get_BC())
     return 16
 
 cdef int PUSH_DE(GBCPU cpu):
     cpu.SP -= 2
+    print(f"writing to {cpu.SP:04x}")
     cpu.mem.write16(cpu.SP, cpu.get_DE())
     return 16
 
 cdef int PUSH_HL(GBCPU cpu):
     cpu.SP -= 2
+    print(f"writing to {cpu.SP:04x}")
     cpu.mem.write16(cpu.SP, cpu.get_HL())
     return 16
 
 cdef int PUSH_AF(GBCPU cpu):
     cpu.SP -= 2
+    print(f"writing to {cpu.SP:04x}")
     cpu.mem.write16(cpu.SP, cpu.get_AF())
     return 16
 
 cdef int POP_BC(GBCPU cpu):
+    print(f"reading from {cpu.SP:04x}")
     cpu.set_BC(cpu.mem.read16(cpu.SP))
     cpu.SP += 2
     return 12
 
 cdef int POP_DE(GBCPU cpu):
+    print(f"reading from {cpu.SP:04x}")
     cpu.set_DE(cpu.mem.read16(cpu.SP))
     cpu.SP += 2
     return 12
 
 cdef int POP_HL(GBCPU cpu):
+    print(f"reading from {cpu.SP:04x}")
     cpu.set_HL(cpu.mem.read16(cpu.SP))
     cpu.SP += 2
     return 12
 
 cdef int POP_AF(GBCPU cpu):
+    print(f"reading from {cpu.SP:04x}")
     cpu.set_AF(cpu.mem.read16(cpu.SP))
     cpu.SP += 2
     return 12

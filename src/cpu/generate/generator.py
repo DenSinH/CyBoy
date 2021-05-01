@@ -21,8 +21,8 @@ class generator:
             self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(r8=r8))
             self.impl.write("    " + "\n    ".join(code.strip().format(r8=r8).split("\n")) + "\n\n")
 
-        self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(r8="HL"))
-        self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(r8="HL"))
+        self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(r8="atHL"))
+        self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(r8="atHL"))
         self.impl.write("    " + "\n    ".join(code_HL.strip().split("\n")) + "\n\n")
 
     def generate_r16(self, name, code, *regs):
@@ -43,8 +43,8 @@ class generator:
                 self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(bit=bit, hex=hex(1 << bit), r8=r8))
                 self.impl.write("    " + "\n    ".join(code.strip().format(bit=bit, hex=hex(1 << bit), r8=r8).split("\n")) + "\n\n")
 
-            self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(bit=bit, hex=hex(1 << bit), r8="HL"))
-            self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(bit=bit, hex=hex(1 << bit), r8="HL"))
+            self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(bit=bit, hex=hex(1 << bit), r8="atHL"))
+            self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(bit=bit, hex=hex(1 << bit), r8="atHL"))
             self.impl.write("    " + "\n    ".join(code_HL.format(bit=bit, hex=hex(1 << bit)).strip().split("\n")) + "\n\n")
 
     def generate_cond(self, name, code, *conds):

@@ -38,7 +38,7 @@ cdef class GBCPU:
     cdef public object log
 
     cdef inline int step(self):
-        self.log.write(f"A: {self.registers[REG_A]:02X} F: {self.F:02X} B: {self.registers[REG_B]:02X} C: {self.registers[REG_C]:02X} D: {self.registers[REG_D]:02X} E: {self.registers[REG_E]:02X} H: {self.registers[REG_H]:02X} L: {self.registers[REG_L]:02X} SP: {self.SP:04X} PC: {self.PC:04X}\n")
+        self.log.write(f"A: {self.registers[REG_A]:02X} F: {self.F:02X} B: {self.registers[REG_B]:02X} C: {self.registers[REG_C]:02X} D: {self.registers[REG_D]:02X} E: {self.registers[REG_E]:02X} H: {self.registers[REG_H]:02X} L: {self.registers[REG_L]:02X} SP: {self.SP:04X} PC: 00:{self.PC:04X}\n")
         self.log.flush()
         print(self.PC)
 

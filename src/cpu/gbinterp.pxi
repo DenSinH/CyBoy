@@ -21,6 +21,15 @@ cdef int LD_A_ff00(GBCPU cpu)
 cdef int LD_ffu8_A(GBCPU cpu)
 cdef int LD_A_ffu8(GBCPU cpu)
 
+cdef int RLA(GBCPU cpu)
+
+cdef int CP_A_u8(GBCPU cpu)
+
+cdef int LD_u16_A(GBCPU cpu)
+cdef int LD_A_u16(GBCPU cpu)
+
+cdef int JP_HL(GBCPU cpu)
+
 include "arithmeticinterp.pxi"
 include "bitopinterp.pxi"
 include "branchinterp.pxi"

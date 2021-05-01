@@ -83,3 +83,33 @@ cdef int CALL__u16(GBCPU cpu):
         return 24
     return 12
 
+cdef int RET_NZ(GBCPU cpu):
+    if not (cpu.F & FLAG_Z):
+        cpu.POP_PC()
+        return 20
+    return 8
+
+cdef int RET_NC(GBCPU cpu):
+    if not (cpu.F & FLAG_C):
+        cpu.POP_PC()
+        return 20
+    return 8
+
+cdef int RET_Z(GBCPU cpu):
+    if cpu.F & FLAG_Z:
+        cpu.POP_PC()
+        return 20
+    return 8
+
+cdef int RET_C(GBCPU cpu):
+    if cpu.F & FLAG_C:
+        cpu.POP_PC()
+        return 20
+    return 8
+
+cdef int RET_(GBCPU cpu):
+    if True:
+        cpu.POP_PC()
+        return 20
+    return 8
+

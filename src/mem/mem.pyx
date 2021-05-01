@@ -1,3 +1,5 @@
+from src.mem.IO cimport *
+
 cdef inline MemoryEntry MakeRW(unsigned char* data):
     cdef MemoryEntry entry 
     entry.read_ptr.data = data
@@ -22,12 +24,20 @@ cdef inline MemoryEntry MakeUnused():
     entry.write = False
     return entry
 
+cdef inline MemoryEntry MakeIO(read_callback read, write_callback write):
+    cdef MemoryEntry entry 
+    entry.read_ptr.callback = read
+    entry.read = False
+    entry.write_ptr.callback = write
+    entry.write = False
+    return entry
+
 cdef unsigned char read_unimplemented(MEM mem, unsigned short address):
     print(f"read from unimplemented address {address:04x}")
     quit(-1)
 
 cdef void write_unimplemented(MEM mem, unsigned short address, unsigned char value):
-    print(f"write to unimplemented address {address:04x}")
+    print(f"write {value:02x} to unimplemented address {address:04x}")
     quit(-2)
 
 cdef inline MemoryEntry MakeUnimplemented():
@@ -80,9 +90,14 @@ cdef class MEM:
         # accessed in bootrom
         self.MMAP[0xff11] = MakeUnused()
         self.MMAP[0xff12] = MakeUnused()
+        self.MMAP[0xff13] = MakeUnused()
+        self.MMAP[0xff14] = MakeUnused()
         self.MMAP[0xff24] = MakeUnused()
         self.MMAP[0xff25] = MakeUnused()
         self.MMAP[0xff26] = MakeUnused()
+        self.MMAP[0xff40] = MakeUnused()
+        self.MMAP[0xff42] = MakeUnused()
+        self.MMAP[0xff44] = MakeIO(read_LY, NULL)
         self.MMAP[0xff47] = MakeUnused()
 
         for i in range(0x7f):

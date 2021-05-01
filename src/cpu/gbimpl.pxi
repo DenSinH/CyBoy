@@ -89,8 +89,45 @@ cdef int LD_A_ffu8(GBCPU cpu):
     cpu.PC += 1
     cpu.registers[REG_A] = cpu.mem.read8(0xff00 + offs)
 
-    
+cdef int RLA(GBCPU cpu):
+    cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned char carry = (cpu.registers[REG_A] & 0x80) >> 7
+    if carry:
+        cpu.F |= FLAG_C
 
+    cpu.registers[REG_A] <<= 1
+    cpu.registers[REG_A] |= old_carry
+    return 8
+
+cdef int CP_A_u8(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cpu.F |= FLAG_N
+    cdef unsigned char value = cpu.mem.read8(cpu.PC)
+    cpu.PC += 1
+    if cpu.registers[REG_A] == value:
+        cpu.F |= FLAG_Z 
+    if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], value):
+        cpu.F |= FLAG_H
+    if (<int>cpu.registers[REG_A]) - (<int>value) < 0:
+        cpu.F |= FLAG_C
+    return 8
+
+cdef int LD_u16_A(GBCPU cpu):
+    cdef unsigned short address = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    cpu.mem.write8(address, cpu.registers[REG_A])
+    return 16
+
+cdef int LD_A_u16(GBCPU cpu):
+    cdef unsigned short address = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    cpu.registers[REG_A] = cpu.mem.read8(address)
+    return 16
+
+cdef int JP_HL(GBCPU cpu):
+    cpu.PC = cpu.get_HL()
+    return 4
 
 
 include "arithmeticimpl.pxi"

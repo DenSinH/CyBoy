@@ -65,4 +65,4 @@ cdef class MEM:
     cdef inline void write16(MEM self, unsigned short address, unsigned short value):
         print(f"address {address:04x} / {value:04x}")
         self.write8(address, <unsigned char>value)
-        self.write8(address, <unsigned char>(value >> 8))
+        self.write8(address + 1, <unsigned char>(value >> 8))

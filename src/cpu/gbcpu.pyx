@@ -7,43 +7,43 @@ cdef class GBCPU:
     def __cinit__(self, MEM mem):
         
         self.instructions = [
-        # + 0          1          2            3        4            5        6         7        8        9          A            B        C           D          E         F
-            NULL,      LD_BC_u16, LD_atBC_A,   NULL,    INC_B,       DEC_B,   LD_B_u8,  NULL,    NULL,    ADD_HL_BC, LD_A_atBC,   NULL,    INC_C,      DEC_C,     LD_C_u8,  NULL,    # 00
-            NULL,      LD_DE_u16, LD_atDE_A,   NULL,    INC_D,       DEC_D,   LD_D_u8,  NULL,    JR__i8,  ADD_HL_DE, LD_A_atDE,   NULL,    INC_E,      DEC_E,     LD_E_u8,  NULL,    # 10
-            JR_NZ_i8,  LD_HL_u16, LD_atHL_Apl, NULL,    INC_H,       DEC_H,   LD_H_u8,  NULL,    JR_Z_i8, ADD_HL_HL, LD_A_atHLpl, NULL,    INC_L,      DEC_L,     LD_L_u8,  NULL,    # 20
-            JR_NC_i8,  LD_SP_u16, LD_atHL_Amn, NULL,    INC_HL,      DEC_HL,  LD_HL_u8, NULL,    JR_C_i8, ADD_HL_SP, LD_A_atHLmn, NULL,    INC_A,      DEC_A,     LD_A_u8,  NULL,    # 30
-            LD_B_B,    LD_B_C,    LD_B_D,      LD_B_E,  LD_B_H,      LD_B_L,  LD_B_HL,  LD_B_A,  LD_C_B,  LD_C_C,    LD_C_D,      LD_C_E,  LD_C_H,     LD_C_L,    LD_C_HL,  LD_C_A,  # 40
-            LD_B_B,    LD_D_C,    LD_D_D,      LD_D_E,  LD_D_H,      LD_D_L,  LD_D_HL,  LD_D_A,  LD_E_B,  LD_E_C,    LD_E_D,      LD_E_E,  LD_E_H,     LD_E_L,    LD_E_HL,  LD_E_A,  # 50
-            LD_B_B,    LD_H_C,    LD_H_D,      LD_H_E,  LD_H_H,      LD_H_L,  LD_H_HL,  LD_H_A,  LD_L_B,  LD_L_C,    LD_L_D,      LD_L_E,  LD_L_H,     LD_L_L,    LD_L_HL,  LD_L_A,  # 60
-            LD_B_B,    LD_HL_C,   LD_HL_D,     LD_HL_E, LD_HL_H,     LD_HL_L, NULL,     LD_HL_A, LD_A_B,  LD_A_C,    LD_A_D,      LD_A_E,  LD_A_H,     LD_A_L,    LD_A_HL,  LD_A_A,  # 70
-            NULL,      NULL,      NULL,        NULL,    NULL,        NULL,    NULL,     NULL,    NULL,    NULL,      NULL,        NULL,    NULL,       NULL,      NULL,     NULL,    # 80
-            NULL,      NULL,      NULL,        NULL,    NULL,        NULL,    NULL,     NULL,    NULL,    NULL,      NULL,        NULL,    NULL,       NULL,      NULL,     NULL,    # 90
-            NULL,      NULL,      NULL,        NULL,    NULL,        NULL,    NULL,     NULL,    XOR_A_B, XOR_A_C,   XOR_A_D,     XOR_A_E, XOR_A_H,    XOR_A_L,   XOR_A_HL, XOR_A_A, # A0
-            NULL,      NULL,      NULL,        NULL,    NULL,        NULL,    NULL,     NULL,    NULL,    NULL,      NULL,        NULL,    NULL,       NULL,      NULL,     NULL,    # B0
-            NULL,      POP_BC,    NULL,        NULL,    CALL_NZ_u16, PUSH_BC, NULL,     NULL,    NULL,    NULL,      NULL,        pref,    CALL_Z_u16, CALL__u16, NULL,     NULL,    # C0
-            NULL,      POP_DE,    NULL,        NULL,    CALL_NC_u16, PUSH_DE, NULL,     NULL,    NULL,    NULL,      NULL,        NULL,    CALL_C_u16, NULL,      NULL,     NULL,    # D0
-            LD_ffu8_A, POP_HL,    LD_ff00_A,   NULL,    NULL,        PUSH_HL, NULL,     NULL,    NULL,    NULL,      NULL,        NULL,    NULL,       NULL,      NULL,     NULL,    # E0
-            LD_A_ffu8, POP_AF,    LD_A_ff00,   NULL,    NULL,        PUSH_AF, NULL,     NULL,    NULL,    NULL,      NULL,        NULL,    NULL,       NULL,      NULL,     NULL,    # F0
+        # + 0          1          2            3          4            5          6           7          8        9          A            B        C           D          E           F
+            NULL,      LD_BC_u16, LD_atBC_A,   INC_BC,    INC_B,       DEC_B,     LD_B_u8,    NULL,      NULL,    ADD_HL_BC, LD_A_atBC,   NULL,    INC_C,      DEC_C,     LD_C_u8,    NULL,    # 00
+            NULL,      LD_DE_u16, LD_atDE_A,   INC_DE,    INC_D,       DEC_D,     LD_D_u8,    RLA,       JR__i8,  ADD_HL_DE, LD_A_atDE,   NULL,    INC_E,      DEC_E,     LD_E_u8,    NULL,    # 10
+            JR_NZ_i8,  LD_HL_u16, LD_atHL_Apl, INC_HL,    INC_H,       DEC_H,     LD_H_u8,    NULL,      JR_Z_i8, ADD_HL_HL, LD_A_atHLpl, NULL,    INC_L,      DEC_L,     LD_L_u8,    NULL,    # 20
+            JR_NC_i8,  LD_SP_u16, LD_atHL_Amn, INC_SP,    INC_atHL,    DEC_atHL,  LD_atHL_u8, NULL,      JR_C_i8, ADD_HL_SP, LD_A_atHLmn, NULL,    INC_A,      DEC_A,     LD_A_u8,    NULL,    # 30
+            LD_B_B,    LD_B_C,    LD_B_D,      LD_B_E,    LD_B_H,      LD_B_L,    LD_B_atHL,  LD_B_A,    LD_C_B,  LD_C_C,    LD_C_D,      LD_C_E,  LD_C_H,     LD_C_L,    LD_C_atHL,  LD_C_A,  # 40
+            LD_B_B,    LD_D_C,    LD_D_D,      LD_D_E,    LD_D_H,      LD_D_L,    LD_D_atHL,  LD_D_A,    LD_E_B,  LD_E_C,    LD_E_D,      LD_E_E,  LD_E_H,     LD_E_L,    LD_E_atHL,  LD_E_A,  # 50
+            LD_B_B,    LD_H_C,    LD_H_D,      LD_H_E,    LD_H_H,      LD_H_L,    LD_H_atHL,  LD_H_A,    LD_L_B,  LD_L_C,    LD_L_D,      LD_L_E,  LD_L_H,     LD_L_L,    LD_L_atHL,  LD_L_A,  # 60
+            LD_B_B,    LD_atHL_C, LD_atHL_D,   LD_atHL_E, LD_atHL_H,   LD_atHL_L, NULL,       LD_atHL_A, LD_A_B,  LD_A_C,    LD_A_D,      LD_A_E,  LD_A_H,     LD_A_L,    LD_A_atHL,  LD_A_A,  # 70
+            NULL,      NULL,      NULL,        NULL,      NULL,        NULL,      NULL,       NULL,      NULL,    NULL,      NULL,        NULL,    NULL,       NULL,      NULL,       NULL,    # 80
+            SUB_A_B,   SUB_A_C,   SUB_A_D,     SUB_A_E,   SUB_A_H,     SUB_A_L,   SUB_A_atHL, SUB_A_A,   NULL,    NULL,      NULL,        NULL,    NULL,       NULL,      NULL,       NULL,    # 90
+            NULL,      NULL,      NULL,        NULL,      NULL,        NULL,      NULL,       NULL,      XOR_A_B, XOR_A_C,   XOR_A_D,     XOR_A_E, XOR_A_H,    XOR_A_L,   XOR_A_atHL, XOR_A_A, # A0
+            NULL,      NULL,      NULL,        NULL,      NULL,        NULL,      NULL,       NULL,      CP_A_B,  CP_A_C,    CP_A_D,      CP_A_E,  CP_A_H,     CP_A_L,    CP_A_atHL,  CP_A_A,  # B0
+            RET_NZ,    POP_BC,    NULL,        NULL,      CALL_NZ_u16, PUSH_BC,   NULL,       NULL,      RET_Z,   RET_,      NULL,        pref,    CALL_Z_u16, CALL__u16, NULL,       NULL,    # C0
+            RET_NC,    POP_DE,    NULL,        NULL,      CALL_NC_u16, PUSH_DE,   NULL,       NULL,      RET_C,   NULL,      NULL,        NULL,    CALL_C_u16, NULL,      NULL,       NULL,    # D0
+            LD_ffu8_A, POP_HL,    LD_ff00_A,   NULL,      NULL,        PUSH_HL,   NULL,       NULL,      NULL,    JP_HL,     LD_u16_A,    NULL,    NULL,       NULL,      NULL,       NULL,    # E0
+            LD_A_ffu8, POP_AF,    LD_A_ff00,   NULL,      NULL,        PUSH_AF,   NULL,       NULL,      NULL,    NULL,      LD_A_u16,    NULL,    NULL,       NULL,      CP_A_u8,    NULL,    # F0
         ]
 
         self.extended_instructions = [
-        # + 0        1        2        3        4        5        6         7        8        9        A        B        C        D        E        F
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 00
-            RL_B,    RL_C,    RL_D,    RL_E,    RL_H,    RL_L,    RL_HL,    RL_A,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 10
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 20
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 30
-            BIT_0_B, BIT_0_C, BIT_0_D, BIT_0_E, BIT_0_H, BIT_0_L, BIT_0_HL, BIT_0_A, BIT_1_B, BIT_1_C, BIT_1_D, BIT_1_E, BIT_1_H, BIT_1_L, BIT_1_HL, BIT_1_A, # 40
-            BIT_2_B, BIT_2_C, BIT_2_D, BIT_2_E, BIT_2_H, BIT_2_L, BIT_2_HL, BIT_2_A, BIT_3_B, BIT_3_C, BIT_3_D, BIT_3_E, BIT_3_H, BIT_3_L, BIT_3_HL, BIT_3_A, # 50
-            BIT_4_B, BIT_4_C, BIT_4_D, BIT_4_E, BIT_4_H, BIT_4_L, BIT_4_HL, BIT_4_A, BIT_5_B, BIT_5_C, BIT_5_D, BIT_5_E, BIT_5_H, BIT_5_L, BIT_5_HL, BIT_5_A, # 60
-            BIT_6_B, BIT_6_C, BIT_6_D, BIT_6_E, BIT_6_H, BIT_6_L, BIT_6_HL, BIT_6_A, BIT_7_B, BIT_7_C, BIT_7_D, BIT_7_E, BIT_7_H, BIT_7_L, BIT_7_HL, BIT_7_A, # 70
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 80
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # 90
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # A0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # B0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # C0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # D0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # E0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,     NULL,    # F0
+        # + 0        1        2        3        4        5        6           7        8        9        A        B        C        D        E           F
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 00
+            RL_B,    RL_C,    RL_D,    RL_E,    RL_H,    RL_L,    RL_atHL,    RL_A,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 10
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 20
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 30
+            BIT_0_B, BIT_0_C, BIT_0_D, BIT_0_E, BIT_0_H, BIT_0_L, BIT_0_atHL, BIT_0_A, BIT_1_B, BIT_1_C, BIT_1_D, BIT_1_E, BIT_1_H, BIT_1_L, BIT_1_atHL, BIT_1_A, # 40
+            BIT_2_B, BIT_2_C, BIT_2_D, BIT_2_E, BIT_2_H, BIT_2_L, BIT_2_atHL, BIT_2_A, BIT_3_B, BIT_3_C, BIT_3_D, BIT_3_E, BIT_3_H, BIT_3_L, BIT_3_atHL, BIT_3_A, # 50
+            BIT_4_B, BIT_4_C, BIT_4_D, BIT_4_E, BIT_4_H, BIT_4_L, BIT_4_atHL, BIT_4_A, BIT_5_B, BIT_5_C, BIT_5_D, BIT_5_E, BIT_5_H, BIT_5_L, BIT_5_atHL, BIT_5_A, # 60
+            BIT_6_B, BIT_6_C, BIT_6_D, BIT_6_E, BIT_6_H, BIT_6_L, BIT_6_atHL, BIT_6_A, BIT_7_B, BIT_7_C, BIT_7_D, BIT_7_E, BIT_7_H, BIT_7_L, BIT_7_atHL, BIT_7_A, # 70
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 80
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 90
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # A0
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # B0
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # C0
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # D0
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # E0
+            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # F0
         ]
 
         self.mem = mem
