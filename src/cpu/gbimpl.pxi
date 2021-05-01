@@ -94,9 +94,42 @@ cdef int NOP(GBCPU cpu):
 
 cdef int DI(GBCPU cpu):
     cpu.IME = 0
+    return 4
 
 cdef int EI(GBCPU cpu):
     cpu.IME = 1
+    return 4
+
+cdef int DAA(GBCPU cpu):
+    # https://ehaskins.com/2018-01-30%20Z80%20DAA
+    cdef unsigned char correction = 0
+    cdef unsigned char carry = 0
+    if ((cpu.F & FLAG_H) or ((not (cpu.F & FLAG_N)) and ((cpu.registers[REG_A] & 0xf) > 9))):
+        correction = 6
+    
+    if ((cpu.F & FLAG_C) or ((not (cpu.F & FLAG_N)) and (cpu.registers[REG_A] > 0x99))):
+        correction |= 0x60
+        carry = FLAG_C 
+
+    if cpu.F & FLAG_N:
+        cpu.registers[REG_A] -= correction
+    else:
+        cpu.registers[REG_A] += correction
+    
+    cpu.F &= ~(FLAG_Z | FLAG_H | FLAG_C)
+    cpu.F |= carry
+    if cpu.registers[REG_A] == 0:
+        cpu.F |= FLAG_Z
+    return 4
+
+cdef int CPL(GBCPU cpu):
+    cpu.registers[REG_A] = ~cpu.registers[REG_A]
+    return 4
+
+cdef int POP_AF(GBCPU cpu):
+    cpu.set_AF(cpu.mem.read16(cpu.SP) & 0xfff0)
+    cpu.SP += 2
+    return 12
 
 cdef int RLA(GBCPU cpu):
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
@@ -110,13 +143,12 @@ cdef int RLA(GBCPU cpu):
     return 8
 
 cdef int RRA(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] & 1:
         cpu.F |= FLAG_C
-        cpu.registers[REG_A] >>= 1
-        cpu.registers[REG_A] |= 0x80
-    else:
-        cpu.registers[REG_A] >>= 1
+    cpu.registers[REG_A] >>= 1
+    cpu.registers[REG_A] |= carry
 
     return 8
 

@@ -302,28 +302,26 @@ return 16
     g.generate_r8(
         "RR_{r8}",
         """
+cdef unsigned char carry = (cpu.F & FLAG_C) << 3
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 if cpu.registers[REG_{r8}] & 1:
     cpu.F |= FLAG_C
-    cpu.registers[REG_{r8}] >>= 1
-    cpu.registers[REG_{r8}] |= 0x80
-else:
-    cpu.registers[REG_{r8}] >>= 1
+cpu.registers[REG_{r8}] >>= 1
+cpu.registers[REG_{r8}] |= carry
 
 if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
 return 8
 """,
         """
+cdef unsigned char carry = (cpu.F & FLAG_C) << 3
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 cdef unsigned short HL = cpu.get_HL()
 cdef unsigned char value = cpu.mem.read8(HL)
 if value & 1:
     cpu.F |= FLAG_C
-    value >>= 1
-    value |= 0x80
-else:
-    value >>= 1
+value >>= 1
+value |= carry
 cpu.mem.write8(HL, value)
 
 if value == 0:
@@ -452,5 +450,5 @@ cpu.{set_r16}(cpu.mem.read16(cpu.SP))
 cpu.SP += 2
 return 12
 """,
-    "BC", "DE", "HL", "AF"
+    "BC", "DE", "HL"
     )

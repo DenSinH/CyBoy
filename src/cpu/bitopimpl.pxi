@@ -704,106 +704,98 @@ cdef int SRL_atHL(GBCPU cpu):
     return 16
 
 cdef int RR_B(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_B] & 1:
         cpu.F |= FLAG_C
-        cpu.registers[REG_B] >>= 1
-        cpu.registers[REG_B] |= 0x80
-    else:
-        cpu.registers[REG_B] >>= 1
+    cpu.registers[REG_B] >>= 1
+    cpu.registers[REG_B] |= carry
     
     if cpu.registers[REG_B] == 0:
         cpu.F |= FLAG_Z
     return 8
 
 cdef int RR_C(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_C] & 1:
         cpu.F |= FLAG_C
-        cpu.registers[REG_C] >>= 1
-        cpu.registers[REG_C] |= 0x80
-    else:
-        cpu.registers[REG_C] >>= 1
+    cpu.registers[REG_C] >>= 1
+    cpu.registers[REG_C] |= carry
     
     if cpu.registers[REG_C] == 0:
         cpu.F |= FLAG_Z
     return 8
 
 cdef int RR_D(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_D] & 1:
         cpu.F |= FLAG_C
-        cpu.registers[REG_D] >>= 1
-        cpu.registers[REG_D] |= 0x80
-    else:
-        cpu.registers[REG_D] >>= 1
+    cpu.registers[REG_D] >>= 1
+    cpu.registers[REG_D] |= carry
     
     if cpu.registers[REG_D] == 0:
         cpu.F |= FLAG_Z
     return 8
 
 cdef int RR_E(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_E] & 1:
         cpu.F |= FLAG_C
-        cpu.registers[REG_E] >>= 1
-        cpu.registers[REG_E] |= 0x80
-    else:
-        cpu.registers[REG_E] >>= 1
+    cpu.registers[REG_E] >>= 1
+    cpu.registers[REG_E] |= carry
     
     if cpu.registers[REG_E] == 0:
         cpu.F |= FLAG_Z
     return 8
 
 cdef int RR_H(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_H] & 1:
         cpu.F |= FLAG_C
-        cpu.registers[REG_H] >>= 1
-        cpu.registers[REG_H] |= 0x80
-    else:
-        cpu.registers[REG_H] >>= 1
+    cpu.registers[REG_H] >>= 1
+    cpu.registers[REG_H] |= carry
     
     if cpu.registers[REG_H] == 0:
         cpu.F |= FLAG_Z
     return 8
 
 cdef int RR_L(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_L] & 1:
         cpu.F |= FLAG_C
-        cpu.registers[REG_L] >>= 1
-        cpu.registers[REG_L] |= 0x80
-    else:
-        cpu.registers[REG_L] >>= 1
+    cpu.registers[REG_L] >>= 1
+    cpu.registers[REG_L] |= carry
     
     if cpu.registers[REG_L] == 0:
         cpu.F |= FLAG_Z
     return 8
 
 cdef int RR_A(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] & 1:
         cpu.F |= FLAG_C
-        cpu.registers[REG_A] >>= 1
-        cpu.registers[REG_A] |= 0x80
-    else:
-        cpu.registers[REG_A] >>= 1
+    cpu.registers[REG_A] >>= 1
+    cpu.registers[REG_A] |= carry
     
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 8
 
 cdef int RR_atHL(GBCPU cpu):
+    cdef unsigned char carry = (cpu.F & FLAG_C) << 3
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     if value & 1:
         cpu.F |= FLAG_C
-        value >>= 1
-        value |= 0x80
-    else:
-        value >>= 1
+    value >>= 1
+    value |= carry
     cpu.mem.write8(HL, value)
     
     if value == 0:

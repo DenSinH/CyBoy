@@ -25,6 +25,11 @@ cdef int NOP(GBCPU cpu)
 cdef int DI(GBCPU cpu)
 cdef int EI(GBCPU cpu)
 
+cdef int DAA(GBCPU cpu)
+cdef int CPL(GBCPU cpu)
+
+cdef int POP_AF(GBCPU cpu)  # special case
+
 cdef int RLA(GBCPU cpu)
 cdef int RRA(GBCPU cpu)
 

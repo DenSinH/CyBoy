@@ -51,6 +51,7 @@ cdef class MEM:
 
     cdef inline unsigned char read8(MEM self, unsigned short address):
         cdef MemoryEntry entry = self.MMAP[address]
+
         if entry.read:
             return entry.read_ptr.data[0]
         elif entry.read_ptr.callback is not NULL:
@@ -65,6 +66,7 @@ cdef class MEM:
 
     cdef inline void write8(MEM self, unsigned short address, unsigned char value):
         cdef MemoryEntry entry = self.MMAP[address]
+
         if entry.write:
             entry.write_ptr.data[0] = value
         elif entry.write_ptr.callback is not NULL:

@@ -10,7 +10,7 @@ cdef class GBCPU:
         # + 0          1          2            3          4            5          6           7          8        9          A            B        C           D          E           F
             NOP,       LD_BC_u16, LD_atBC_A,   INC_BC,    INC_B,       DEC_B,     LD_B_u8,    NULL,      NULL,    ADD_HL_BC, LD_A_atBC,   NULL,    INC_C,      DEC_C,     LD_C_u8,    NULL,    # 00
             NULL,      LD_DE_u16, LD_atDE_A,   INC_DE,    INC_D,       DEC_D,     LD_D_u8,    RLA,       JR__i8,  ADD_HL_DE, LD_A_atDE,   NULL,    INC_E,      DEC_E,     LD_E_u8,    RRA,     # 10
-            JR_NZ_i8,  LD_HL_u16, LD_atHL_Apl, INC_HL,    INC_H,       DEC_H,     LD_H_u8,    NULL,      JR_Z_i8, ADD_HL_HL, LD_A_atHLpl, NULL,    INC_L,      DEC_L,     LD_L_u8,    NULL,    # 20
+            JR_NZ_i8,  LD_HL_u16, LD_atHL_Apl, INC_HL,    INC_H,       DEC_H,     LD_H_u8,    DAA,       JR_Z_i8, ADD_HL_HL, LD_A_atHLpl, NULL,    INC_L,      DEC_L,     LD_L_u8,    CPL,     # 20
             JR_NC_i8,  LD_SP_u16, LD_atHL_Amn, INC_SP,    INC_atHL,    DEC_atHL,  LD_atHL_u8, NULL,      JR_C_i8, ADD_HL_SP, LD_A_atHLmn, NULL,    INC_A,      DEC_A,     LD_A_u8,    NULL,    # 30
             LD_B_B,    LD_B_C,    LD_B_D,      LD_B_E,    LD_B_H,      LD_B_L,    LD_B_atHL,  LD_B_A,    LD_C_B,  LD_C_C,    LD_C_D,      LD_C_E,  LD_C_H,     LD_C_L,    LD_C_atHL,  LD_C_A,  # 40
             LD_B_B,    LD_D_C,    LD_D_D,      LD_D_E,    LD_D_H,      LD_D_L,    LD_D_atHL,  LD_D_A,    LD_E_B,  LD_E_C,    LD_E_D,      LD_E_E,  LD_E_H,     LD_E_L,    LD_E_atHL,  LD_E_A,  # 50

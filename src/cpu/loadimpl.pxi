@@ -349,8 +349,3 @@ cdef int POP_HL(GBCPU cpu):
     cpu.SP += 2
     return 12
 
-cdef int POP_AF(GBCPU cpu):
-    cpu.set_AF(cpu.mem.read16(cpu.SP))
-    cpu.SP += 2
-    return 12
-

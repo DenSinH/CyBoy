@@ -117,4 +117,3 @@ cdef class MEM:
             self.MMAP[0xff80 + i] = MakeRW(&self.HRAM[i])
 
         self.MMAP[0xffff] = MakeUnimpIO()  # IE
-            
