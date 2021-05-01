@@ -38,3 +38,48 @@ cdef int JR__i8(GBCPU cpu):
         return 12
     return 8
 
+cdef int CALL_NZ_u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if not (cpu.F & FLAG_Z):
+        cpu.PUSH_PC()
+        cpu.PC = addr
+        return 24
+    return 12
+
+cdef int CALL_NC_u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if not (cpu.F & FLAG_C):
+        cpu.PUSH_PC()
+        cpu.PC = addr
+        return 24
+    return 12
+
+cdef int CALL_Z_u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if cpu.F & FLAG_Z:
+        cpu.PUSH_PC()
+        cpu.PC = addr
+        return 24
+    return 12
+
+cdef int CALL_C_u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if cpu.F & FLAG_C:
+        cpu.PUSH_PC()
+        cpu.PC = addr
+        return 24
+    return 12
+
+cdef int CALL__u16(GBCPU cpu):
+    cdef unsigned short addr = cpu.mem.read16(cpu.PC)
+    cpu.PC += 2
+    if True:
+        cpu.PUSH_PC()
+        cpu.PC = addr
+        return 24
+    return 12
+

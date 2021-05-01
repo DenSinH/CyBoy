@@ -25,6 +25,17 @@ class generator:
         self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(r8="HL"))
         self.impl.write("    " + "\n    ".join(code_HL.strip().split("\n")) + "\n\n")
 
+    def generate_r16(self, name, code, *regs):
+        for r16 in regs:
+            self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(r16=r16))
+            self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(r16=r16))
+            self.impl.write("    " + "\n    ".join(code.strip().format(
+                r16=r16, 
+                get_r16="SP" if r16 == "SP" else f"get_{r16}()",
+                set_r16="SP = " if r16 == "SP" else f"set_{r16}"
+            ).split("\n")) + "\n\n")
+            
+
     def generate_bitop(self, name, code, code_HL):
         for bit in range(8):
             for r8 in ["B", "C", "D", "E", "H", "L", "A"]:
@@ -38,7 +49,6 @@ class generator:
 
     def generate_cond(self, name, code, *conds):
         for cond in conds:
-            print(cond)
             cond_code = "True"
             if cond == "Z":
                 cond_code = "cpu.F & FLAG_Z"

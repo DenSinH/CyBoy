@@ -77,6 +77,14 @@ cdef class MEM:
         for i in range(0x80):   # IO
             self.MMAP[0xff00 + i] = MakeUnimplemented()
 
+        # accessed in bootrom
+        self.MMAP[0xff11] = MakeUnused()
+        self.MMAP[0xff12] = MakeUnused()
+        self.MMAP[0xff24] = MakeUnused()
+        self.MMAP[0xff25] = MakeUnused()
+        self.MMAP[0xff26] = MakeUnused()
+        self.MMAP[0xff47] = MakeUnused()
+
         for i in range(0x7f):
             self.MMAP[0xff80 + i] = MakeRW(&self.HRAM[i])
         self.MMAP[0xffff] = MakeUnimplemented()  # IE

@@ -3,3 +3,5 @@ venv/
 *.bin
 *.gb
 build/
+files/blargg/
+*.log

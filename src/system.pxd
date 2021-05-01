@@ -10,4 +10,5 @@ cdef class GB:
         MEM mem
 
     cpdef public void load_bootrom(GB self, str file_name)
+    cpdef public void load_rom(GB self, str file_name)
     cpdef public int run(GB self)
