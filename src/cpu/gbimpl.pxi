@@ -129,14 +129,17 @@ cdef int DAA(GBCPU cpu):
 
 cdef int SCF(GBCPU cpu):
     cpu.F |= FLAG_C 
+    cpu.F &= ~(FLAG_N | FLAG_H)
     return 4
 
 cdef int CCF(GBCPU cpu):
-    cpu.F &= ~FLAG_C
+    cpu.F ^= FLAG_C
+    cpu.F &= ~(FLAG_N | FLAG_H)
     return 4
 
 cdef int CPL(GBCPU cpu):
     cpu.registers[REG_A] = ~cpu.registers[REG_A]
+    cpu.F |= FLAG_N | FLAG_H
     return 4
 
 cdef int POP_AF(GBCPU cpu):
@@ -157,7 +160,7 @@ cdef int LD_SP_HL(GBCPU cpu):
 cdef int ADD_SP_i8(GBCPU cpu):
     cdef char offs = <char>cpu.mem.read8(cpu.PC)
     cpu.PC += 1
-    cpu.F &= ~(FLAG_H | FLAG_C)
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(<unsigned char>cpu.SP, offs):
         cpu.F |= FLAG_H
 
@@ -170,7 +173,7 @@ cdef int ADD_SP_i8(GBCPU cpu):
 cdef int LD_HL_SP_i8(GBCPU cpu):
     cdef char offs = <char>cpu.mem.read8(cpu.PC)
     cpu.PC += 1
-    cpu.F &= ~(FLAG_H | FLAG_C)
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(<unsigned char>cpu.SP, offs):
         cpu.F |= FLAG_H
 
@@ -217,7 +220,7 @@ cdef int RRCA(GBCPU cpu):
     if carry:
         cpu.F |= FLAG_C
     cpu.registers[REG_A] >>= 1
-    cpu.registers[REG_A] |= carry
+    cpu.registers[REG_A] |= carry << 7
 
     return 4
 
@@ -257,7 +260,7 @@ cdef int OR_A_u8(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cdef unsigned char value = cpu.mem.read8(cpu.PC)
     cpu.PC += 1
-    cpu.registers[REG_A] ^= value
+    cpu.registers[REG_A] |= value
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 8

@@ -47,7 +47,6 @@ if cpu.registers[REG_A] == 0:
         "ADD_A_{r8}",
         """
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cpu.F |= FLAG_N
 if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_{r8}]):
     cpu.F |= FLAG_H
 if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_{r8}]) > 0xff:
@@ -236,7 +235,7 @@ cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 if carry:
     cpu.F |= FLAG_C
 cpu.registers[REG_{r8}] >>= 1
-cpu.registers[REG_{r8}] |= carry
+cpu.registers[REG_{r8}] |= carry << 7
 if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
 """, 8)
@@ -256,7 +255,7 @@ if cpu.registers[REG_{r8}] == 0:
     g.generate_r8(
         "SRA_{r8}",
         """
-cdef unsigned char carry = cpu.registers[REG_{r8}] & 0x80
+cdef unsigned char carry = cpu.registers[REG_{r8}] & 1
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 if carry:
     cpu.F |= FLAG_C

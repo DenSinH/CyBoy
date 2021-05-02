@@ -292,7 +292,6 @@ cdef int SUB_A_atHL(GBCPU cpu):
 
 cdef int ADD_A_B(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_B]):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_B]) > 0xff:
@@ -304,7 +303,6 @@ cdef int ADD_A_B(GBCPU cpu):
 
 cdef int ADD_A_C(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_C]):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_C]) > 0xff:
@@ -316,7 +314,6 @@ cdef int ADD_A_C(GBCPU cpu):
 
 cdef int ADD_A_D(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_D]):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_D]) > 0xff:
@@ -328,7 +325,6 @@ cdef int ADD_A_D(GBCPU cpu):
 
 cdef int ADD_A_E(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_E]):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_E]) > 0xff:
@@ -340,7 +336,6 @@ cdef int ADD_A_E(GBCPU cpu):
 
 cdef int ADD_A_H(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_H]):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_H]) > 0xff:
@@ -352,7 +347,6 @@ cdef int ADD_A_H(GBCPU cpu):
 
 cdef int ADD_A_L(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_L]):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_L]) > 0xff:
@@ -364,7 +358,6 @@ cdef int ADD_A_L(GBCPU cpu):
 
 cdef int ADD_A_A(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_A]):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_A]) > 0xff:
@@ -379,7 +372,6 @@ cdef int ADD_A_atHL(GBCPU cpu):
     cdef unsigned char value = cpu.mem.read8(HL)
     
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], value):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>value) > 0xff:
