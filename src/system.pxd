@@ -6,7 +6,7 @@ from src.mem.mem cimport MEM
 
 @cython.final
 cdef class GB:
-    cdef public:
+    cdef:
         GBCPU cpu
         GBPPU ppu
         MEM mem

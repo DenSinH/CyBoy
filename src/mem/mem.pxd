@@ -3,8 +3,8 @@ from libcpp cimport bool
 
 cdef class MEM
 
-ctypedef unsigned char (*read_callback)(MEM mem, unsigned short address)
-ctypedef void (*write_callback)(MEM mem, unsigned short address, unsigned char value)
+ctypedef unsigned char (*read_callback)(MEM mem, unsigned short address) nogil
+ctypedef void (*write_callback)(MEM mem, unsigned short address, unsigned char value) nogil
 
 
 cdef union read_ptr_t:
@@ -22,10 +22,10 @@ cdef packed struct MemoryEntry:
     bool read
     bool write
 
-cdef MemoryEntry MakeRW(unsigned char* data)
-cdef MemoryEntry MakeROM(unsigned char* data)
-cdef MemoryEntry MakeUnused()
-cdef MemoryEntry MakeIO(read_callback read, write_callback write)
+cdef MemoryEntry MakeRW(unsigned char* data) nogil
+cdef MemoryEntry MakeROM(unsigned char* data) nogil
+cdef MemoryEntry MakeUnused() nogil
+cdef MemoryEntry MakeIO(read_callback read, write_callback write) nogil
 
 
 cdef struct IO_REGS:
@@ -49,7 +49,7 @@ cdef class MEM:
 
         IO_REGS IO
 
-    cdef inline unsigned char read8(MEM self, unsigned short address):
+    cdef inline unsigned char read8(MEM self, unsigned short address) nogil:
         cdef MemoryEntry entry = self.MMAP[address]
 
         if entry.read:
@@ -58,13 +58,13 @@ cdef class MEM:
             return entry.read_ptr.callback(self, address)  # todo: address is for debugging
         return 0xff  # default for bad reads
 
-    cdef inline unsigned short read16(MEM self, unsigned short address):
+    cdef inline unsigned short read16(MEM self, unsigned short address) nogil:
         cdef unsigned short value
         value = self.read8(address)
         value |= (<unsigned short>self.read8(address + 1)) << 8
         return value
 
-    cdef inline void write8(MEM self, unsigned short address, unsigned char value):
+    cdef inline void write8(MEM self, unsigned short address, unsigned char value) nogil:
         cdef MemoryEntry entry = self.MMAP[address]
 
         if entry.write:
@@ -72,6 +72,6 @@ cdef class MEM:
         elif entry.write_ptr.callback is not NULL:
             entry.write_ptr.callback(self, address, value)  # todo: address is for debugging
 
-    cdef inline void write16(MEM self, unsigned short address, unsigned short value):
+    cdef inline void write16(MEM self, unsigned short address, unsigned short value) nogil:
         self.write8(address, <unsigned char>value)
         self.write8(address + 1, <unsigned char>(value >> 8))

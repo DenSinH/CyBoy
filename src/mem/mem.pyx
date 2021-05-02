@@ -1,6 +1,8 @@
 from src.mem.IO cimport *
+from libc.stdio cimport printf
+from libc.stdlib cimport exit
 
-cdef MemoryEntry MakeRW(unsigned char* data):
+cdef MemoryEntry MakeRW(unsigned char* data) nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.data = data
     entry.read = True
@@ -8,7 +10,7 @@ cdef MemoryEntry MakeRW(unsigned char* data):
     entry.write = True
     return entry
 
-cdef MemoryEntry MakeROM(unsigned char* data):
+cdef MemoryEntry MakeROM(unsigned char* data) nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.data = data
     entry.read = True
@@ -16,7 +18,7 @@ cdef MemoryEntry MakeROM(unsigned char* data):
     entry.write = False
     return entry
 
-cdef MemoryEntry MakeUnused():
+cdef MemoryEntry MakeUnused() nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.data = NULL
     entry.read = False
@@ -24,7 +26,7 @@ cdef MemoryEntry MakeUnused():
     entry.write = False
     return entry
 
-cdef MemoryEntry MakeIO(read_callback read, write_callback write):
+cdef MemoryEntry MakeIO(read_callback read, write_callback write) nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.callback = read
     entry.read = False
@@ -32,15 +34,15 @@ cdef MemoryEntry MakeIO(read_callback read, write_callback write):
     entry.write = False
     return entry
 
-cdef unsigned char read_unimplemented(MEM mem, unsigned short address):
-    print(f"read from unimplemented address {address:04x}")
-    quit(-1)
+cdef unsigned char read_unimplemented(MEM mem, unsigned short address) nogil:
+    printf("read from unimplemented address %04x\n", address)
+    exit(-1)
 
-cdef void write_unimplemented(MEM mem, unsigned short address, unsigned char value):
-    print(f"write {value:02x} to unimplemented address {address:04x}")
-    quit(-2)
+cdef void write_unimplemented(MEM mem, unsigned short address, unsigned char value) nogil:
+    printf("write %02x to unimplemented address %04x\n", value, address)
+    exit(-2)
 
-cdef inline MemoryEntry MakeUnimplemented():
+cdef inline MemoryEntry MakeUnimplemented() nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.callback = read_unimplemented
     entry.read = False
@@ -48,7 +50,7 @@ cdef inline MemoryEntry MakeUnimplemented():
     entry.write = False
     return entry
 
-cdef inline MemoryEntry MakeUnimpIO():
+cdef inline MemoryEntry MakeUnimpIO() nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.callback = read_unimpIO
     entry.read = False

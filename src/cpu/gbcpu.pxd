@@ -1,25 +1,27 @@
 cimport cython
 from src.mem.mem cimport MEM
 from libcpp cimport bool
+from libc.stdio cimport printf
+from libc.stdlib cimport exit
 
 include "../generic/macros.pxi"
 include "gbinterp.pxi"
 
 cdef class GBCPU
 
-ctypedef int (*instruction)(GBCPU)
+ctypedef int (*instruction)(GBCPU) nogil
 
-cdef inline bool HALF_CARRY_8BIT_SUB(unsigned char op1, unsigned char op2):
+cdef inline bool HALF_CARRY_8BIT_SUB(unsigned char op1, unsigned char op2) nogil:
     return ((op1 & 0xf) < (op2 & 0xf))
-cdef inline bool HALF_CARRY_8BIT_SUB_C(unsigned char op1, unsigned char op2, unsigned char C):
+cdef inline bool HALF_CARRY_8BIT_SUB_C(unsigned char op1, unsigned char op2, unsigned char C) nogil:
     return ((op1 & 0xf) < ((op2 & 0xf) + (C)))
-cdef inline bool HALF_CARRY_16BIT_SUB(unsigned short op1, unsigned short op2):
+cdef inline bool HALF_CARRY_16BIT_SUB(unsigned short op1, unsigned short op2) nogil:
     return ((op1 & 0xfff) < (op2 & 0xfff))
-cdef inline bool HALF_CARRY_8BIT_ADD(unsigned char op1, unsigned char op2):
+cdef inline bool HALF_CARRY_8BIT_ADD(unsigned char op1, unsigned char op2) nogil:
     return ((op1 & 0xf) + (op2 & 0xf)) > 0xf
-cdef inline bool HALF_CARRY_8BIT_ADD_C(unsigned char op1, unsigned char op2, unsigned char C):
+cdef inline bool HALF_CARRY_8BIT_ADD_C(unsigned char op1, unsigned char op2, unsigned char C) nogil:
     return ((op1 & 0xf) + ((op2 & 0xf) + (C))) > 0xf
-cdef inline bool HALF_CARRY_16BIT_ADD(unsigned short op1, unsigned short op2):
+cdef inline bool HALF_CARRY_16BIT_ADD(unsigned short op1, unsigned short op2) nogil:
     return ((op1 & 0xfff) + (op2 & 0xfff)) > 0xfff
 
 @cython.final
@@ -39,7 +41,7 @@ cdef class GBCPU:
 
     cdef public object log
 
-    cdef inline int step(self):
+    cdef inline int step(self) nogil:
         # self.log.write(f"A: {self.registers[REG_A]:02X} F: {self.F:02X} B: {self.registers[REG_B]:02X} C: {self.registers[REG_C]:02X} D: {self.registers[REG_D]:02X} E: {self.registers[REG_E]:02X} H: {self.registers[REG_H]:02X} L: {self.registers[REG_L]:02X} SP: {self.SP:04X} PC: 00:{self.PC:04X}\n")
         # self.log.flush()
 
@@ -50,50 +52,50 @@ cdef class GBCPU:
         cdef instruction instr = self.instructions[opcode]
         
         if instr is NULL:
-            print(f"Unimplemented opcode: {opcode:02x} at {self.PC:04x}")
-            quit(opcode)
+            printf("Unimplemented opcode: %02x at %04x\n", opcode, self.PC)
+            exit(opcode)
         return instr(self)
 
-    cdef inline void PUSH_PC(self):
+    cdef inline void PUSH_PC(self) nogil:
         self.SP -= 2
         self.mem.write16(self.SP, self.PC)
 
-    cdef inline void POP_PC(self):
+    cdef inline void POP_PC(self) nogil:
         self.PC = self.mem.read16(self.SP)
         self.SP += 2
 
-    cdef inline unsigned short get_BC(self):
+    cdef inline unsigned short get_BC(self) nogil:
         cdef unsigned short BC = self.registers[REG_C]
         BC |= (<unsigned short>self.registers[REG_B]) << 8
         return BC
 
-    cdef inline void set_BC(self, unsigned short value):
+    cdef inline void set_BC(self, unsigned short value) nogil:
         self.registers[REG_C] = <unsigned char>value 
         self.registers[REG_B] = <unsigned char>(value >> 8)
 
-    cdef inline unsigned short get_DE(self):
+    cdef inline unsigned short get_DE(self) nogil:
         cdef unsigned short DE = self.registers[REG_E]
         DE |= (<unsigned short>self.registers[REG_D]) << 8
         return DE
 
-    cdef inline void set_DE(self, unsigned short value):
+    cdef inline void set_DE(self, unsigned short value) nogil:
         self.registers[REG_E] = <unsigned char>value 
         self.registers[REG_D] = <unsigned char>(value >> 8)
 
-    cdef inline unsigned short get_HL(self):
+    cdef inline unsigned short get_HL(self) nogil:
         cdef unsigned short HL = self.registers[REG_L]
         HL |= (<unsigned short>self.registers[REG_H]) << 8
         return HL
 
-    cdef inline void set_HL(self, unsigned short value):
+    cdef inline void set_HL(self, unsigned short value) nogil:
         self.registers[REG_L] = <unsigned char>value 
         self.registers[REG_H] = <unsigned char>(value >> 8)
 
-    cdef inline unsigned short get_AF(self):
+    cdef inline unsigned short get_AF(self) nogil:
         cdef unsigned short AF = self.F
         AF |= (<unsigned short>self.registers[REG_A]) << 8
         return AF
 
-    cdef inline void set_AF(self, unsigned short value):
+    cdef inline void set_AF(self, unsigned short value) nogil:
         self.F = <unsigned char>value 
         self.registers[REG_A] = <unsigned char>(value >> 8)

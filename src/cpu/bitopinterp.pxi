@@ -1,256 +1,256 @@
-cdef int BIT_0_B(GBCPU cpu)
-cdef int BIT_0_C(GBCPU cpu)
-cdef int BIT_0_D(GBCPU cpu)
-cdef int BIT_0_E(GBCPU cpu)
-cdef int BIT_0_H(GBCPU cpu)
-cdef int BIT_0_L(GBCPU cpu)
-cdef int BIT_0_A(GBCPU cpu)
-cdef int BIT_0_atHL(GBCPU cpu)
-cdef int BIT_1_B(GBCPU cpu)
-cdef int BIT_1_C(GBCPU cpu)
-cdef int BIT_1_D(GBCPU cpu)
-cdef int BIT_1_E(GBCPU cpu)
-cdef int BIT_1_H(GBCPU cpu)
-cdef int BIT_1_L(GBCPU cpu)
-cdef int BIT_1_A(GBCPU cpu)
-cdef int BIT_1_atHL(GBCPU cpu)
-cdef int BIT_2_B(GBCPU cpu)
-cdef int BIT_2_C(GBCPU cpu)
-cdef int BIT_2_D(GBCPU cpu)
-cdef int BIT_2_E(GBCPU cpu)
-cdef int BIT_2_H(GBCPU cpu)
-cdef int BIT_2_L(GBCPU cpu)
-cdef int BIT_2_A(GBCPU cpu)
-cdef int BIT_2_atHL(GBCPU cpu)
-cdef int BIT_3_B(GBCPU cpu)
-cdef int BIT_3_C(GBCPU cpu)
-cdef int BIT_3_D(GBCPU cpu)
-cdef int BIT_3_E(GBCPU cpu)
-cdef int BIT_3_H(GBCPU cpu)
-cdef int BIT_3_L(GBCPU cpu)
-cdef int BIT_3_A(GBCPU cpu)
-cdef int BIT_3_atHL(GBCPU cpu)
-cdef int BIT_4_B(GBCPU cpu)
-cdef int BIT_4_C(GBCPU cpu)
-cdef int BIT_4_D(GBCPU cpu)
-cdef int BIT_4_E(GBCPU cpu)
-cdef int BIT_4_H(GBCPU cpu)
-cdef int BIT_4_L(GBCPU cpu)
-cdef int BIT_4_A(GBCPU cpu)
-cdef int BIT_4_atHL(GBCPU cpu)
-cdef int BIT_5_B(GBCPU cpu)
-cdef int BIT_5_C(GBCPU cpu)
-cdef int BIT_5_D(GBCPU cpu)
-cdef int BIT_5_E(GBCPU cpu)
-cdef int BIT_5_H(GBCPU cpu)
-cdef int BIT_5_L(GBCPU cpu)
-cdef int BIT_5_A(GBCPU cpu)
-cdef int BIT_5_atHL(GBCPU cpu)
-cdef int BIT_6_B(GBCPU cpu)
-cdef int BIT_6_C(GBCPU cpu)
-cdef int BIT_6_D(GBCPU cpu)
-cdef int BIT_6_E(GBCPU cpu)
-cdef int BIT_6_H(GBCPU cpu)
-cdef int BIT_6_L(GBCPU cpu)
-cdef int BIT_6_A(GBCPU cpu)
-cdef int BIT_6_atHL(GBCPU cpu)
-cdef int BIT_7_B(GBCPU cpu)
-cdef int BIT_7_C(GBCPU cpu)
-cdef int BIT_7_D(GBCPU cpu)
-cdef int BIT_7_E(GBCPU cpu)
-cdef int BIT_7_H(GBCPU cpu)
-cdef int BIT_7_L(GBCPU cpu)
-cdef int BIT_7_A(GBCPU cpu)
-cdef int BIT_7_atHL(GBCPU cpu)
-cdef int RES_0_B(GBCPU cpu)
-cdef int RES_0_C(GBCPU cpu)
-cdef int RES_0_D(GBCPU cpu)
-cdef int RES_0_E(GBCPU cpu)
-cdef int RES_0_H(GBCPU cpu)
-cdef int RES_0_L(GBCPU cpu)
-cdef int RES_0_A(GBCPU cpu)
-cdef int RES_0_atHL(GBCPU cpu)
-cdef int RES_1_B(GBCPU cpu)
-cdef int RES_1_C(GBCPU cpu)
-cdef int RES_1_D(GBCPU cpu)
-cdef int RES_1_E(GBCPU cpu)
-cdef int RES_1_H(GBCPU cpu)
-cdef int RES_1_L(GBCPU cpu)
-cdef int RES_1_A(GBCPU cpu)
-cdef int RES_1_atHL(GBCPU cpu)
-cdef int RES_2_B(GBCPU cpu)
-cdef int RES_2_C(GBCPU cpu)
-cdef int RES_2_D(GBCPU cpu)
-cdef int RES_2_E(GBCPU cpu)
-cdef int RES_2_H(GBCPU cpu)
-cdef int RES_2_L(GBCPU cpu)
-cdef int RES_2_A(GBCPU cpu)
-cdef int RES_2_atHL(GBCPU cpu)
-cdef int RES_3_B(GBCPU cpu)
-cdef int RES_3_C(GBCPU cpu)
-cdef int RES_3_D(GBCPU cpu)
-cdef int RES_3_E(GBCPU cpu)
-cdef int RES_3_H(GBCPU cpu)
-cdef int RES_3_L(GBCPU cpu)
-cdef int RES_3_A(GBCPU cpu)
-cdef int RES_3_atHL(GBCPU cpu)
-cdef int RES_4_B(GBCPU cpu)
-cdef int RES_4_C(GBCPU cpu)
-cdef int RES_4_D(GBCPU cpu)
-cdef int RES_4_E(GBCPU cpu)
-cdef int RES_4_H(GBCPU cpu)
-cdef int RES_4_L(GBCPU cpu)
-cdef int RES_4_A(GBCPU cpu)
-cdef int RES_4_atHL(GBCPU cpu)
-cdef int RES_5_B(GBCPU cpu)
-cdef int RES_5_C(GBCPU cpu)
-cdef int RES_5_D(GBCPU cpu)
-cdef int RES_5_E(GBCPU cpu)
-cdef int RES_5_H(GBCPU cpu)
-cdef int RES_5_L(GBCPU cpu)
-cdef int RES_5_A(GBCPU cpu)
-cdef int RES_5_atHL(GBCPU cpu)
-cdef int RES_6_B(GBCPU cpu)
-cdef int RES_6_C(GBCPU cpu)
-cdef int RES_6_D(GBCPU cpu)
-cdef int RES_6_E(GBCPU cpu)
-cdef int RES_6_H(GBCPU cpu)
-cdef int RES_6_L(GBCPU cpu)
-cdef int RES_6_A(GBCPU cpu)
-cdef int RES_6_atHL(GBCPU cpu)
-cdef int RES_7_B(GBCPU cpu)
-cdef int RES_7_C(GBCPU cpu)
-cdef int RES_7_D(GBCPU cpu)
-cdef int RES_7_E(GBCPU cpu)
-cdef int RES_7_H(GBCPU cpu)
-cdef int RES_7_L(GBCPU cpu)
-cdef int RES_7_A(GBCPU cpu)
-cdef int RES_7_atHL(GBCPU cpu)
-cdef int SET_0_B(GBCPU cpu)
-cdef int SET_0_C(GBCPU cpu)
-cdef int SET_0_D(GBCPU cpu)
-cdef int SET_0_E(GBCPU cpu)
-cdef int SET_0_H(GBCPU cpu)
-cdef int SET_0_L(GBCPU cpu)
-cdef int SET_0_A(GBCPU cpu)
-cdef int SET_0_atHL(GBCPU cpu)
-cdef int SET_1_B(GBCPU cpu)
-cdef int SET_1_C(GBCPU cpu)
-cdef int SET_1_D(GBCPU cpu)
-cdef int SET_1_E(GBCPU cpu)
-cdef int SET_1_H(GBCPU cpu)
-cdef int SET_1_L(GBCPU cpu)
-cdef int SET_1_A(GBCPU cpu)
-cdef int SET_1_atHL(GBCPU cpu)
-cdef int SET_2_B(GBCPU cpu)
-cdef int SET_2_C(GBCPU cpu)
-cdef int SET_2_D(GBCPU cpu)
-cdef int SET_2_E(GBCPU cpu)
-cdef int SET_2_H(GBCPU cpu)
-cdef int SET_2_L(GBCPU cpu)
-cdef int SET_2_A(GBCPU cpu)
-cdef int SET_2_atHL(GBCPU cpu)
-cdef int SET_3_B(GBCPU cpu)
-cdef int SET_3_C(GBCPU cpu)
-cdef int SET_3_D(GBCPU cpu)
-cdef int SET_3_E(GBCPU cpu)
-cdef int SET_3_H(GBCPU cpu)
-cdef int SET_3_L(GBCPU cpu)
-cdef int SET_3_A(GBCPU cpu)
-cdef int SET_3_atHL(GBCPU cpu)
-cdef int SET_4_B(GBCPU cpu)
-cdef int SET_4_C(GBCPU cpu)
-cdef int SET_4_D(GBCPU cpu)
-cdef int SET_4_E(GBCPU cpu)
-cdef int SET_4_H(GBCPU cpu)
-cdef int SET_4_L(GBCPU cpu)
-cdef int SET_4_A(GBCPU cpu)
-cdef int SET_4_atHL(GBCPU cpu)
-cdef int SET_5_B(GBCPU cpu)
-cdef int SET_5_C(GBCPU cpu)
-cdef int SET_5_D(GBCPU cpu)
-cdef int SET_5_E(GBCPU cpu)
-cdef int SET_5_H(GBCPU cpu)
-cdef int SET_5_L(GBCPU cpu)
-cdef int SET_5_A(GBCPU cpu)
-cdef int SET_5_atHL(GBCPU cpu)
-cdef int SET_6_B(GBCPU cpu)
-cdef int SET_6_C(GBCPU cpu)
-cdef int SET_6_D(GBCPU cpu)
-cdef int SET_6_E(GBCPU cpu)
-cdef int SET_6_H(GBCPU cpu)
-cdef int SET_6_L(GBCPU cpu)
-cdef int SET_6_A(GBCPU cpu)
-cdef int SET_6_atHL(GBCPU cpu)
-cdef int SET_7_B(GBCPU cpu)
-cdef int SET_7_C(GBCPU cpu)
-cdef int SET_7_D(GBCPU cpu)
-cdef int SET_7_E(GBCPU cpu)
-cdef int SET_7_H(GBCPU cpu)
-cdef int SET_7_L(GBCPU cpu)
-cdef int SET_7_A(GBCPU cpu)
-cdef int SET_7_atHL(GBCPU cpu)
-cdef int RL_B(GBCPU cpu)
-cdef int RL_C(GBCPU cpu)
-cdef int RL_D(GBCPU cpu)
-cdef int RL_E(GBCPU cpu)
-cdef int RL_H(GBCPU cpu)
-cdef int RL_L(GBCPU cpu)
-cdef int RL_A(GBCPU cpu)
-cdef int RL_atHL(GBCPU cpu)
-cdef int RLC_B(GBCPU cpu)
-cdef int RLC_C(GBCPU cpu)
-cdef int RLC_D(GBCPU cpu)
-cdef int RLC_E(GBCPU cpu)
-cdef int RLC_H(GBCPU cpu)
-cdef int RLC_L(GBCPU cpu)
-cdef int RLC_A(GBCPU cpu)
-cdef int RLC_atHL(GBCPU cpu)
-cdef int RRC_B(GBCPU cpu)
-cdef int RRC_C(GBCPU cpu)
-cdef int RRC_D(GBCPU cpu)
-cdef int RRC_E(GBCPU cpu)
-cdef int RRC_H(GBCPU cpu)
-cdef int RRC_L(GBCPU cpu)
-cdef int RRC_A(GBCPU cpu)
-cdef int RRC_atHL(GBCPU cpu)
-cdef int SLA_B(GBCPU cpu)
-cdef int SLA_C(GBCPU cpu)
-cdef int SLA_D(GBCPU cpu)
-cdef int SLA_E(GBCPU cpu)
-cdef int SLA_H(GBCPU cpu)
-cdef int SLA_L(GBCPU cpu)
-cdef int SLA_A(GBCPU cpu)
-cdef int SLA_atHL(GBCPU cpu)
-cdef int SRA_B(GBCPU cpu)
-cdef int SRA_C(GBCPU cpu)
-cdef int SRA_D(GBCPU cpu)
-cdef int SRA_E(GBCPU cpu)
-cdef int SRA_H(GBCPU cpu)
-cdef int SRA_L(GBCPU cpu)
-cdef int SRA_A(GBCPU cpu)
-cdef int SRA_atHL(GBCPU cpu)
-cdef int SWAP_B(GBCPU cpu)
-cdef int SWAP_C(GBCPU cpu)
-cdef int SWAP_D(GBCPU cpu)
-cdef int SWAP_E(GBCPU cpu)
-cdef int SWAP_H(GBCPU cpu)
-cdef int SWAP_L(GBCPU cpu)
-cdef int SWAP_A(GBCPU cpu)
-cdef int SWAP_atHL(GBCPU cpu)
-cdef int SRL_B(GBCPU cpu)
-cdef int SRL_C(GBCPU cpu)
-cdef int SRL_D(GBCPU cpu)
-cdef int SRL_E(GBCPU cpu)
-cdef int SRL_H(GBCPU cpu)
-cdef int SRL_L(GBCPU cpu)
-cdef int SRL_A(GBCPU cpu)
-cdef int SRL_atHL(GBCPU cpu)
-cdef int RR_B(GBCPU cpu)
-cdef int RR_C(GBCPU cpu)
-cdef int RR_D(GBCPU cpu)
-cdef int RR_E(GBCPU cpu)
-cdef int RR_H(GBCPU cpu)
-cdef int RR_L(GBCPU cpu)
-cdef int RR_A(GBCPU cpu)
-cdef int RR_atHL(GBCPU cpu)
+cdef int BIT_0_B(GBCPU cpu) nogil
+cdef int BIT_0_C(GBCPU cpu) nogil
+cdef int BIT_0_D(GBCPU cpu) nogil
+cdef int BIT_0_E(GBCPU cpu) nogil
+cdef int BIT_0_H(GBCPU cpu) nogil
+cdef int BIT_0_L(GBCPU cpu) nogil
+cdef int BIT_0_A(GBCPU cpu) nogil
+cdef int BIT_0_atHL(GBCPU cpu) nogil
+cdef int BIT_1_B(GBCPU cpu) nogil
+cdef int BIT_1_C(GBCPU cpu) nogil
+cdef int BIT_1_D(GBCPU cpu) nogil
+cdef int BIT_1_E(GBCPU cpu) nogil
+cdef int BIT_1_H(GBCPU cpu) nogil
+cdef int BIT_1_L(GBCPU cpu) nogil
+cdef int BIT_1_A(GBCPU cpu) nogil
+cdef int BIT_1_atHL(GBCPU cpu) nogil
+cdef int BIT_2_B(GBCPU cpu) nogil
+cdef int BIT_2_C(GBCPU cpu) nogil
+cdef int BIT_2_D(GBCPU cpu) nogil
+cdef int BIT_2_E(GBCPU cpu) nogil
+cdef int BIT_2_H(GBCPU cpu) nogil
+cdef int BIT_2_L(GBCPU cpu) nogil
+cdef int BIT_2_A(GBCPU cpu) nogil
+cdef int BIT_2_atHL(GBCPU cpu) nogil
+cdef int BIT_3_B(GBCPU cpu) nogil
+cdef int BIT_3_C(GBCPU cpu) nogil
+cdef int BIT_3_D(GBCPU cpu) nogil
+cdef int BIT_3_E(GBCPU cpu) nogil
+cdef int BIT_3_H(GBCPU cpu) nogil
+cdef int BIT_3_L(GBCPU cpu) nogil
+cdef int BIT_3_A(GBCPU cpu) nogil
+cdef int BIT_3_atHL(GBCPU cpu) nogil
+cdef int BIT_4_B(GBCPU cpu) nogil
+cdef int BIT_4_C(GBCPU cpu) nogil
+cdef int BIT_4_D(GBCPU cpu) nogil
+cdef int BIT_4_E(GBCPU cpu) nogil
+cdef int BIT_4_H(GBCPU cpu) nogil
+cdef int BIT_4_L(GBCPU cpu) nogil
+cdef int BIT_4_A(GBCPU cpu) nogil
+cdef int BIT_4_atHL(GBCPU cpu) nogil
+cdef int BIT_5_B(GBCPU cpu) nogil
+cdef int BIT_5_C(GBCPU cpu) nogil
+cdef int BIT_5_D(GBCPU cpu) nogil
+cdef int BIT_5_E(GBCPU cpu) nogil
+cdef int BIT_5_H(GBCPU cpu) nogil
+cdef int BIT_5_L(GBCPU cpu) nogil
+cdef int BIT_5_A(GBCPU cpu) nogil
+cdef int BIT_5_atHL(GBCPU cpu) nogil
+cdef int BIT_6_B(GBCPU cpu) nogil
+cdef int BIT_6_C(GBCPU cpu) nogil
+cdef int BIT_6_D(GBCPU cpu) nogil
+cdef int BIT_6_E(GBCPU cpu) nogil
+cdef int BIT_6_H(GBCPU cpu) nogil
+cdef int BIT_6_L(GBCPU cpu) nogil
+cdef int BIT_6_A(GBCPU cpu) nogil
+cdef int BIT_6_atHL(GBCPU cpu) nogil
+cdef int BIT_7_B(GBCPU cpu) nogil
+cdef int BIT_7_C(GBCPU cpu) nogil
+cdef int BIT_7_D(GBCPU cpu) nogil
+cdef int BIT_7_E(GBCPU cpu) nogil
+cdef int BIT_7_H(GBCPU cpu) nogil
+cdef int BIT_7_L(GBCPU cpu) nogil
+cdef int BIT_7_A(GBCPU cpu) nogil
+cdef int BIT_7_atHL(GBCPU cpu) nogil
+cdef int RES_0_B(GBCPU cpu) nogil
+cdef int RES_0_C(GBCPU cpu) nogil
+cdef int RES_0_D(GBCPU cpu) nogil
+cdef int RES_0_E(GBCPU cpu) nogil
+cdef int RES_0_H(GBCPU cpu) nogil
+cdef int RES_0_L(GBCPU cpu) nogil
+cdef int RES_0_A(GBCPU cpu) nogil
+cdef int RES_0_atHL(GBCPU cpu) nogil
+cdef int RES_1_B(GBCPU cpu) nogil
+cdef int RES_1_C(GBCPU cpu) nogil
+cdef int RES_1_D(GBCPU cpu) nogil
+cdef int RES_1_E(GBCPU cpu) nogil
+cdef int RES_1_H(GBCPU cpu) nogil
+cdef int RES_1_L(GBCPU cpu) nogil
+cdef int RES_1_A(GBCPU cpu) nogil
+cdef int RES_1_atHL(GBCPU cpu) nogil
+cdef int RES_2_B(GBCPU cpu) nogil
+cdef int RES_2_C(GBCPU cpu) nogil
+cdef int RES_2_D(GBCPU cpu) nogil
+cdef int RES_2_E(GBCPU cpu) nogil
+cdef int RES_2_H(GBCPU cpu) nogil
+cdef int RES_2_L(GBCPU cpu) nogil
+cdef int RES_2_A(GBCPU cpu) nogil
+cdef int RES_2_atHL(GBCPU cpu) nogil
+cdef int RES_3_B(GBCPU cpu) nogil
+cdef int RES_3_C(GBCPU cpu) nogil
+cdef int RES_3_D(GBCPU cpu) nogil
+cdef int RES_3_E(GBCPU cpu) nogil
+cdef int RES_3_H(GBCPU cpu) nogil
+cdef int RES_3_L(GBCPU cpu) nogil
+cdef int RES_3_A(GBCPU cpu) nogil
+cdef int RES_3_atHL(GBCPU cpu) nogil
+cdef int RES_4_B(GBCPU cpu) nogil
+cdef int RES_4_C(GBCPU cpu) nogil
+cdef int RES_4_D(GBCPU cpu) nogil
+cdef int RES_4_E(GBCPU cpu) nogil
+cdef int RES_4_H(GBCPU cpu) nogil
+cdef int RES_4_L(GBCPU cpu) nogil
+cdef int RES_4_A(GBCPU cpu) nogil
+cdef int RES_4_atHL(GBCPU cpu) nogil
+cdef int RES_5_B(GBCPU cpu) nogil
+cdef int RES_5_C(GBCPU cpu) nogil
+cdef int RES_5_D(GBCPU cpu) nogil
+cdef int RES_5_E(GBCPU cpu) nogil
+cdef int RES_5_H(GBCPU cpu) nogil
+cdef int RES_5_L(GBCPU cpu) nogil
+cdef int RES_5_A(GBCPU cpu) nogil
+cdef int RES_5_atHL(GBCPU cpu) nogil
+cdef int RES_6_B(GBCPU cpu) nogil
+cdef int RES_6_C(GBCPU cpu) nogil
+cdef int RES_6_D(GBCPU cpu) nogil
+cdef int RES_6_E(GBCPU cpu) nogil
+cdef int RES_6_H(GBCPU cpu) nogil
+cdef int RES_6_L(GBCPU cpu) nogil
+cdef int RES_6_A(GBCPU cpu) nogil
+cdef int RES_6_atHL(GBCPU cpu) nogil
+cdef int RES_7_B(GBCPU cpu) nogil
+cdef int RES_7_C(GBCPU cpu) nogil
+cdef int RES_7_D(GBCPU cpu) nogil
+cdef int RES_7_E(GBCPU cpu) nogil
+cdef int RES_7_H(GBCPU cpu) nogil
+cdef int RES_7_L(GBCPU cpu) nogil
+cdef int RES_7_A(GBCPU cpu) nogil
+cdef int RES_7_atHL(GBCPU cpu) nogil
+cdef int SET_0_B(GBCPU cpu) nogil
+cdef int SET_0_C(GBCPU cpu) nogil
+cdef int SET_0_D(GBCPU cpu) nogil
+cdef int SET_0_E(GBCPU cpu) nogil
+cdef int SET_0_H(GBCPU cpu) nogil
+cdef int SET_0_L(GBCPU cpu) nogil
+cdef int SET_0_A(GBCPU cpu) nogil
+cdef int SET_0_atHL(GBCPU cpu) nogil
+cdef int SET_1_B(GBCPU cpu) nogil
+cdef int SET_1_C(GBCPU cpu) nogil
+cdef int SET_1_D(GBCPU cpu) nogil
+cdef int SET_1_E(GBCPU cpu) nogil
+cdef int SET_1_H(GBCPU cpu) nogil
+cdef int SET_1_L(GBCPU cpu) nogil
+cdef int SET_1_A(GBCPU cpu) nogil
+cdef int SET_1_atHL(GBCPU cpu) nogil
+cdef int SET_2_B(GBCPU cpu) nogil
+cdef int SET_2_C(GBCPU cpu) nogil
+cdef int SET_2_D(GBCPU cpu) nogil
+cdef int SET_2_E(GBCPU cpu) nogil
+cdef int SET_2_H(GBCPU cpu) nogil
+cdef int SET_2_L(GBCPU cpu) nogil
+cdef int SET_2_A(GBCPU cpu) nogil
+cdef int SET_2_atHL(GBCPU cpu) nogil
+cdef int SET_3_B(GBCPU cpu) nogil
+cdef int SET_3_C(GBCPU cpu) nogil
+cdef int SET_3_D(GBCPU cpu) nogil
+cdef int SET_3_E(GBCPU cpu) nogil
+cdef int SET_3_H(GBCPU cpu) nogil
+cdef int SET_3_L(GBCPU cpu) nogil
+cdef int SET_3_A(GBCPU cpu) nogil
+cdef int SET_3_atHL(GBCPU cpu) nogil
+cdef int SET_4_B(GBCPU cpu) nogil
+cdef int SET_4_C(GBCPU cpu) nogil
+cdef int SET_4_D(GBCPU cpu) nogil
+cdef int SET_4_E(GBCPU cpu) nogil
+cdef int SET_4_H(GBCPU cpu) nogil
+cdef int SET_4_L(GBCPU cpu) nogil
+cdef int SET_4_A(GBCPU cpu) nogil
+cdef int SET_4_atHL(GBCPU cpu) nogil
+cdef int SET_5_B(GBCPU cpu) nogil
+cdef int SET_5_C(GBCPU cpu) nogil
+cdef int SET_5_D(GBCPU cpu) nogil
+cdef int SET_5_E(GBCPU cpu) nogil
+cdef int SET_5_H(GBCPU cpu) nogil
+cdef int SET_5_L(GBCPU cpu) nogil
+cdef int SET_5_A(GBCPU cpu) nogil
+cdef int SET_5_atHL(GBCPU cpu) nogil
+cdef int SET_6_B(GBCPU cpu) nogil
+cdef int SET_6_C(GBCPU cpu) nogil
+cdef int SET_6_D(GBCPU cpu) nogil
+cdef int SET_6_E(GBCPU cpu) nogil
+cdef int SET_6_H(GBCPU cpu) nogil
+cdef int SET_6_L(GBCPU cpu) nogil
+cdef int SET_6_A(GBCPU cpu) nogil
+cdef int SET_6_atHL(GBCPU cpu) nogil
+cdef int SET_7_B(GBCPU cpu) nogil
+cdef int SET_7_C(GBCPU cpu) nogil
+cdef int SET_7_D(GBCPU cpu) nogil
+cdef int SET_7_E(GBCPU cpu) nogil
+cdef int SET_7_H(GBCPU cpu) nogil
+cdef int SET_7_L(GBCPU cpu) nogil
+cdef int SET_7_A(GBCPU cpu) nogil
+cdef int SET_7_atHL(GBCPU cpu) nogil
+cdef int RL_B(GBCPU cpu) nogil
+cdef int RL_C(GBCPU cpu) nogil
+cdef int RL_D(GBCPU cpu) nogil
+cdef int RL_E(GBCPU cpu) nogil
+cdef int RL_H(GBCPU cpu) nogil
+cdef int RL_L(GBCPU cpu) nogil
+cdef int RL_A(GBCPU cpu) nogil
+cdef int RL_atHL(GBCPU cpu) nogil
+cdef int RLC_B(GBCPU cpu) nogil
+cdef int RLC_C(GBCPU cpu) nogil
+cdef int RLC_D(GBCPU cpu) nogil
+cdef int RLC_E(GBCPU cpu) nogil
+cdef int RLC_H(GBCPU cpu) nogil
+cdef int RLC_L(GBCPU cpu) nogil
+cdef int RLC_A(GBCPU cpu) nogil
+cdef int RLC_atHL(GBCPU cpu) nogil
+cdef int RRC_B(GBCPU cpu) nogil
+cdef int RRC_C(GBCPU cpu) nogil
+cdef int RRC_D(GBCPU cpu) nogil
+cdef int RRC_E(GBCPU cpu) nogil
+cdef int RRC_H(GBCPU cpu) nogil
+cdef int RRC_L(GBCPU cpu) nogil
+cdef int RRC_A(GBCPU cpu) nogil
+cdef int RRC_atHL(GBCPU cpu) nogil
+cdef int SLA_B(GBCPU cpu) nogil
+cdef int SLA_C(GBCPU cpu) nogil
+cdef int SLA_D(GBCPU cpu) nogil
+cdef int SLA_E(GBCPU cpu) nogil
+cdef int SLA_H(GBCPU cpu) nogil
+cdef int SLA_L(GBCPU cpu) nogil
+cdef int SLA_A(GBCPU cpu) nogil
+cdef int SLA_atHL(GBCPU cpu) nogil
+cdef int SRA_B(GBCPU cpu) nogil
+cdef int SRA_C(GBCPU cpu) nogil
+cdef int SRA_D(GBCPU cpu) nogil
+cdef int SRA_E(GBCPU cpu) nogil
+cdef int SRA_H(GBCPU cpu) nogil
+cdef int SRA_L(GBCPU cpu) nogil
+cdef int SRA_A(GBCPU cpu) nogil
+cdef int SRA_atHL(GBCPU cpu) nogil
+cdef int SWAP_B(GBCPU cpu) nogil
+cdef int SWAP_C(GBCPU cpu) nogil
+cdef int SWAP_D(GBCPU cpu) nogil
+cdef int SWAP_E(GBCPU cpu) nogil
+cdef int SWAP_H(GBCPU cpu) nogil
+cdef int SWAP_L(GBCPU cpu) nogil
+cdef int SWAP_A(GBCPU cpu) nogil
+cdef int SWAP_atHL(GBCPU cpu) nogil
+cdef int SRL_B(GBCPU cpu) nogil
+cdef int SRL_C(GBCPU cpu) nogil
+cdef int SRL_D(GBCPU cpu) nogil
+cdef int SRL_E(GBCPU cpu) nogil
+cdef int SRL_H(GBCPU cpu) nogil
+cdef int SRL_L(GBCPU cpu) nogil
+cdef int SRL_A(GBCPU cpu) nogil
+cdef int SRL_atHL(GBCPU cpu) nogil
+cdef int RR_B(GBCPU cpu) nogil
+cdef int RR_C(GBCPU cpu) nogil
+cdef int RR_D(GBCPU cpu) nogil
+cdef int RR_E(GBCPU cpu) nogil
+cdef int RR_H(GBCPU cpu) nogil
+cdef int RR_L(GBCPU cpu) nogil
+cdef int RR_A(GBCPU cpu) nogil
+cdef int RR_atHL(GBCPU cpu) nogil

@@ -1,53 +1,53 @@
-cdef int XOR_A_B(GBCPU cpu):
+cdef int XOR_A_B(GBCPU cpu) nogil:
     cpu.registers[REG_A] ^= cpu.registers[REG_B]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int XOR_A_C(GBCPU cpu):
+cdef int XOR_A_C(GBCPU cpu) nogil:
     cpu.registers[REG_A] ^= cpu.registers[REG_C]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int XOR_A_D(GBCPU cpu):
+cdef int XOR_A_D(GBCPU cpu) nogil:
     cpu.registers[REG_A] ^= cpu.registers[REG_D]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int XOR_A_E(GBCPU cpu):
+cdef int XOR_A_E(GBCPU cpu) nogil:
     cpu.registers[REG_A] ^= cpu.registers[REG_E]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int XOR_A_H(GBCPU cpu):
+cdef int XOR_A_H(GBCPU cpu) nogil:
     cpu.registers[REG_A] ^= cpu.registers[REG_H]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int XOR_A_L(GBCPU cpu):
+cdef int XOR_A_L(GBCPU cpu) nogil:
     cpu.registers[REG_A] ^= cpu.registers[REG_L]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int XOR_A_A(GBCPU cpu):
+cdef int XOR_A_A(GBCPU cpu) nogil:
     cpu.registers[REG_A] ^= cpu.registers[REG_A]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int XOR_A_atHL(GBCPU cpu):
+cdef int XOR_A_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -59,56 +59,56 @@ cdef int XOR_A_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int OR_A_B(GBCPU cpu):
+cdef int OR_A_B(GBCPU cpu) nogil:
     cpu.registers[REG_A] |= cpu.registers[REG_B]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int OR_A_C(GBCPU cpu):
+cdef int OR_A_C(GBCPU cpu) nogil:
     cpu.registers[REG_A] |= cpu.registers[REG_C]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int OR_A_D(GBCPU cpu):
+cdef int OR_A_D(GBCPU cpu) nogil:
     cpu.registers[REG_A] |= cpu.registers[REG_D]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int OR_A_E(GBCPU cpu):
+cdef int OR_A_E(GBCPU cpu) nogil:
     cpu.registers[REG_A] |= cpu.registers[REG_E]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int OR_A_H(GBCPU cpu):
+cdef int OR_A_H(GBCPU cpu) nogil:
     cpu.registers[REG_A] |= cpu.registers[REG_H]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int OR_A_L(GBCPU cpu):
+cdef int OR_A_L(GBCPU cpu) nogil:
     cpu.registers[REG_A] |= cpu.registers[REG_L]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int OR_A_A(GBCPU cpu):
+cdef int OR_A_A(GBCPU cpu) nogil:
     cpu.registers[REG_A] |= cpu.registers[REG_A]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     return 4
 
-cdef int OR_A_atHL(GBCPU cpu):
+cdef int OR_A_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -120,7 +120,7 @@ cdef int OR_A_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int AND_A_B(GBCPU cpu):
+cdef int AND_A_B(GBCPU cpu) nogil:
     cpu.registers[REG_A] &= cpu.registers[REG_B]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_H
@@ -128,7 +128,7 @@ cdef int AND_A_B(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int AND_A_C(GBCPU cpu):
+cdef int AND_A_C(GBCPU cpu) nogil:
     cpu.registers[REG_A] &= cpu.registers[REG_C]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_H
@@ -136,7 +136,7 @@ cdef int AND_A_C(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int AND_A_D(GBCPU cpu):
+cdef int AND_A_D(GBCPU cpu) nogil:
     cpu.registers[REG_A] &= cpu.registers[REG_D]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_H
@@ -144,7 +144,7 @@ cdef int AND_A_D(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int AND_A_E(GBCPU cpu):
+cdef int AND_A_E(GBCPU cpu) nogil:
     cpu.registers[REG_A] &= cpu.registers[REG_E]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_H
@@ -152,7 +152,7 @@ cdef int AND_A_E(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int AND_A_H(GBCPU cpu):
+cdef int AND_A_H(GBCPU cpu) nogil:
     cpu.registers[REG_A] &= cpu.registers[REG_H]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_H
@@ -160,7 +160,7 @@ cdef int AND_A_H(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int AND_A_L(GBCPU cpu):
+cdef int AND_A_L(GBCPU cpu) nogil:
     cpu.registers[REG_A] &= cpu.registers[REG_L]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_H
@@ -168,7 +168,7 @@ cdef int AND_A_L(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int AND_A_A(GBCPU cpu):
+cdef int AND_A_A(GBCPU cpu) nogil:
     cpu.registers[REG_A] &= cpu.registers[REG_A]
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_H
@@ -176,7 +176,7 @@ cdef int AND_A_A(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int AND_A_atHL(GBCPU cpu):
+cdef int AND_A_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -189,7 +189,7 @@ cdef int AND_A_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int SUB_A_B(GBCPU cpu):
+cdef int SUB_A_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_B]):
@@ -201,7 +201,7 @@ cdef int SUB_A_B(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SUB_A_C(GBCPU cpu):
+cdef int SUB_A_C(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_C]):
@@ -213,7 +213,7 @@ cdef int SUB_A_C(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SUB_A_D(GBCPU cpu):
+cdef int SUB_A_D(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_D]):
@@ -225,7 +225,7 @@ cdef int SUB_A_D(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SUB_A_E(GBCPU cpu):
+cdef int SUB_A_E(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_E]):
@@ -237,7 +237,7 @@ cdef int SUB_A_E(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SUB_A_H(GBCPU cpu):
+cdef int SUB_A_H(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_H]):
@@ -249,7 +249,7 @@ cdef int SUB_A_H(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SUB_A_L(GBCPU cpu):
+cdef int SUB_A_L(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_L]):
@@ -261,7 +261,7 @@ cdef int SUB_A_L(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SUB_A_A(GBCPU cpu):
+cdef int SUB_A_A(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_A]):
@@ -273,7 +273,7 @@ cdef int SUB_A_A(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SUB_A_atHL(GBCPU cpu):
+cdef int SUB_A_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -290,7 +290,7 @@ cdef int SUB_A_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int ADD_A_B(GBCPU cpu):
+cdef int ADD_A_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_B]):
         cpu.F |= FLAG_H
@@ -301,7 +301,7 @@ cdef int ADD_A_B(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADD_A_C(GBCPU cpu):
+cdef int ADD_A_C(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_C]):
         cpu.F |= FLAG_H
@@ -312,7 +312,7 @@ cdef int ADD_A_C(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADD_A_D(GBCPU cpu):
+cdef int ADD_A_D(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_D]):
         cpu.F |= FLAG_H
@@ -323,7 +323,7 @@ cdef int ADD_A_D(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADD_A_E(GBCPU cpu):
+cdef int ADD_A_E(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_E]):
         cpu.F |= FLAG_H
@@ -334,7 +334,7 @@ cdef int ADD_A_E(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADD_A_H(GBCPU cpu):
+cdef int ADD_A_H(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_H]):
         cpu.F |= FLAG_H
@@ -345,7 +345,7 @@ cdef int ADD_A_H(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADD_A_L(GBCPU cpu):
+cdef int ADD_A_L(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_L]):
         cpu.F |= FLAG_H
@@ -356,7 +356,7 @@ cdef int ADD_A_L(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADD_A_A(GBCPU cpu):
+cdef int ADD_A_A(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], cpu.registers[REG_A]):
         cpu.F |= FLAG_H
@@ -367,7 +367,7 @@ cdef int ADD_A_A(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADD_A_atHL(GBCPU cpu):
+cdef int ADD_A_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -383,7 +383,7 @@ cdef int ADD_A_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int ADC_A_B(GBCPU cpu):
+cdef int ADC_A_B(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_B], old_carry):
@@ -395,7 +395,7 @@ cdef int ADC_A_B(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADC_A_C(GBCPU cpu):
+cdef int ADC_A_C(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_C], old_carry):
@@ -407,7 +407,7 @@ cdef int ADC_A_C(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADC_A_D(GBCPU cpu):
+cdef int ADC_A_D(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_D], old_carry):
@@ -419,7 +419,7 @@ cdef int ADC_A_D(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADC_A_E(GBCPU cpu):
+cdef int ADC_A_E(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_E], old_carry):
@@ -431,7 +431,7 @@ cdef int ADC_A_E(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADC_A_H(GBCPU cpu):
+cdef int ADC_A_H(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_H], old_carry):
@@ -443,7 +443,7 @@ cdef int ADC_A_H(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADC_A_L(GBCPU cpu):
+cdef int ADC_A_L(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_L], old_carry):
@@ -455,7 +455,7 @@ cdef int ADC_A_L(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADC_A_A(GBCPU cpu):
+cdef int ADC_A_A(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], cpu.registers[REG_A], old_carry):
@@ -467,7 +467,7 @@ cdef int ADC_A_A(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int ADC_A_atHL(GBCPU cpu):
+cdef int ADC_A_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -484,7 +484,7 @@ cdef int ADC_A_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int SBC_A_B(GBCPU cpu):
+cdef int SBC_A_B(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
@@ -497,7 +497,7 @@ cdef int SBC_A_B(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SBC_A_C(GBCPU cpu):
+cdef int SBC_A_C(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
@@ -510,7 +510,7 @@ cdef int SBC_A_C(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SBC_A_D(GBCPU cpu):
+cdef int SBC_A_D(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
@@ -523,7 +523,7 @@ cdef int SBC_A_D(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SBC_A_E(GBCPU cpu):
+cdef int SBC_A_E(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
@@ -536,7 +536,7 @@ cdef int SBC_A_E(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SBC_A_H(GBCPU cpu):
+cdef int SBC_A_H(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
@@ -549,7 +549,7 @@ cdef int SBC_A_H(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SBC_A_L(GBCPU cpu):
+cdef int SBC_A_L(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
@@ -562,7 +562,7 @@ cdef int SBC_A_L(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SBC_A_A(GBCPU cpu):
+cdef int SBC_A_A(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
@@ -575,7 +575,7 @@ cdef int SBC_A_A(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int SBC_A_atHL(GBCPU cpu):
+cdef int SBC_A_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -593,7 +593,7 @@ cdef int SBC_A_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int CP_A_B(GBCPU cpu):
+cdef int CP_A_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_B]):
@@ -604,7 +604,7 @@ cdef int CP_A_B(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int CP_A_C(GBCPU cpu):
+cdef int CP_A_C(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_C]):
@@ -615,7 +615,7 @@ cdef int CP_A_C(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int CP_A_D(GBCPU cpu):
+cdef int CP_A_D(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_D]):
@@ -626,7 +626,7 @@ cdef int CP_A_D(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int CP_A_E(GBCPU cpu):
+cdef int CP_A_E(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_E]):
@@ -637,7 +637,7 @@ cdef int CP_A_E(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int CP_A_H(GBCPU cpu):
+cdef int CP_A_H(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_H]):
@@ -648,7 +648,7 @@ cdef int CP_A_H(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int CP_A_L(GBCPU cpu):
+cdef int CP_A_L(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_L]):
@@ -659,7 +659,7 @@ cdef int CP_A_L(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int CP_A_A(GBCPU cpu):
+cdef int CP_A_A(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], cpu.registers[REG_A]):
@@ -670,7 +670,7 @@ cdef int CP_A_A(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int CP_A_atHL(GBCPU cpu):
+cdef int CP_A_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -686,7 +686,7 @@ cdef int CP_A_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int INC_B(GBCPU cpu):
+cdef int INC_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_B], 1):
         cpu.F |= FLAG_H
@@ -695,7 +695,7 @@ cdef int INC_B(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int INC_C(GBCPU cpu):
+cdef int INC_C(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_C], 1):
         cpu.F |= FLAG_H
@@ -704,7 +704,7 @@ cdef int INC_C(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int INC_D(GBCPU cpu):
+cdef int INC_D(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_D], 1):
         cpu.F |= FLAG_H
@@ -713,7 +713,7 @@ cdef int INC_D(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int INC_E(GBCPU cpu):
+cdef int INC_E(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_E], 1):
         cpu.F |= FLAG_H
@@ -722,7 +722,7 @@ cdef int INC_E(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int INC_H(GBCPU cpu):
+cdef int INC_H(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_H], 1):
         cpu.F |= FLAG_H
@@ -731,7 +731,7 @@ cdef int INC_H(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int INC_L(GBCPU cpu):
+cdef int INC_L(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_L], 1):
         cpu.F |= FLAG_H
@@ -740,7 +740,7 @@ cdef int INC_L(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int INC_A(GBCPU cpu):
+cdef int INC_A(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], 1):
         cpu.F |= FLAG_H
@@ -749,7 +749,7 @@ cdef int INC_A(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int INC_atHL(GBCPU cpu):
+cdef int INC_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -763,7 +763,7 @@ cdef int INC_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int DEC_B(GBCPU cpu):
+cdef int DEC_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_B], 1):
@@ -773,7 +773,7 @@ cdef int DEC_B(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int DEC_C(GBCPU cpu):
+cdef int DEC_C(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_C], 1):
@@ -783,7 +783,7 @@ cdef int DEC_C(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int DEC_D(GBCPU cpu):
+cdef int DEC_D(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_D], 1):
@@ -793,7 +793,7 @@ cdef int DEC_D(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int DEC_E(GBCPU cpu):
+cdef int DEC_E(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_E], 1):
@@ -803,7 +803,7 @@ cdef int DEC_E(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int DEC_H(GBCPU cpu):
+cdef int DEC_H(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_H], 1):
@@ -813,7 +813,7 @@ cdef int DEC_H(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int DEC_L(GBCPU cpu):
+cdef int DEC_L(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_L], 1):
@@ -823,7 +823,7 @@ cdef int DEC_L(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int DEC_A(GBCPU cpu):
+cdef int DEC_A(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     cpu.F |= FLAG_N
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], 1):
@@ -833,7 +833,7 @@ cdef int DEC_A(GBCPU cpu):
         cpu.F |= FLAG_Z
     return 4
 
-cdef int DEC_atHL(GBCPU cpu):
+cdef int DEC_atHL(GBCPU cpu) nogil:
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
     
@@ -848,7 +848,7 @@ cdef int DEC_atHL(GBCPU cpu):
     cpu.mem.write8(HL, value)
     return 12
 
-cdef int ADD_HL_BC(GBCPU cpu):
+cdef int ADD_HL_BC(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_16BIT_ADD(cpu.get_BC(), cpu.get_HL()):
         cpu.F |= FLAG_H
@@ -859,7 +859,7 @@ cdef int ADD_HL_BC(GBCPU cpu):
     cpu.set_HL(<unsigned short>result)
     return 8
 
-cdef int ADD_HL_DE(GBCPU cpu):
+cdef int ADD_HL_DE(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_16BIT_ADD(cpu.get_DE(), cpu.get_HL()):
         cpu.F |= FLAG_H
@@ -870,7 +870,7 @@ cdef int ADD_HL_DE(GBCPU cpu):
     cpu.set_HL(<unsigned short>result)
     return 8
 
-cdef int ADD_HL_HL(GBCPU cpu):
+cdef int ADD_HL_HL(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_16BIT_ADD(cpu.get_HL(), cpu.get_HL()):
         cpu.F |= FLAG_H
@@ -881,7 +881,7 @@ cdef int ADD_HL_HL(GBCPU cpu):
     cpu.set_HL(<unsigned short>result)
     return 8
 
-cdef int ADD_HL_SP(GBCPU cpu):
+cdef int ADD_HL_SP(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_N | FLAG_H | FLAG_C)
     if HALF_CARRY_16BIT_ADD(cpu.SP, cpu.get_HL()):
         cpu.F |= FLAG_H
@@ -892,35 +892,35 @@ cdef int ADD_HL_SP(GBCPU cpu):
     cpu.set_HL(<unsigned short>result)
     return 8
 
-cdef int INC_BC(GBCPU cpu):
+cdef int INC_BC(GBCPU cpu) nogil:
     cpu.set_BC(cpu.get_BC() + 1)
     return 8
 
-cdef int INC_DE(GBCPU cpu):
+cdef int INC_DE(GBCPU cpu) nogil:
     cpu.set_DE(cpu.get_DE() + 1)
     return 8
 
-cdef int INC_HL(GBCPU cpu):
+cdef int INC_HL(GBCPU cpu) nogil:
     cpu.set_HL(cpu.get_HL() + 1)
     return 8
 
-cdef int INC_SP(GBCPU cpu):
+cdef int INC_SP(GBCPU cpu) nogil:
     cpu.SP = (cpu.SP + 1)
     return 8
 
-cdef int DEC_BC(GBCPU cpu):
+cdef int DEC_BC(GBCPU cpu) nogil:
     cpu.set_BC(cpu.get_BC() - 1)
     return 8
 
-cdef int DEC_DE(GBCPU cpu):
+cdef int DEC_DE(GBCPU cpu) nogil:
     cpu.set_DE(cpu.get_DE() - 1)
     return 8
 
-cdef int DEC_HL(GBCPU cpu):
+cdef int DEC_HL(GBCPU cpu) nogil:
     cpu.set_HL(cpu.get_HL() - 1)
     return 8
 
-cdef int DEC_SP(GBCPU cpu):
+cdef int DEC_SP(GBCPU cpu) nogil:
     cpu.SP = (cpu.SP - 1)
     return 8
 

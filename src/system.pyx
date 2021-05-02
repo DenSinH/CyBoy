@@ -47,5 +47,6 @@ cdef class GB:
         #     self.cpu.set_BC(value)
         #     if (i & 0x0fff_0000) == 0:
         #         print(hex(i))
-        while True:
-            self.cpu.step()
+        with nogil:
+            while True:
+                self.cpu.step()
