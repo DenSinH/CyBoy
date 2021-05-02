@@ -20,15 +20,23 @@ class generator:
         self.impl.write((f"cdef int {name}(GBCPU cpu):\n"))
         self.impl.write("    " + "\n    ".join(code.strip().split("\n")) + "\n\n")
 
-    def generate_r8(self, name, code, code_HL):
+    def generate_r8(self, name, code, cycles, HL=True):
         for r8 in ["B", "C", "D", "E", "H", "L", "A"]:
             self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(r8=r8))
             self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(r8=r8))
-            self.impl.write("    " + "\n    ".join(code.strip().format(r8=r8).split("\n")) + "\n\n")
+            self.impl.write("    " + "\n    ".join(code.strip().format(r8=r8).split("\n")) + f"\n    return {cycles}\n\n")
 
-        self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(r8="atHL"))
-        self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(r8="atHL"))
-        self.impl.write("    " + "\n    ".join(code_HL.strip().split("\n")) + "\n\n")
+        if HL:
+            self.interp.write((f"cdef int {name}(GBCPU cpu)\n").format(r8="atHL"))
+            self.impl.write((f"cdef int {name}(GBCPU cpu):\n").format(r8="atHL"))
+            code_HL = (
+                f"cdef unsigned short HL = cpu.get_HL()\n"
+                f"cdef unsigned char value = cpu.mem.read8(HL)\n"
+            ) + code.replace("cpu.registers[REG_{r8}]", "value") + (
+                f"\ncpu.mem.write8(HL, value)"
+                f"\nreturn {cycles + 8}\n\n"
+            )
+            self.impl.write("    " + "\n    ".join(code_HL.strip().split("\n")) + "\n\n")
 
     def generate_r16(self, name, code, *regs):
         for r16 in regs:

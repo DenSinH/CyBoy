@@ -189,7 +189,17 @@ cdef int RLA(GBCPU cpu):
 
     cpu.registers[REG_A] <<= 1
     cpu.registers[REG_A] |= old_carry
-    return 8
+    return 4
+
+cdef int RLCA(GBCPU cpu):
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    cdef unsigned char carry = (cpu.registers[REG_A] & 0x80) >> 7
+    if carry:
+        cpu.F |= FLAG_C
+
+    cpu.registers[REG_A] <<= 1
+    cpu.registers[REG_A] |= carry
+    return 4
 
 cdef int RRA(GBCPU cpu):
     cdef unsigned char carry = (cpu.F & FLAG_C) << 3
@@ -199,7 +209,17 @@ cdef int RRA(GBCPU cpu):
     cpu.registers[REG_A] >>= 1
     cpu.registers[REG_A] |= carry
 
-    return 8
+    return 4
+
+cdef int RRCA(GBCPU cpu):
+    cdef unsigned char carry = cpu.registers[REG_A] & 1
+    cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+    if carry:
+        cpu.F |= FLAG_C
+    cpu.registers[REG_A] >>= 1
+    cpu.registers[REG_A] |= carry
+
+    return 4
 
 cdef int CP_A_u8(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)

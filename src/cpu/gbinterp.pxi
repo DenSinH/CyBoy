@@ -38,7 +38,9 @@ cdef int ADD_SP_i8(GBCPU cpu)
 cdef int LD_HL_SP_i8(GBCPU cpu)
 
 cdef int RLA(GBCPU cpu)
+cdef int RLCA(GBCPU cpu)
 cdef int RRA(GBCPU cpu)
+cdef int RRCA(GBCPU cpu)
 
 cdef int CP_A_u8(GBCPU cpu)
 cdef int AND_A_u8(GBCPU cpu)

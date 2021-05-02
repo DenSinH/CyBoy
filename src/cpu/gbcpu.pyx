@@ -8,7 +8,7 @@ cdef class GBCPU:
         
         self.instructions = [
         # + 0          1          2            3          4            5          6           7          8            9          A            B        C           D          E           F
-            NOP,       LD_BC_u16, LD_atBC_A,   INC_BC,    INC_B,       DEC_B,     LD_B_u8,    NULL,      LD_u16_SP,   ADD_HL_BC, LD_A_atBC,   DEC_BC,  INC_C,      DEC_C,     LD_C_u8,    NULL,    # 00
+            NOP,       LD_BC_u16, LD_atBC_A,   INC_BC,    INC_B,       DEC_B,     LD_B_u8,    RLCA,      LD_u16_SP,   ADD_HL_BC, LD_A_atBC,   DEC_BC,  INC_C,      DEC_C,     LD_C_u8,    RRCA,    # 00
             NULL,      LD_DE_u16, LD_atDE_A,   INC_DE,    INC_D,       DEC_D,     LD_D_u8,    RLA,       JR__i8,      ADD_HL_DE, LD_A_atDE,   DEC_DE,  INC_E,      DEC_E,     LD_E_u8,    RRA,     # 10
             JR_NZ_i8,  LD_HL_u16, LD_atHL_Apl, INC_HL,    INC_H,       DEC_H,     LD_H_u8,    DAA,       JR_Z_i8,     ADD_HL_HL, LD_A_atHLpl, DEC_HL,  INC_L,      DEC_L,     LD_L_u8,    CPL,     # 20
             JR_NC_i8,  LD_SP_u16, LD_atHL_Amn, INC_SP,    INC_atHL,    DEC_atHL,  LD_atHL_u8, SCF,       JR_C_i8,     ADD_HL_SP, LD_A_atHLmn, DEC_SP,  INC_A,      DEC_A,     LD_A_u8,    CCF,     # 30
@@ -28,22 +28,22 @@ cdef class GBCPU:
 
         self.extended_instructions = [
         # + 0        1        2        3        4        5        6           7        8        9        A        B        C        D        E           F
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 00
+            RLC_B,   RLC_C,   RLC_D,   RLC_E,   RLC_H,   RLC_L,   RLC_atHL,   RLC_A,   RRC_B,   RRC_C,   RRC_D,   RRC_E,   RRC_H,   RRC_L,   RRC_atHL,   RRC_A,   # 00
             RL_B,    RL_C,    RL_D,    RL_E,    RL_H,    RL_L,    RL_atHL,    RL_A,    RR_B,    RR_C,    RR_D,    RR_E,    RR_H,    RR_L,    RR_atHL,    RR_A,    # 10
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 20
+            SLA_B,   SLA_C,   SLA_D,   SLA_E,   SLA_H,   SLA_L,   SLA_atHL,   RL_A,    SRA_B,   SRA_C,   SRA_D,   SRA_E,   SRA_H,   SRA_L,   SRA_atHL,   SRA_A,   # 20
             SWAP_B,  SWAP_C,  SWAP_D,  SWAP_E,  SWAP_H,  SWAP_L,  SWAP_atHL,  SWAP_A,  SRL_B,   SRL_C,   SRL_D,   SRL_E,   SRL_H,   SRL_L,   SRL_atHL,   RL_A,    # 30
             BIT_0_B, BIT_0_C, BIT_0_D, BIT_0_E, BIT_0_H, BIT_0_L, BIT_0_atHL, BIT_0_A, BIT_1_B, BIT_1_C, BIT_1_D, BIT_1_E, BIT_1_H, BIT_1_L, BIT_1_atHL, BIT_1_A, # 40
             BIT_2_B, BIT_2_C, BIT_2_D, BIT_2_E, BIT_2_H, BIT_2_L, BIT_2_atHL, BIT_2_A, BIT_3_B, BIT_3_C, BIT_3_D, BIT_3_E, BIT_3_H, BIT_3_L, BIT_3_atHL, BIT_3_A, # 50
             BIT_4_B, BIT_4_C, BIT_4_D, BIT_4_E, BIT_4_H, BIT_4_L, BIT_4_atHL, BIT_4_A, BIT_5_B, BIT_5_C, BIT_5_D, BIT_5_E, BIT_5_H, BIT_5_L, BIT_5_atHL, BIT_5_A, # 60
             BIT_6_B, BIT_6_C, BIT_6_D, BIT_6_E, BIT_6_H, BIT_6_L, BIT_6_atHL, BIT_6_A, BIT_7_B, BIT_7_C, BIT_7_D, BIT_7_E, BIT_7_H, BIT_7_L, BIT_7_atHL, BIT_7_A, # 70
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 80
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # 90
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # A0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # B0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # C0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # D0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # E0
-            NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL,       NULL,    # F0
+            RES_0_B, RES_0_C, RES_0_D, RES_0_E, RES_0_H, RES_0_L, RES_0_atHL, RES_0_A, RES_1_B, RES_1_C, RES_1_D, RES_1_E, RES_1_H, RES_1_L, RES_1_atHL, RES_1_A, # 80
+            RES_2_B, RES_2_C, RES_2_D, RES_2_E, RES_2_H, RES_2_L, RES_2_atHL, RES_2_A, RES_3_B, RES_3_C, RES_3_D, RES_3_E, RES_3_H, RES_3_L, RES_3_atHL, RES_3_A, # 90
+            RES_4_B, RES_4_C, RES_4_D, RES_4_E, RES_4_H, RES_4_L, RES_4_atHL, RES_4_A, RES_5_B, RES_5_C, RES_5_D, RES_5_E, RES_5_H, RES_5_L, RES_5_atHL, RES_5_A, # A0
+            RES_6_B, RES_6_C, RES_6_D, RES_6_E, RES_6_H, RES_6_L, RES_6_atHL, RES_6_A, RES_7_B, RES_7_C, RES_7_D, RES_7_E, RES_7_H, RES_7_L, RES_7_atHL, RES_7_A, # B0
+            SET_0_B, SET_0_C, SET_0_D, SET_0_E, SET_0_H, SET_0_L, SET_0_atHL, SET_0_A, SET_1_B, SET_1_C, SET_1_D, SET_1_E, SET_1_H, SET_1_L, SET_1_atHL, SET_1_A, # C0
+            SET_2_B, SET_2_C, SET_2_D, SET_2_E, SET_2_H, SET_2_L, SET_2_atHL, SET_2_A, SET_3_B, SET_3_C, SET_3_D, SET_3_E, SET_3_H, SET_3_L, SET_3_atHL, SET_3_A, # D0
+            SET_4_B, SET_4_C, SET_4_D, SET_4_E, SET_4_H, SET_4_L, SET_4_atHL, SET_4_A, SET_5_B, SET_5_C, SET_5_D, SET_5_E, SET_5_H, SET_5_L, SET_5_atHL, SET_5_A, # E0
+            SET_6_B, SET_6_C, SET_6_D, SET_6_E, SET_6_H, SET_6_L, SET_6_atHL, SET_6_A, SET_7_B, SET_7_C, SET_7_D, SET_7_E, SET_7_H, SET_7_L, SET_7_atHL, SET_7_A, # F0
         ]
 
         self.mem = mem

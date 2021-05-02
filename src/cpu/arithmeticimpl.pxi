@@ -48,11 +48,16 @@ cdef int XOR_A_A(GBCPU cpu):
     return 4
 
 cdef int XOR_A_atHL(GBCPU cpu):
-    cpu.registers[REG_A] ^= cpu.mem.read8(cpu.get_HL())
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    
+    cpu.registers[REG_A] ^= value
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
-    return 8
+    
+    cpu.mem.write8(HL, value)
+    return 12
 
 cdef int OR_A_B(GBCPU cpu):
     cpu.registers[REG_A] |= cpu.registers[REG_B]
@@ -104,11 +109,16 @@ cdef int OR_A_A(GBCPU cpu):
     return 4
 
 cdef int OR_A_atHL(GBCPU cpu):
-    cpu.registers[REG_A] |= cpu.mem.read8(cpu.get_HL())
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    
+    cpu.registers[REG_A] |= value
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
-    return 8
+    
+    cpu.mem.write8(HL, value)
+    return 12
 
 cdef int AND_A_B(GBCPU cpu):
     cpu.registers[REG_A] &= cpu.registers[REG_B]
@@ -167,12 +177,17 @@ cdef int AND_A_A(GBCPU cpu):
     return 4
 
 cdef int AND_A_atHL(GBCPU cpu):
-    cpu.registers[REG_A] |= cpu.mem.read8(cpu.get_HL())
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    
+    cpu.registers[REG_A] &= value
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_H
     if cpu.registers[REG_A] == 0:
-        cpu.F &= FLAG_Z
-    return 8
+        cpu.F |= FLAG_Z
+    
+    cpu.mem.write8(HL, value)
+    return 12
 
 cdef int SUB_A_B(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
@@ -259,9 +274,11 @@ cdef int SUB_A_A(GBCPU cpu):
     return 4
 
 cdef int SUB_A_atHL(GBCPU cpu):
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
-    cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], value):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) - (<int>value) < 0:
@@ -269,7 +286,9 @@ cdef int SUB_A_atHL(GBCPU cpu):
     cpu.registers[REG_A] -= value
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
-    return 8
+    
+    cpu.mem.write8(HL, value)
+    return 12
 
 cdef int ADD_A_B(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
@@ -356,9 +375,11 @@ cdef int ADD_A_A(GBCPU cpu):
     return 4
 
 cdef int ADD_A_atHL(GBCPU cpu):
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
-    cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
     if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], value):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>value) > 0xff:
@@ -366,7 +387,9 @@ cdef int ADD_A_atHL(GBCPU cpu):
     cpu.registers[REG_A] += value
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
-    return 8
+    
+    cpu.mem.write8(HL, value)
+    return 12
 
 cdef int ADC_A_B(GBCPU cpu):
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
@@ -453,9 +476,11 @@ cdef int ADC_A_A(GBCPU cpu):
     return 4
 
 cdef int ADC_A_atHL(GBCPU cpu):
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-    cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
     if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], value, old_carry):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) + (<int>value) + old_carry > 0xff:
@@ -463,7 +488,9 @@ cdef int ADC_A_atHL(GBCPU cpu):
     cpu.registers[REG_A] += value + old_carry
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
-    return 8
+    
+    cpu.mem.write8(HL, value)
+    return 12
 
 cdef int SBC_A_B(GBCPU cpu):
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
@@ -557,10 +584,12 @@ cdef int SBC_A_A(GBCPU cpu):
     return 4
 
 cdef int SBC_A_atHL(GBCPU cpu):
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
-    cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
     if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], value, old_carry):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) - (<int>value) - old_carry < 0:
@@ -568,7 +597,9 @@ cdef int SBC_A_atHL(GBCPU cpu):
     cpu.registers[REG_A] -= value + old_carry
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
-    return 8
+    
+    cpu.mem.write8(HL, value)
+    return 12
 
 cdef int CP_A_B(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
@@ -648,16 +679,20 @@ cdef int CP_A_A(GBCPU cpu):
     return 4
 
 cdef int CP_A_atHL(GBCPU cpu):
+    cdef unsigned short HL = cpu.get_HL()
+    cdef unsigned char value = cpu.mem.read8(HL)
+    
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
     cpu.F |= FLAG_N
-    cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
     if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], value):
         cpu.F |= FLAG_H
     if (<int>cpu.registers[REG_A]) - (<int>value) < 0:
         cpu.F |= FLAG_C
     if cpu.registers[REG_A] == value:
         cpu.F |= FLAG_Z
-    return 8
+    
+    cpu.mem.write8(HL, value)
+    return 12
 
 cdef int INC_B(GBCPU cpu):
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
@@ -725,12 +760,15 @@ cdef int INC_A(GBCPU cpu):
 cdef int INC_atHL(GBCPU cpu):
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
+    
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     if HALF_CARRY_8BIT_ADD(value, 1):
         cpu.F |= FLAG_H
-    if (value + 1) == 0:
+    value += 1
+    if value == 0:
         cpu.F |= FLAG_Z
-    cpu.mem.write8(HL, value + 1)
+    
+    cpu.mem.write8(HL, value)
     return 12
 
 cdef int DEC_B(GBCPU cpu):
@@ -806,13 +844,16 @@ cdef int DEC_A(GBCPU cpu):
 cdef int DEC_atHL(GBCPU cpu):
     cdef unsigned short HL = cpu.get_HL()
     cdef unsigned char value = cpu.mem.read8(HL)
+    
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
     cpu.F |= FLAG_N
-    if HALF_CARRY_8BIT_ADD(value, 1):
+    if HALF_CARRY_8BIT_SUB(value, 1):
         cpu.F |= FLAG_H
-    if (value - 1) == 0:
+    value -= 1
+    if value == 0:
         cpu.F |= FLAG_Z
-    cpu.mem.write8(HL, value - 1)
+    
+    cpu.mem.write8(HL, value)
     return 12
 
 cdef int ADD_HL_BC(GBCPU cpu):

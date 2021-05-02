@@ -8,16 +8,7 @@ cpu.registers[REG_A] ^= cpu.registers[REG_{r8}]
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cpu.registers[REG_A] ^= cpu.mem.read8(cpu.get_HL())
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-if cpu.registers[REG_A] == 0:
-    cpu.F |= FLAG_Z
-return 8
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "OR_A_{r8}",
@@ -26,16 +17,7 @@ cpu.registers[REG_A] |= cpu.registers[REG_{r8}]
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cpu.registers[REG_A] |= cpu.mem.read8(cpu.get_HL())
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-if cpu.registers[REG_A] == 0:
-    cpu.F |= FLAG_Z
-return 8
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "AND_A_{r8}",
@@ -45,17 +27,7 @@ cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 cpu.F |= FLAG_H
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cpu.registers[REG_A] |= cpu.mem.read8(cpu.get_HL())
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cpu.F |= FLAG_H
-if cpu.registers[REG_A] == 0:
-    cpu.F &= FLAG_Z
-return 8
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "SUB_A_{r8}",
@@ -69,22 +41,7 @@ if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_{r8}]) < 0:
 cpu.registers[REG_A] -= cpu.registers[REG_{r8}]
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cpu.F |= FLAG_N
-cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
-if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], value):
-    cpu.F |= FLAG_H
-if (<int>cpu.registers[REG_A]) - (<int>value) < 0:
-    cpu.F |= FLAG_C
-cpu.registers[REG_A] -= value
-if cpu.registers[REG_A] == 0:
-    cpu.F |= FLAG_Z
-return 8
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "ADD_A_{r8}",
@@ -98,22 +55,7 @@ if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_{r8}]) > 0xff:
 cpu.registers[REG_A] += cpu.registers[REG_{r8}]
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cpu.F |= FLAG_N
-cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
-if HALF_CARRY_8BIT_ADD(cpu.registers[REG_A], value):
-    cpu.F |= FLAG_H
-if (<int>cpu.registers[REG_A]) + (<int>value) > 0xff:
-    cpu.F |= FLAG_C
-cpu.registers[REG_A] += value
-if cpu.registers[REG_A] == 0:
-    cpu.F |= FLAG_Z
-return 8
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "ADC_A_{r8}",
@@ -127,22 +69,7 @@ if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_{r8}]) + old_carry > 0x
 cpu.registers[REG_A] += cpu.registers[REG_{r8}] + old_carry
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
-if HALF_CARRY_8BIT_ADD_C(cpu.registers[REG_A], value, old_carry):
-    cpu.F |= FLAG_H
-if (<int>cpu.registers[REG_A]) + (<int>value) + old_carry > 0xff:
-    cpu.F |= FLAG_C
-cpu.registers[REG_A] += value + old_carry
-if cpu.registers[REG_A] == 0:
-    cpu.F |= FLAG_Z
-return 8
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "SBC_A_{r8}",
@@ -157,23 +84,7 @@ if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_{r8}]) - old_carry < 0:
 cpu.registers[REG_A] -= cpu.registers[REG_{r8}] + old_carry
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cpu.F |= FLAG_N
-cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
-if HALF_CARRY_8BIT_SUB_C(cpu.registers[REG_A], value, old_carry):
-    cpu.F |= FLAG_H
-if (<int>cpu.registers[REG_A]) - (<int>value) - old_carry < 0:
-    cpu.F |= FLAG_C
-cpu.registers[REG_A] -= value + old_carry
-if cpu.registers[REG_A] == 0:
-    cpu.F |= FLAG_Z
-return 8
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "CP_A_{r8}",
@@ -186,21 +97,7 @@ if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_{r8}]) < 0:
     cpu.F |= FLAG_C
 if cpu.registers[REG_A] == cpu.registers[REG_{r8}]:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cpu.F |= FLAG_N
-cdef unsigned char value = cpu.mem.read8(cpu.get_HL())
-if HALF_CARRY_8BIT_SUB(cpu.registers[REG_A], value):
-    cpu.F |= FLAG_H
-if (<int>cpu.registers[REG_A]) - (<int>value) < 0:
-    cpu.F |= FLAG_C
-if cpu.registers[REG_A] == value:
-    cpu.F |= FLAG_Z
-return 8
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "INC_{r8}",
@@ -211,20 +108,7 @@ if HALF_CARRY_8BIT_ADD(cpu.registers[REG_{r8}], 1):
 cpu.registers[REG_{r8}] += 1
 if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cdef unsigned short HL = cpu.get_HL()
-cdef unsigned char value = cpu.mem.read8(HL)
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
-if HALF_CARRY_8BIT_ADD(value, 1):
-    cpu.F |= FLAG_H
-if (value + 1) == 0:
-    cpu.F |= FLAG_Z
-cpu.mem.write8(HL, value + 1)
-return 12
-""",
-    )
+""", 4)
 
     g.generate_r8(
         "DEC_{r8}",
@@ -236,21 +120,7 @@ if HALF_CARRY_8BIT_SUB(cpu.registers[REG_{r8}], 1):
 cpu.registers[REG_{r8}] -= 1
 if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
-return 4
-""",
-        """
-cdef unsigned short HL = cpu.get_HL()
-cdef unsigned char value = cpu.mem.read8(HL)
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
-cpu.F |= FLAG_N
-if HALF_CARRY_8BIT_ADD(value, 1):
-    cpu.F |= FLAG_H
-if (value - 1) == 0:
-    cpu.F |= FLAG_Z
-cpu.mem.write8(HL, value - 1)
-return 12
-""",
-    )
+""", 4)
 
     g.generate_r16(
         "ADD_HL_{r16}",
@@ -295,16 +165,39 @@ cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
 cpu.F |= FLAG_H
 if (cpu.registers[REG_{r8}] & {hex}) == 0:
     cpu.F |= FLAG_Z
-return 4
+return 8
 """,
         """
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)
 cpu.F |= FLAG_H
 if (cpu.mem.read8(cpu.get_HL()) & {hex}) == 0:
     cpu.F |= FLAG_Z
+return 12
+""")
+
+    g.generate_bitop(
+        "RES_{bit}_{r8}",
+        """
+cpu.registers[REG_{r8}] &= ~{hex}
 return 8
 """,
-    )
+        """
+cdef unsigned short HL = cpu.get_HL()
+cpu.mem.write8(HL, cpu.mem.read8(HL) & ~{hex})
+return 16
+""")
+    
+    g.generate_bitop(
+        "SET_{bit}_{r8}",
+        """
+cpu.registers[REG_{r8}] |= {hex}
+return 8
+""",
+        """
+cdef unsigned short HL = cpu.get_HL()
+cpu.mem.write8(HL, cpu.mem.read8(HL) | {hex})
+return 16
+""")
 
     g.generate_r8(
         "RL_{r8}",
@@ -319,25 +212,58 @@ cpu.registers[REG_{r8}] <<= 1
 cpu.registers[REG_{r8}] |= old_carry
 if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
-return 8
-""",
+""", 8)
+
+    g.generate_r8(
+        "RLC_{r8}",
         """
-cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
-cdef unsigned short HL = cpu.get_HL()
-cdef unsigned char value = cpu.mem.read8(HL)
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cdef unsigned char carry = (value & 0x80) >> 7
+cdef unsigned char carry = (cpu.registers[REG_{r8}] & 0x80) >> 7
 if carry:
     cpu.F |= FLAG_C
 
-value <<= 1
-value |= old_carry
-cpu.mem.write8(HL, value)
-if value == 0:
+cpu.registers[REG_{r8}] <<= 1
+cpu.registers[REG_{r8}] |= carry
+if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
-return 16
-""",
-    )
+""", 8)
+
+    g.generate_r8(
+        "RRC_{r8}",
+        """
+cdef unsigned char carry = cpu.registers[REG_{r8}] & 1
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+if carry:
+    cpu.F |= FLAG_C
+cpu.registers[REG_{r8}] >>= 1
+cpu.registers[REG_{r8}] |= carry
+if cpu.registers[REG_{r8}] == 0:
+    cpu.F |= FLAG_Z
+""", 8)
+
+    g.generate_r8(
+        "SLA_{r8}",
+        """
+cdef unsigned char carry = cpu.registers[REG_{r8}] & 0x80
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+if carry:
+    cpu.F |= FLAG_C
+cpu.registers[REG_{r8}] <<= 1
+if cpu.registers[REG_{r8}] == 0:
+    cpu.F |= FLAG_Z
+""", 8)
+
+    g.generate_r8(
+        "SRA_{r8}",
+        """
+cdef unsigned char carry = cpu.registers[REG_{r8}] & 0x80
+cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
+if carry:
+    cpu.F |= FLAG_C
+cpu.registers[REG_{r8}] = <unsigned char>((<char>cpu.registers[REG_{r8}]) >> 1)
+if cpu.registers[REG_{r8}] == 0:
+    cpu.F |= FLAG_Z
+""", 8)
 
     g.generate_r8(
         "SWAP_{r8}",
@@ -347,20 +273,7 @@ cpu.registers[REG_{r8}] = (cpu.registers[REG_{r8}] >> 4) | (cpu.registers[REG_{r
 
 if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
-return 8
-""",
-        """
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cdef unsigned short HL = cpu.get_HL()
-cdef unsigned char value = cpu.mem.read8(HL)
-value = (value >> 4) | (value << 4)
-cpu.mem.write8(HL, value)
-
-if value == 0:
-    cpu.F |= FLAG_Z
-return 16
-""",
-    )
+""", 8)
 
     g.generate_r8(
         "SRL_{r8}",
@@ -372,22 +285,7 @@ cpu.registers[REG_{r8}] >>= 1
 
 if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
-return 8
-""",
-        """
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cdef unsigned short HL = cpu.get_HL()
-cdef unsigned char value = cpu.mem.read8(HL)
-if value & 1:
-    cpu.F |= FLAG_C
-value >>= 1
-cpu.mem.write8(HL, value)
-
-if value == 0:
-    cpu.F |= FLAG_Z
-return 16
-""",
-    )
+""", 8)
 
     g.generate_r8(
         "RR_{r8}",
@@ -401,24 +299,7 @@ cpu.registers[REG_{r8}] |= carry
 
 if cpu.registers[REG_{r8}] == 0:
     cpu.F |= FLAG_Z
-return 8
-""",
-        """
-cdef unsigned char carry = (cpu.F & FLAG_C) << 3
-cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
-cdef unsigned short HL = cpu.get_HL()
-cdef unsigned char value = cpu.mem.read8(HL)
-if value & 1:
-    cpu.F |= FLAG_C
-value >>= 1
-value |= carry
-cpu.mem.write8(HL, value)
-
-if value == 0:
-    cpu.F |= FLAG_Z
-return 16
-""",
-    )
+""", 8)
 
 with generator("src/cpu/branchinterp.pxi", "src/cpu/branchimpl.pxi") as g:
     g.generate_cond(
@@ -431,8 +312,7 @@ cpu.PC += 1
     return 12
 return 8
 """,
-    "NZ", "NC", "Z", "C", ""
-    )
+    "NZ", "NC", "Z", "C", "")
 
     g.generate_cond(
         "CALL_{cond}_u16",
@@ -445,8 +325,7 @@ cpu.PC += 2
     return 24
 return 12
 """,
-    "NZ", "NC", "Z", "C", ""
-    )
+    "NZ", "NC", "Z", "C", "")
 
     g.generate_cond(
         "RET_{cond}",
@@ -456,8 +335,7 @@ return 12
     return 20
 return 8
 """,
-    "NZ", "NC", "Z", "C", ""
-    )
+    "NZ", "NC", "Z", "C", "")
 
     g.generate_cond(
         "JP_{cond}_u16",
@@ -469,8 +347,8 @@ cpu.PC += 2
     return 16
 return 12
 """,
-    "NZ", "NC", "Z", "C", ""
-    )
+    "NZ", "NC", "Z", "C", "")
+
     for vec in [0, 8, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38]:
         g.generate_manual(
             f"RST_{vec:02x}",
@@ -478,8 +356,7 @@ return 12
 cpu.PUSH_PC()
 cpu.PC = 0x{vec:02x}
 return 16
-"""
-        )
+""")
 
 with generator("src/cpu/loadinterp.pxi", "src/cpu/loadimpl.pxi") as g:
     g.generate_r8(
@@ -487,40 +364,33 @@ with generator("src/cpu/loadinterp.pxi", "src/cpu/loadimpl.pxi") as g:
         """
 cpu.registers[REG_{r8}] = cpu.mem.read8(cpu.PC)
 cpu.PC += 1
-return 8
-""",
+""", 8, HL=False)
+    g.generate_manual(
+    "LD_atHL_u8",
         """
-cpu.set_HL(cpu.mem.read8(cpu.PC))
+cpu.mem.write8(cpu.get_HL(), cpu.mem.read8(cpu.PC))
 cpu.PC += 1
 return 12
-""",
-    )
+""")
     
     for r8 in ["B", "C", "D", "E", "H", "L", "A"]:
         g.generate_r8(
             f"LD_{{r8}}_{r8}",
             f"""
 cpu.registers[REG_{{r8}}] = cpu.registers[REG_{r8}]
-return 4
-    """,
+    """, 4, HL=False)
+        g.generate_manual(
+            f"LD_atHL_{r8}",
             f"""
 cpu.mem.write8(cpu.get_HL(), cpu.registers[REG_{r8}])
 return 8
-    """,
-        )
-    
+""")
     
     g.generate_r8(
             "LD_{r8}_atHL",
             """
 cpu.registers[REG_{r8}] = cpu.mem.read8(cpu.get_HL())
-return 4
-    """,
-            """
-print("This is HALT!")
-quit(-69)
-    """,
-        )
+    """, 4, HL=False)
 
     g.generate_r16(
         "LD_{r16}_u16",
@@ -529,8 +399,7 @@ cpu.{set_r16}(cpu.mem.read16(cpu.PC))
 cpu.PC += 2
 return 12
 """,
-    "BC", "DE", "HL", "SP"
-    )
+    "BC", "DE", "HL", "SP")
 
     g.generate_r16(
         "PUSH_{r16}",
@@ -539,8 +408,7 @@ cpu.SP -= 2
 cpu.mem.write16(cpu.SP, cpu.{get_r16})
 return 16
 """,
-    "BC", "DE", "HL", "AF"
-    )
+    "BC", "DE", "HL", "AF")
 
     g.generate_r16(
         "POP_{r16}",
@@ -549,5 +417,4 @@ cpu.{set_r16}(cpu.mem.read16(cpu.SP))
 cpu.SP += 2
 return 12
 """,
-    "BC", "DE", "HL"
-    )
+    "BC", "DE", "HL")

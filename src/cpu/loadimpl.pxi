@@ -34,7 +34,7 @@ cdef int LD_A_u8(GBCPU cpu):
     return 8
 
 cdef int LD_atHL_u8(GBCPU cpu):
-    cpu.set_HL(cpu.mem.read8(cpu.PC))
+    cpu.mem.write8(cpu.get_HL(), cpu.mem.read8(cpu.PC))
     cpu.PC += 1
     return 12
 
@@ -289,10 +289,6 @@ cdef int LD_L_atHL(GBCPU cpu):
 cdef int LD_A_atHL(GBCPU cpu):
     cpu.registers[REG_A] = cpu.mem.read8(cpu.get_HL())
     return 4
-
-cdef int LD_atHL_atHL(GBCPU cpu):
-    print("This is HALT!")
-    quit(-69)
 
 cdef int LD_BC_u16(GBCPU cpu):
     cpu.set_BC(cpu.mem.read16(cpu.PC))
