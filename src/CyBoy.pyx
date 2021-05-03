@@ -1,4 +1,5 @@
 from libc.stdio cimport fopen, fclose, FILE, fread
+from src.frontend.frontend cimport Frontend
 
 include "./generic/macros.pxi"
 
@@ -47,6 +48,10 @@ cdef class GB:
         #     self.cpu.set_BC(value)
         #     if (i & 0x0fff_0000) == 0:
         #         print(hex(i))
+        cdef Frontend* frontend = new Frontend(&self.cpu.shutdown, NULL, b"GB")
+        frontend.run()
         with nogil:
-            while True:
+            while not self.cpu.shutdown:
                 self.cpu.step()
+        frontend.join()
+        del frontend

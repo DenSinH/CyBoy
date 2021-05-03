@@ -26,7 +26,8 @@ cdef inline bool HALF_CARRY_16BIT_ADD(unsigned short op1, unsigned short op2) no
 
 @cython.final
 cdef class GBCPU:
-    cdef: 
+    cdef:
+        unsigned char shutdown
         unsigned char registers[8]
         unsigned char F
         unsigned short SP

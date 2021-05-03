@@ -5,3 +5,9 @@ venv/
 build/
 files/blargg/
 *.log
+cmake-*/
+.idea/
+*.cpp
+*-win_amd64.pyd
+!CyBoyFront.cpp
+src/*.dll

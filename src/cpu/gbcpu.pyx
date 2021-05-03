@@ -5,6 +5,7 @@ include "gbimpl.pxi"
 cdef class GBCPU:
 
     def __cinit__(self, MEM mem):
+        self.shutdown = 0
         
         self.instructions = [
         # + 0          1          2            3          4            5          6           7          8            9          A            B        C           D          E           F
