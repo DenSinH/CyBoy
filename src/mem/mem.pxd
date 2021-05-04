@@ -1,5 +1,6 @@
 cimport cython
 from libcpp cimport bool
+from libc.stdio cimport printf
 
 cdef class MEM
 
@@ -29,6 +30,8 @@ cdef MemoryEntry MakeIO(read_callback read, write_callback write) nogil
 
 
 cdef struct IO_REGS:
+    unsigned char LY
+    unsigned char LCDC
     unsigned char SCY, SCX
 
 @cython.final

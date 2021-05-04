@@ -16,28 +16,20 @@ def make_ext(name, source):
     )
 
 ext_modules = [
-    *(make_ext(file.removesuffix(".pyx").replace("/", "."), file) for file in [
+    make_ext(file.removesuffix(".pyx").replace("/", "."), file) for file in [
             "src/cpu/gbcpu.pyx",
             "src/mem/mem.pyx",
             "src/mem/IO.pyx",
             "src/ppu/gbppu.pyx",
-    ]),
-    Extension(
-        "src.CyBoy",
-        ["src/CyBoy.pyx"],
-        language="c++",
-        libraries=["frontend"],
-        library_dirs=["./src/frontend/lib"],
-        include_dirs=["."]
-    ),
+            "src/CyBoy.pyx"
+    ]
 ]
 
 setup(
     name="CyBoy",
     cmdclass={"build_ext": build_ext},
     ext_modules=cythonize(
-        ext_modules, 
-        nthreads=4, 
+        ext_modules,
         compiler_directives={
             "boundscheck": False,
             "wraparound": False,

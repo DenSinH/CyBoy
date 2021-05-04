@@ -16,14 +16,14 @@ void DLLEXPORT Frontend::init() {
 
     window = SDL_CreateWindow(
             this->name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            160, 144,
+            scale * width, scale * height,
             SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI
     );
     renderer = SDL_CreateRenderer(
             window, -1, SDL_RENDERER_ACCELERATED
     );
     texture = SDL_CreateTexture(
-            renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, 160, 144
+            renderer, SDL_PIXELFORMAT_RGBX8888, SDL_TEXTUREACCESS_STREAMING, width, height
     );
 }
 
@@ -39,6 +39,8 @@ void DLLEXPORT Frontend::_run() {
                     return;
             }
             SDL_RenderClear(renderer);
+            SDL_UpdateTexture(texture, nullptr, (const void *) data, 4 * width);
+            SDL_RenderCopy(renderer, texture, nullptr, nullptr);
             SDL_RenderPresent(renderer);
         }
     }

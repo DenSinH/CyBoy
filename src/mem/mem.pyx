@@ -108,10 +108,10 @@ cdef class MEM:
         self.MMAP[0xff24] = MakeUnimpIO()
         self.MMAP[0xff25] = MakeUnimpIO()
         self.MMAP[0xff26] = MakeUnimpIO()
-        self.MMAP[0xff40] = MakeUnimpIO()
+        self.MMAP[0xff40] = MakeRW(&self.IO.LCDC)
         self.MMAP[0xff42] = MakeRW(&self.IO.SCY)
         self.MMAP[0xff43] = MakeRW(&self.IO.SCX)
-        self.MMAP[0xff44] = MakeIO(read_LY, NULL)
+        self.MMAP[0xff44] = MakeROM(&self.IO.LY)
         self.MMAP[0xff47] = MakeUnimpIO()
         self.MMAP[0xff50] = MakeIO(NULL, write_UnmapBoot)
 

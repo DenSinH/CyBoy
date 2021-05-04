@@ -1,7 +1,12 @@
-from libc.stdio cimport fopen, fclose, FILE, fread
+from libc.stdio cimport fopen, fclose, FILE, fread, printf
 from src.frontend.frontend cimport Frontend
 
 include "./generic/macros.pxi"
+
+DEF MODE_2_CYCLES = 80
+DEF MODE_3_CYCLES = 200  # depends on sprite count
+DEF MODE_0_CYCLES = 176  # depends on sprite count
+DEF LINE_CYCLES = 456
 
 cdef class GB:
     def __cinit__(self):
@@ -48,10 +53,48 @@ cdef class GB:
         #     self.cpu.set_BC(value)
         #     if (i & 0x0fff_0000) == 0:
         #         print(hex(i))
-        cdef Frontend* frontend = new Frontend(&self.cpu.shutdown, NULL, b"GB")
+        cdef Frontend* frontend = new Frontend(
+            &self.cpu.shutdown,
+            <unsigned char*>&self.ppu.display[0], 
+            b"GB",
+            160,
+            144,
+            2
+        )
         frontend.run()
+        cdef unsigned int timer = 0
         with nogil:
             while not self.cpu.shutdown:
-                self.cpu.step()
+                if self.mem.IO.LY < 144:
+                    while timer < MODE_2_CYCLES * 4:
+                        timer += self.cpu.step()
+                    timer -= MODE_2_CYCLES * 4
+
+                    # change mode to 3
+                    while timer < MODE_3_CYCLES * 4:
+                        timer += self.cpu.step()
+                    timer -= MODE_3_CYCLES * 4
+
+                    # change mode to 0 and do HBlank stuff
+                    while timer < MODE_0_CYCLES * 4:
+                        timer += self.cpu.step()
+                    timer -= MODE_0_CYCLES * 4
+                else:
+                    while timer < LINE_CYCLES * 4:
+                        timer += self.cpu.step()
+                    timer -= LINE_CYCLES * 4
+
+                self.mem.IO.LY = self.mem.IO.LY + 1
+                if self.mem.IO.LY < 144:
+                    self.ppu.draw_line(self.mem.IO.LY)
+                elif line == 144:
+                    # do VBlank stuff
+                    pass
+                elif line == 154:
+                    # send frame to screen
+                    line = 0
+
+
+
         frontend.join()
         del frontend

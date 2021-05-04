@@ -1,6 +1,13 @@
 {
     "files.exclude": {
-        "**/__pycache__": true
+        "**/__pycache__": true,
+        "**/*-win_amd64.pyd": true
     },
-    "discord.enabled": false
+    "discord.enabled": false,
+    "files.associations": {
+        "xiosbase": "cpp",
+        "array": "cpp",
+        "system_error": "cpp",
+        "xlocale": "cpp"
+    }
 }
