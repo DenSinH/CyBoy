@@ -95,7 +95,7 @@ cdef class MEM:
             self.MMAP[0xfea0 + i] = MakeUnused()
 
         for i in range(0x80):   # IO
-            self.MMAP[0xff00 + i] = MakeUnimplemented()
+            self.MMAP[0xff00 + i] = MakeUnimpIO()
 
         self.MMAP[0xff01] = MakeIO(NULL, write_SB)
         self.MMAP[0xff02] = MakeIO(NULL, NULL)  # todo
@@ -105,15 +105,23 @@ cdef class MEM:
         self.MMAP[0xff12] = MakeUnimpIO()
         self.MMAP[0xff13] = MakeUnimpIO()
         self.MMAP[0xff14] = MakeUnimpIO()
+        self.MMAP[0xff17] = MakeUnimpIO()
+        self.MMAP[0xff19] = MakeUnimpIO()
+        self.MMAP[0xff21] = MakeUnimpIO()
+        self.MMAP[0xff23] = MakeUnimpIO()
         self.MMAP[0xff24] = MakeUnimpIO()
         self.MMAP[0xff25] = MakeUnimpIO()
         self.MMAP[0xff26] = MakeUnimpIO()
         self.MMAP[0xff40] = MakeRW(&self.IO.LCDC)
+        self.MMAP[0xff41] = MakeUnimpIO()
         self.MMAP[0xff42] = MakeRW(&self.IO.SCY)
         self.MMAP[0xff43] = MakeRW(&self.IO.SCX)
         self.MMAP[0xff44] = MakeROM(&self.IO.LY)
         self.MMAP[0xff47] = MakeUnimpIO()
+        self.MMAP[0xff48] = MakeUnimpIO()
+        self.MMAP[0xff49] = MakeUnimpIO()
         self.MMAP[0xff50] = MakeIO(NULL, write_UnmapBoot)
+        self.MMAP[0xff7f] = MakeUnimpIO()
 
         for i in range(0x7f):
             self.MMAP[0xff80 + i] = MakeRW(&self.HRAM[i])

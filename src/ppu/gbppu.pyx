@@ -28,9 +28,9 @@ cdef class GBPPU:
         if LCDC & LCDC_BG_TILE_MAP:
             tile_id_address = 0x1c00
 
-        cdef unsigned short tile_data = 0x0000
+        cdef unsigned short tile_data = 0x1000
         if LCDC & LCDC_BG_TILE_DATA:
-            tile_data = 0x1000
+            tile_data = 0x0000
 
         # todo: scrolling
         cdef unsigned char x        = 0
@@ -39,7 +39,7 @@ cdef class GBPPU:
         tile_id_address            += (x >> 3) + 32 * (y >> 3)  # offset for leftmost tile
         tile_id_address            -= 1  # correct for first loop iteration
         cdef unsigned char tile_id  = self.mem.VRAM[tile_id_address]
-        cdef unsigned char current_data_ptr
+        cdef unsigned short current_data_ptr
         cdef unsigned short data_lo
         cdef unsigned short data_hi
 
@@ -52,23 +52,25 @@ cdef class GBPPU:
                 # printf("id %x\n", tile_id_address)
                 tile_id = self.mem.VRAM[tile_id_address]
                 if LCDC & LCDC_BG_TILE_DATA:
-                    # signed addressing
-                    current_data_ptr = tile_data + <char>tile_id * 16
-                else:
                     # unsigned addressing
                     current_data_ptr = tile_data + tile_id * 16
+                else:
+                    # signed addressing
+                    current_data_ptr = tile_data + <char>tile_id * 16
+
                 # first byte holds lower bit, second byte holds upper bit
                 data_lo = self.mem.VRAM[current_data_ptr]
                 data_hi = self.mem.VRAM[current_data_ptr + 1]
             
-            pixel  =  (data_lo >> x_shift) & 1        # lower bit
-            pixel |= ((data_lo >> x_shift) & 1) << 1  # upper bit
+            pixel  = ((data_lo << x_shift) & 0x80) >> 7  # lower bit
+            pixel |= ((data_lo << x_shift) & 0x80) >> 6  # upper bit
 
             self.framebuffer[y][screen_x] = palette[pixel]
 
             x += 1
         
         if y == VISIBLE_SCREEN_HEIGHT - 1:
+            self.frame += 1
             self.copy_buffer()
 
     cdef void copy_buffer(GBPPU self) nogil:

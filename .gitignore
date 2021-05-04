@@ -11,3 +11,4 @@ cmake-*/
 *-win_amd64.pyd
 !CyBoyFront.cpp
 src/*.dll
+*.dump

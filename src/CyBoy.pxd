@@ -15,3 +15,5 @@ cdef class GB:
     cpdef public void skip_bootrom(GB self)
     cpdef public void load_rom(GB self, str file_name)
     cpdef public int run(GB self)
+
+    cdef void dump_vram(GB self) nogil

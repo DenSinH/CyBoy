@@ -1,5 +1,5 @@
-from libc.stdio cimport fopen, fclose, FILE, fread, printf
-from src.frontend.frontend cimport Frontend
+from libc.stdio cimport fopen, fclose, FILE, fread, fwrite, printf
+from src.frontend.frontend cimport Frontend, frontend_callback
 
 include "./generic/macros.pxi"
 
@@ -57,10 +57,12 @@ cdef class GB:
             &self.cpu.shutdown,
             <unsigned char*>&self.ppu.display[0], 
             b"GB",
+            &self.ppu.frame,
             160,
             144,
             2
         )
+        frontend.bind_callback(ord('v'), <frontend_callback>&GB.dump_vram, <void*>self)
         frontend.run()
         cdef unsigned int timer = 0
         with nogil:
@@ -94,7 +96,13 @@ cdef class GB:
                     # send frame to screen
                     line = 0
 
-
-
         frontend.join()
         del frontend
+
+    cdef void dump_vram(GB self) nogil:
+        cdef FILE *dump 
+        dump = fopen(b"VRAM.dump", "wb+")
+        if dump is NULL:
+            return
+        fwrite(self.mem.VRAM, 0x2000, 1, dump)
+        fclose(dump)

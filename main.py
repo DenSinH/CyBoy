@@ -10,13 +10,15 @@ SDL_DLL_PATH = "./src/SDL2.dll"
 SDL_DLL_LIB_PATH = "./SDL/x64/SDL2.dll"
 if __name__ == "__main__":
     if not os.path.exists(FRONTEND_DLL_PATH) or os.path.getmtime(FRONTEND_DLL_PATH) < os.path.getmtime(FRONTEND_DLL_LIB_PATH):
+        print("refresh frontend.dll")
         shutil.copy2(FRONTEND_DLL_LIB_PATH, FRONTEND_DLL_PATH)
     if not os.path.exists(SDL_DLL_PATH):
         shutil.copy2(SDL_DLL_LIB_PATH, SDL_DLL_PATH)
 
     from src.CyBoy import GB
     gb = GB()
-    gb.load_rom("files/blargg/cpu_instrs/individual/01-special.gb")
+    #gb.load_rom("files/blargg/cpu_instrs/individual/01-special.gb")
+    gb.load_rom("files/Tetris.gb")
     gb.load_bootrom("files/DMG_ROM.bin")
     # gb.skip_bootrom()
 
