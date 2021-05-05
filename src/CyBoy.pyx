@@ -62,7 +62,9 @@ cdef class GB:
             144,
             2
         )
+
         frontend.bind_callback(ord('v'), <frontend_callback>&GB.dump_vram, <void*>self)
+        
         frontend.run()
         cdef unsigned int timer = 0
         with nogil:
@@ -89,12 +91,12 @@ cdef class GB:
                 self.mem.IO.LY = self.mem.IO.LY + 1
                 if self.mem.IO.LY < 144:
                     self.ppu.draw_line(self.mem.IO.LY)
-                elif line == 144:
+                elif self.mem.IO.LY == 144:
                     # do VBlank stuff
                     pass
-                elif line == 154:
+                elif self.mem.IO.LY == 154:
                     # send frame to screen
-                    line = 0
+                    self.mem.IO.LY = 0
 
         frontend.join()
         del frontend

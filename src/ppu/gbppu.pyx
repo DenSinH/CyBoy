@@ -1,4 +1,5 @@
 from libc.stdio cimport printf
+from libc.string cimport memcpy
 
 DEF SCREEN_HEIGHT         = 154
 DEF VISIBLE_SCREEN_HEIGHT = 144
@@ -75,6 +76,4 @@ cdef class GBPPU:
 
     cdef void copy_buffer(GBPPU self) nogil:
         cdef unsigned int x, y
-        for y in range(144):
-            for x in range(160):
-                self.display[y][x] = self.framebuffer[y][x]
+        memcpy(self.display, self.framebuffer, 4 * 144 * 160)

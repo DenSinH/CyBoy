@@ -25,7 +25,7 @@ void DLLEXPORT Frontend::init() {
             SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI
     );
     renderer = SDL_CreateRenderer(
-            window, -1, SDL_RENDERER_ACCELERATED
+            window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
     texture = SDL_CreateTexture(
             renderer, SDL_PIXELFORMAT_RGBX8888, SDL_TEXTUREACCESS_STREAMING, width, height
@@ -53,20 +53,20 @@ void DLLEXPORT Frontend::_run() {
                     break;
                 }
             }
-
-            if ((SDL_GetTicks() - ticks) > 500) {
-                float framerate = (float)(1000.0 * *frame_counter) / (float)(SDL_GetTicks() - ticks);
-                std::snprintf(title, sizeof(title), "%s (%.1f fps)", name, framerate);
-                SDL_SetWindowTitle(window, title);
-                ticks = SDL_GetTicks();
-                *frame_counter = 0;
-            }
-
-            SDL_RenderClear(renderer);
-            SDL_UpdateTexture(texture, nullptr, (const void *) data, 4 * width);
-            SDL_RenderCopy(renderer, texture, nullptr, nullptr);
-            SDL_RenderPresent(renderer);
         }
+
+        if ((SDL_GetTicks() - ticks) > 500) {
+            float framerate = (float)(1000.0 * *frame_counter) / (float)(SDL_GetTicks() - ticks);
+            std::snprintf(title, sizeof(title), "%s (%.1f fps)", name, framerate);
+            SDL_SetWindowTitle(window, title);
+            ticks = SDL_GetTicks();
+            *frame_counter = 0;
+        }
+
+        SDL_RenderClear(renderer);
+        SDL_UpdateTexture(texture, nullptr, (const void *) data, 4 * width);
+        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+        SDL_RenderPresent(renderer);
     }
 }
 
