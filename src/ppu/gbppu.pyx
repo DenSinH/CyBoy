@@ -4,7 +4,7 @@ from libc.string cimport memcpy
 DEF SCREEN_HEIGHT         = 154
 DEF VISIBLE_SCREEN_HEIGHT = 144
 
-include "./lcdio.pxi"
+include "../mem/IO.pxi"
 
 cdef unsigned int[4] palette = [
     0xcadc9f00, 0x8bac0f00, 0x30623000, 0x0f380f00
@@ -64,7 +64,7 @@ cdef class GBPPU:
                 data_hi = self.mem.VRAM[current_data_ptr + 1]
             
             pixel  = ((data_lo << x_shift) & 0x80) >> 7  # lower bit
-            pixel |= ((data_lo << x_shift) & 0x80) >> 6  # upper bit
+            pixel |= ((data_hi << x_shift) & 0x80) >> 6  # upper bit
 
             self.framebuffer[y][screen_x] = palette[pixel]
 

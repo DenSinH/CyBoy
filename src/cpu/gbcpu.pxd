@@ -57,6 +57,8 @@ cdef class GBCPU:
             exit(opcode)
         return instr(self)
 
+    cdef void interrupt(GBCPU self) nogil
+
     cdef inline void PUSH_PC(self) nogil:
         self.SP -= 2
         self.mem.write16(self.SP, self.PC)

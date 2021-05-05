@@ -13,84 +13,74 @@ cdef int pref(GBCPU cpu) nogil:
         exit(opcode)
     return instr(cpu)
 
-# cdef int LD_BC_u16(GBCPU cpu) nogil:
-#     cpu.set_BC(cpu.mem.read16(cpu.PC))
-#     cpu.PC += 2
-#     return 12
-# 
-# cdef int LD_DE_u16(GBCPU cpu) nogil:
-#     cpu.set_DE(cpu.mem.read16(cpu.PC))
-#     cpu.PC += 2
-#     return 12
-# 
-# cdef int LD_HL_u16(GBCPU cpu) nogil:
-#     cpu.set_HL(cpu.mem.read16(cpu.PC))
-#     cpu.PC += 2
-#     return 12
-#
-# cdef int LD_SP_u16(GBCPU cpu) nogil:
-#     cpu.SP = cpu.mem.read16(cpu.PC)
-#     cpu.PC += 2
-#     return 12
-
-
 cdef int LD_atBC_A(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_BC()
     cpu.mem.write8(addr, cpu.registers[REG_A])
+    return 8
 
 cdef int LD_atDE_A(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_DE()
     cpu.mem.write8(addr, cpu.registers[REG_A])
+    return 8
 
 cdef int LD_atHL_Apl(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_HL()
     cpu.mem.write8(addr, cpu.registers[REG_A])
     cpu.set_HL(addr + 1)
+    return 8
 
 cdef int LD_atHL_Amn(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_HL()
     cpu.mem.write8(addr, cpu.registers[REG_A])
     cpu.set_HL(addr - 1)
+    return 8
 
 
 cdef int LD_A_atBC(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_BC()
     cpu.registers[REG_A] = cpu.mem.read8(addr)
+    return 8
 
 cdef int LD_A_atDE(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_DE()
     cpu.registers[REG_A] = cpu.mem.read8(addr)
+    return 8
 
 cdef int LD_A_atHLpl(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_HL()
     cpu.registers[REG_A] = cpu.mem.read8(addr)
     cpu.set_HL(addr + 1)
+    return 8
 
 cdef int LD_A_atHLmn(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_HL()
     cpu.registers[REG_A] = cpu.mem.read8(addr)
     cpu.set_HL(addr - 1)
+    return 8
 
 
 cdef int LD_ff00_A(GBCPU cpu) nogil:
     cdef unsigned short address = 0xff00 + cpu.registers[REG_C]
     cpu.mem.write8(address, cpu.registers[REG_A])
+    return 8
 
 cdef int LD_A_ff00(GBCPU cpu) nogil:
     cdef unsigned short address = 0xff00 + cpu.registers[REG_C]
     cpu.registers[REG_A] = cpu.mem.read8(address)
+    return 8
 
-    
 cdef int LD_ffu8_A(GBCPU cpu) nogil:
     cdef unsigned char offs = cpu.mem.read8(cpu.PC)
     cpu.PC += 1
     cpu.mem.write8(0xff00 + offs, cpu.registers[REG_A])
+    return 12
 
 
 cdef int LD_A_ffu8(GBCPU cpu) nogil:
     cdef unsigned char offs = cpu.mem.read8(cpu.PC)
     cpu.PC += 1
     cpu.registers[REG_A] = cpu.mem.read8(0xff00 + offs)
+    return 12
 
 cdef int NOP(GBCPU cpu) nogil:
     return 4
@@ -101,11 +91,13 @@ cdef int DI(GBCPU cpu) nogil:
 
 cdef int EI(GBCPU cpu) nogil:
     cpu.IME = 1
+    cpu.interrupt()  # check if interrupts are requested
     return 4
 
 cdef int RETI(GBCPU cpu) nogil:
     cpu.IME = 1
     cpu.POP_PC()
+    cpu.interrupt()  # check if interrupts are requested
     return 16
 
 cdef int DAA(GBCPU cpu) nogil:

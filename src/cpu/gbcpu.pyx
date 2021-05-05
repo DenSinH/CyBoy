@@ -48,6 +48,7 @@ cdef class GBCPU:
         ]
 
         self.mem = mem
+        self.mem.bind_cpu(<void (*)(void*) nogil>&GBCPU.interrupt, <void*>self)
 
         cdef int i = 0
         for i in range(8):
@@ -57,3 +58,22 @@ cdef class GBCPU:
         self.SP = 0
 
         self.log = open("trace.log", "w+")
+
+    cdef void interrupt(GBCPU self) nogil:
+        if not self.IME:
+            return
+        cdef unsigned char ack = self.mem.IO.IF_ & self.mem.IO.IE
+        if not ack:
+            return 
+
+        cdef unsigned char INT = 1
+        cdef unsigned short vector = 0x40
+        while INT != 0x20:
+            if ack & INT:
+                self.IME = 0
+                self.mem.IO.IF_ = self.mem.IO.IF_ & ~INT  # clear requested interrupt
+                self.PUSH_PC()
+                self.PC = vector
+                return
+            vector += 8
+            INT <<= 1

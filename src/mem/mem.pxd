@@ -32,7 +32,9 @@ cdef MemoryEntry MakeIO(read_callback read, write_callback write) nogil
 cdef struct IO_REGS:
     unsigned char LY
     unsigned char LCDC
+    unsigned char STAT
     unsigned char SCY, SCX
+    unsigned char IE, IF_  # IF is a reserved keyword in cython
 
 @cython.final
 cdef class MEM:
@@ -51,6 +53,15 @@ cdef class MEM:
         MemoryEntry[0x10000] MMAP
 
         IO_REGS IO
+        void (*interrupt_cpu)(void* cpu) nogil
+        void* cpu
+
+    cdef inline void bind_cpu(MEM self, void (*interrupt_cpu)(void* cpu) nogil, void* cpu):
+        self.interrupt_cpu = interrupt_cpu
+        self.cpu = cpu
+
+    cdef inline void set_STAT_mode(MEM self, unsigned char mode) nogil:
+        self.IO.STAT = (self.IO.STAT & 0xfc) | mode
 
     cdef inline unsigned char read8(MEM self, unsigned short address) nogil:
         cdef MemoryEntry entry = self.MMAP[address]

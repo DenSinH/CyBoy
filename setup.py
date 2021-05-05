@@ -2,6 +2,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 from Cython.Build import cythonize
+from Cython.Compiler import Options
 import os
 
 # os.environ["CC"] = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang++.exe"
@@ -9,6 +10,7 @@ os.environ["CC"] = "clang"
 os.environ["CXX"] = "clang++"
 os.environ["LDSHARED"] = "clang -shared"
 
+Options.fast_fail = True
 
 def make_ext(name, source):
     return Extension(
@@ -42,7 +44,7 @@ setup(
             "cdivision": True,
         },
         language_level=3,
-        nthreads=4
+        # nthreads=4
     ),
     include_dirs=[
         "./src/frontend/lib",  # frontend c++ library

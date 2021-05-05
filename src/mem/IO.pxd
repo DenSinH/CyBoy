@@ -8,6 +8,9 @@ cdef void write_unimpIO(MEM mem, unsigned short address, unsigned char value) no
 
 cdef void write_SB(MEM mem, unsigned short address, unsigned char value) nogil
 
-cdef unsigned char read_LY(MEM mem, unsigned short address) nogil
+cdef void write_IF(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_IE(MEM mem, unsigned short address, unsigned char value) nogil
+
+cdef void write_STAT(MEM mem, unsigned short address, unsigned char value) nogil
 
 cdef void write_UnmapBoot(MEM mem, unsigned short address, unsigned char value) nogil

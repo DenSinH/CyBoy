@@ -1,7 +1,7 @@
 from libc.stdio cimport fopen, fclose, FILE, fread, fwrite, printf
-from src.frontend.frontend cimport Frontend, frontend_callback
 
 include "./generic/macros.pxi"
+include "./mem/IO.pxi"
 
 DEF MODE_2_CYCLES = 80
 DEF MODE_3_CYCLES = 200  # depends on sprite count
@@ -46,14 +46,8 @@ cdef class GB:
         fread(&self.mem.ROM1, 0x4000, 1, rom)
         fclose(rom)
 
-    cpdef public int run(GB self):
-        # cdef int i
-        # cdef unsigned short value = 0x4209
-        # for i in range(0xf000_0000):
-        #     self.cpu.set_BC(value)
-        #     if (i & 0x0fff_0000) == 0:
-        #         print(hex(i))
-        cdef Frontend* frontend = new Frontend(
+    cpdef public void spawn_frontend(GB self):
+        self.frontend = new Frontend(
             &self.cpu.shutdown,
             <unsigned char*>&self.ppu.display[0], 
             b"GB",
@@ -63,23 +57,33 @@ cdef class GB:
             2
         )
 
-        frontend.bind_callback(ord('v'), <frontend_callback>&GB.dump_vram, <void*>self)
-        
-        frontend.run()
+        self.frontend.bind_callback(ord('v'), <frontend_callback>&GB.dump_vram, <void*>self)
+        self.frontend.run()
+
+    cpdef public void close_frontend(GB self):
+        self.frontend.join()
+        del self.frontend
+
+    cpdef public int run(GB self):
+        self.spawn_frontend()
+
         cdef unsigned int timer = 0
         with nogil:
             while not self.cpu.shutdown:
                 if self.mem.IO.LY < 144:
+                    self.mem.set_STAT_mode(2)
                     while timer < MODE_2_CYCLES * 4:
                         timer += self.cpu.step()
                     timer -= MODE_2_CYCLES * 4
 
                     # change mode to 3
+                    self.mem.set_STAT_mode(3)
                     while timer < MODE_3_CYCLES * 4:
                         timer += self.cpu.step()
                     timer -= MODE_3_CYCLES * 4
 
                     # change mode to 0 and do HBlank stuff
+                    self.mem.set_STAT_mode(0)
                     while timer < MODE_0_CYCLES * 4:
                         timer += self.cpu.step()
                     timer -= MODE_0_CYCLES * 4
@@ -92,14 +96,14 @@ cdef class GB:
                 if self.mem.IO.LY < 144:
                     self.ppu.draw_line(self.mem.IO.LY)
                 elif self.mem.IO.LY == 144:
-                    # do VBlank stuff
-                    pass
+                    self.mem.set_STAT_mode(1)
+                    self.mem.IO.IF_ = self.mem.IO.IF_ | INTERRUPT_VBLANK
+                    self.cpu.interrupt()
                 elif self.mem.IO.LY == 154:
                     # send frame to screen
                     self.mem.IO.LY = 0
 
-        frontend.join()
-        del frontend
+        self.close_frontend()
 
     cdef void dump_vram(GB self) nogil:
         cdef FILE *dump 
@@ -108,3 +112,13 @@ cdef class GB:
             return
         fwrite(self.mem.VRAM, 0x2000, 1, dump)
         fclose(dump)
+
+    def __getitem__(self, address: int):
+        return self.mem.read8(address)
+
+    def step(self):
+        return self.cpu.step()
+
+    @property
+    def shutdown(self):
+        return self.cpu.shutdown

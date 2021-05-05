@@ -58,6 +58,15 @@ cdef inline MemoryEntry MakeUnimpIO() nogil:
     entry.write = False
     return entry
 
+cdef inline MemoryEntry MakeComplexWrite(unsigned char* data, write_callback write):
+    cdef MemoryEntry entry 
+    entry.read_ptr.data = data
+    entry.read = True
+    entry.write_ptr.callback = write
+    entry.write = False
+    return entry
+
+
 cdef class MEM:
     
     def __cinit__(self):
@@ -100,7 +109,7 @@ cdef class MEM:
         self.MMAP[0xff01] = MakeIO(NULL, write_SB)
         self.MMAP[0xff02] = MakeIO(NULL, NULL)  # todo
         self.MMAP[0xff07] = MakeUnimpIO()
-        self.MMAP[0xff0f] = MakeUnimpIO()
+        self.MMAP[0xff0f] = MakeComplexWrite(&self.IO.IF_, write_IF)
         self.MMAP[0xff11] = MakeUnimpIO()
         self.MMAP[0xff12] = MakeUnimpIO()
         self.MMAP[0xff13] = MakeUnimpIO()
@@ -113,7 +122,7 @@ cdef class MEM:
         self.MMAP[0xff25] = MakeUnimpIO()
         self.MMAP[0xff26] = MakeUnimpIO()
         self.MMAP[0xff40] = MakeRW(&self.IO.LCDC)
-        self.MMAP[0xff41] = MakeUnimpIO()
+        self.MMAP[0xff41] = MakeComplexWrite(&self.IO.STAT, write_STAT)
         self.MMAP[0xff42] = MakeRW(&self.IO.SCY)
         self.MMAP[0xff43] = MakeRW(&self.IO.SCX)
         self.MMAP[0xff44] = MakeROM(&self.IO.LY)
@@ -126,4 +135,4 @@ cdef class MEM:
         for i in range(0x7f):
             self.MMAP[0xff80 + i] = MakeRW(&self.HRAM[i])
 
-        self.MMAP[0xffff] = MakeUnimpIO()  # IE
+        self.MMAP[0xffff] = MakeComplexWrite(&self.IO.IE, write_IE)  # IE
