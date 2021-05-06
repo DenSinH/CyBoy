@@ -2,6 +2,7 @@ cimport cython
 from libcpp cimport bool
 from libc.stdio cimport printf
 
+include "./IO.pxi"
 cdef class MEM
 
 ctypedef unsigned char (*read_callback)(MEM mem, unsigned short address) nogil
@@ -33,7 +34,14 @@ cdef struct IO_REGS:
     unsigned char JOYPAD  # note: not the register, just a mask!
     unsigned char JOYP
 
-    unsigned char LY
+    unsigned char DIV
+    unsigned char TIMA
+    unsigned char TMA
+    unsigned char TAC
+    unsigned int TIMA_timer
+    unsigned int TIMA_limit
+
+    unsigned char LY, LYC
     unsigned char LCDC
     unsigned char STAT
     unsigned char SCY, SCX
@@ -65,6 +73,21 @@ cdef class MEM:
 
     cdef inline void set_STAT_mode(MEM self, unsigned char mode) nogil:
         self.IO.STAT = (self.IO.STAT & 0xfc) | mode
+        if mode < 3 and self.IO.STAT & (0x8 << mode):
+            self.IO.IF_ |= INTERRUPT_STAT
+            self.interrupt_cpu(self.cpu)
+
+    cdef inline void tick(MEM self, unsigned int cycles) nogil:
+        self.IO.DIV += cycles
+        if self.IO.TAC & TIMA_ENABLED:
+            self.IO.TIMA_timer += cycles
+            if self.IO.TIMA_timer > self.IO.TIMA_limit:
+                self.IO.TIMA_timer -= self.IO.TIMA_limit
+                self.IO.TIMA += 1
+                if self.IO.TIMA == 0:
+                    self.IO.TIMA = self.IO.TMA
+                    self.IO.IF_ |= INTERRUPT_TIMER
+                    self.interrupt_cpu(self.cpu)
 
     cdef inline unsigned char read8(MEM self, unsigned short address) nogil:
         cdef MemoryEntry entry = self.MMAP[address]

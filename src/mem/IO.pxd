@@ -7,6 +7,8 @@ cdef unsigned char read_unimpIO(MEM mem, unsigned short address) nogil
 cdef void write_unimpIO(MEM mem, unsigned short address, unsigned char value) nogil
 
 cdef unsigned char read_JOYP(MEM mem, unsigned short address) nogil
+cdef void write_DIV(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_TAC(MEM mem, unsigned short address, unsigned char value) nogil
 
 cdef void write_SB(MEM mem, unsigned short address, unsigned char value) nogil
 

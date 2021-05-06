@@ -28,6 +28,7 @@ cdef inline bool HALF_CARRY_16BIT_ADD(unsigned short op1, unsigned short op2) no
 cdef class GBCPU:
     cdef:
         unsigned char shutdown
+        bool halted
         unsigned char registers[8]
         unsigned char F
         unsigned short SP
@@ -43,8 +44,8 @@ cdef class GBCPU:
     cdef public object log
 
     cdef inline int step(self) nogil:
-        # self.log.write(f"A: {self.registers[REG_A]:02X} F: {self.F:02X} B: {self.registers[REG_B]:02X} C: {self.registers[REG_C]:02X} D: {self.registers[REG_D]:02X} E: {self.registers[REG_E]:02X} H: {self.registers[REG_H]:02X} L: {self.registers[REG_L]:02X} SP: {self.SP:04X} PC: 00:{self.PC:04X}\n")
-        # self.log.flush()
+        if self.halted:
+            return 4
 
         cdef unsigned char opcode = self.mem.read8(self.PC)
         self.PC += 1

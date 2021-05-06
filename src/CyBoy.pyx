@@ -59,6 +59,7 @@ cdef class GB:
         )
 
         self.frontend.bind_callback(ord('v'), <frontend_callback>&GB.dump_vram, <void*>self)
+        self.frontend.bind_callback(ord('p'), <frontend_callback>&GB.print_status, <void*>self)
         self.bind_keyboard_input('w', JOYPAD_UP)
         self.bind_keyboard_input('a', JOYPAD_LEFT)
         self.bind_keyboard_input('s', JOYPAD_DOWN)
@@ -87,28 +88,37 @@ cdef class GB:
             self.spawn_frontend()
 
         cdef unsigned int timer = 0
+        cdef unsigned int cycles = 0
         with nogil:
             while not self.cpu.shutdown:
                 if self.mem.IO.LY < 144:
                     self.mem.set_STAT_mode(2)
                     while timer < MODE_2_CYCLES * 4:
-                        timer += self.cpu.step()
+                        cycles = self.cpu.step()
+                        self.mem.tick(cycles)
+                        timer += cycles
                     timer -= MODE_2_CYCLES * 4
 
                     # change mode to 3
                     self.mem.set_STAT_mode(3)
                     while timer < MODE_3_CYCLES * 4:
-                        timer += self.cpu.step()
+                        cycles = self.cpu.step()
+                        self.mem.tick(cycles)
+                        timer += cycles
                     timer -= MODE_3_CYCLES * 4
 
                     # change mode to 0 and do HBlank stuff
                     self.mem.set_STAT_mode(0)
                     while timer < MODE_0_CYCLES * 4:
-                        timer += self.cpu.step()
+                        cycles = self.cpu.step()
+                        self.mem.tick(cycles)
+                        timer += cycles
                     timer -= MODE_0_CYCLES * 4
                 else:
                     while timer < LINE_CYCLES * 4:
-                        timer += self.cpu.step()
+                        cycles = self.cpu.step()
+                        self.mem.tick(cycles)
+                        timer += cycles
                     timer -= LINE_CYCLES * 4
 
                 self.mem.IO.LY = self.mem.IO.LY + 1
@@ -121,6 +131,12 @@ cdef class GB:
                 elif self.mem.IO.LY == 154:
                     # send frame to screen
                     self.mem.IO.LY = 0
+                
+                if self.mem.IO.LYC == self.mem.IO.LY:
+                    self.mem.IO.STAT = self.mem.IO.STAT | STAT_LY_COINCIDENCE
+                    if self.mem.IO.STAT & STAT_LY_COINCIDENCE_INTR:
+                        self.mem.IO.IF_ = self.mem.IO.IF_ | INTERRUPT_STAT
+                        self.cpu.interrupt()
 
         self.close_frontend()
 
@@ -137,6 +153,17 @@ cdef class GB:
             return
         fwrite(self.mem.VRAM, 0x2000, 1, dump)
         fclose(dump)
+
+    cdef void print_status(GB self) nogil:
+        printf(
+            "A: %02X F: %02X B: %02X C: %02X D: %02X E: %02X H: %02X L: %02X SP: %04X PC: 00:%04X\n",
+            self.cpu.registers[REG_A], self.cpu.F, 
+            self.cpu.registers[REG_B], self.cpu.registers[REG_C], 
+            self.cpu.registers[REG_D], self.cpu.registers[REG_E], 
+            self.cpu.registers[REG_H], self.cpu.registers[REG_L], 
+            self.cpu.SP, self.cpu.PC
+        )
+        printf("Halted: %d\n", self.cpu.halted)
 
     def __getitem__(self, address: int):
         return self.mem.read8(address)

@@ -1,6 +1,7 @@
 from src.mem.mem cimport *
 from libc.stdio cimport printf
 
+include "./IO.pxi"
 
 cdef unsigned char read_unimpIO(MEM mem, unsigned short address) nogil:
     # printf("Unimplemented read from address %04x\n", address)
@@ -17,6 +18,25 @@ cdef unsigned char read_JOYP(MEM mem, unsigned short address) nogil:
     elif value & 0x10:  # action buttons
         return value | ~(mem.IO.JOYPAD >> 4)
     return value | 0xf
+
+cdef void write_DIV(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.DIV = 0
+
+cdef unsigned int[4] TAC_SETTINGS = [
+    1024, 16, 64, 256
+]
+
+cdef void write_TAC(MEM mem, unsigned short address, unsigned char value) nogil:
+    cdef unsigned char old = mem.IO.TAC
+    mem.IO.TAC = value & 7
+    mem.IO.TIMA_limit = TAC_SETTINGS[value & 3]
+    if (value & TIMA_ENABLED):
+        if not (old & TIMA_ENABLED):
+            mem.IO.TIMA_timer = 0
+        else:
+            # we don't want the timer to overflow multiple times in a row
+            if mem.IO.TIMA_timer > mem.IO.TIMA_limit:
+                mem.IO.TIMA_timer = mem.IO.TIMA_limit
 
 cdef void write_SB(MEM mem, unsigned short address, unsigned char value) nogil:
     # printf("%c", value)

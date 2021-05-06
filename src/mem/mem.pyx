@@ -2,6 +2,7 @@ from src.mem.IO cimport *
 from libc.stdio cimport printf
 from libc.stdlib cimport exit
 
+
 cdef MemoryEntry MakeRW(unsigned char* data) nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.data = data
@@ -118,29 +119,18 @@ cdef class MEM:
         self.MMAP[0xff00] = MakeComplexRead(read_JOYP, &self.IO.JOYP)
         self.MMAP[0xff01] = MakeIO(NULL, write_SB)
         self.MMAP[0xff02] = MakeIO(NULL, NULL)  # todo
-        self.MMAP[0xff07] = MakeUnimpIO()
+        self.MMAP[0xff04] = MakeComplexWrite(&self.IO.DIV, write_DIV)
+        self.MMAP[0xff05] = MakeROM(&self.IO.TIMA)
+        self.MMAP[0xff06] = MakeRW(&self.IO.TMA)
+        self.MMAP[0xff07] = MakeComplexWrite(&self.IO.TAC, write_TAC)
         self.MMAP[0xff0f] = MakeComplexWrite(&self.IO.IF_, write_IF)
-        self.MMAP[0xff11] = MakeUnimpIO()
-        self.MMAP[0xff12] = MakeUnimpIO()
-        self.MMAP[0xff13] = MakeUnimpIO()
-        self.MMAP[0xff14] = MakeUnimpIO()
-        self.MMAP[0xff17] = MakeUnimpIO()
-        self.MMAP[0xff19] = MakeUnimpIO()
-        self.MMAP[0xff21] = MakeUnimpIO()
-        self.MMAP[0xff23] = MakeUnimpIO()
-        self.MMAP[0xff24] = MakeUnimpIO()
-        self.MMAP[0xff25] = MakeUnimpIO()
-        self.MMAP[0xff26] = MakeUnimpIO()
         self.MMAP[0xff40] = MakeRW(&self.IO.LCDC)
         self.MMAP[0xff41] = MakeComplexWrite(&self.IO.STAT, write_STAT)
         self.MMAP[0xff42] = MakeRW(&self.IO.SCY)
         self.MMAP[0xff43] = MakeRW(&self.IO.SCX)
         self.MMAP[0xff44] = MakeROM(&self.IO.LY)
-        self.MMAP[0xff47] = MakeUnimpIO()
-        self.MMAP[0xff48] = MakeUnimpIO()
-        self.MMAP[0xff49] = MakeUnimpIO()
+        self.MMAP[0xff45] = MakeROM(&self.IO.LYC)
         self.MMAP[0xff50] = MakeIO(NULL, write_UnmapBoot)
-        self.MMAP[0xff7f] = MakeUnimpIO()
 
         for i in range(0x7f):
             self.MMAP[0xff80 + i] = MakeRW(&self.HRAM[i])

@@ -24,3 +24,4 @@ cdef class GB:
     cpdef public void bind_controller_input(GB self, char key, unsigned char mask)
 
     cdef void dump_vram(GB self) nogil
+    cdef void print_status(GB self) nogil

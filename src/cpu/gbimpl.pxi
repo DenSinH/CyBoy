@@ -35,7 +35,6 @@ cdef int LD_atHL_Amn(GBCPU cpu) nogil:
     cpu.set_HL(addr - 1)
     return 8
 
-
 cdef int LD_A_atBC(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.get_BC()
     cpu.registers[REG_A] = cpu.mem.read8(addr)
@@ -58,7 +57,6 @@ cdef int LD_A_atHLmn(GBCPU cpu) nogil:
     cpu.set_HL(addr - 1)
     return 8
 
-
 cdef int LD_ff00_A(GBCPU cpu) nogil:
     cdef unsigned short address = 0xff00 + cpu.registers[REG_C]
     cpu.mem.write8(address, cpu.registers[REG_A])
@@ -74,7 +72,6 @@ cdef int LD_ffu8_A(GBCPU cpu) nogil:
     cpu.PC += 1
     cpu.mem.write8(0xff00 + offs, cpu.registers[REG_A])
     return 12
-
 
 cdef int LD_A_ffu8(GBCPU cpu) nogil:
     cdef unsigned char offs = cpu.mem.read8(cpu.PC)
@@ -135,6 +132,10 @@ cdef int CCF(GBCPU cpu) nogil:
 cdef int CPL(GBCPU cpu) nogil:
     cpu.registers[REG_A] = ~cpu.registers[REG_A]
     cpu.F |= FLAG_N | FLAG_H
+    return 4
+
+cdef int HALT(GBCPU cpu) nogil:
+    cpu.halted = 1
     return 4
 
 cdef int POP_AF(GBCPU cpu) nogil:

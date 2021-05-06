@@ -1,4 +1,3 @@
-
 # instruction implementations:
 include "gbimpl.pxi"
 
@@ -16,7 +15,7 @@ cdef class GBCPU:
             LD_B_B,    LD_B_C,    LD_B_D,      LD_B_E,    LD_B_H,      LD_B_L,    LD_B_atHL,  LD_B_A,    LD_C_B,      LD_C_C,    LD_C_D,      LD_C_E,  LD_C_H,     LD_C_L,    LD_C_atHL,  LD_C_A,  # 40
             LD_D_B,    LD_D_C,    LD_D_D,      LD_D_E,    LD_D_H,      LD_D_L,    LD_D_atHL,  LD_D_A,    LD_E_B,      LD_E_C,    LD_E_D,      LD_E_E,  LD_E_H,     LD_E_L,    LD_E_atHL,  LD_E_A,  # 50
             LD_H_B,    LD_H_C,    LD_H_D,      LD_H_E,    LD_H_H,      LD_H_L,    LD_H_atHL,  LD_H_A,    LD_L_B,      LD_L_C,    LD_L_D,      LD_L_E,  LD_L_H,     LD_L_L,    LD_L_atHL,  LD_L_A,  # 60
-            LD_atHL_B, LD_atHL_C, LD_atHL_D,   LD_atHL_E, LD_atHL_H,   LD_atHL_L, NULL,       LD_atHL_A, LD_A_B,      LD_A_C,    LD_A_D,      LD_A_E,  LD_A_H,     LD_A_L,    LD_A_atHL,  LD_A_A,  # 70
+            LD_atHL_B, LD_atHL_C, LD_atHL_D,   LD_atHL_E, LD_atHL_H,   LD_atHL_L, HALT,       LD_atHL_A, LD_A_B,      LD_A_C,    LD_A_D,      LD_A_E,  LD_A_H,     LD_A_L,    LD_A_atHL,  LD_A_A,  # 70
             ADD_A_B,   ADD_A_C,   ADD_A_D,     ADD_A_E,   ADD_A_H,     ADD_A_L,   ADD_A_atHL, ADD_A_A,   ADC_A_B,     ADC_A_C,   ADC_A_D,     ADC_A_E, ADC_A_H,    ADC_A_L,   ADC_A_atHL, ADC_A_A, # 80
             SUB_A_B,   SUB_A_C,   SUB_A_D,     SUB_A_E,   SUB_A_H,     SUB_A_L,   SUB_A_atHL, SUB_A_A,   SBC_A_B,     SBC_A_C,   SBC_A_D,     SBC_A_E, SBC_A_H,    SBC_A_L,   SBC_A_atHL, SBC_A_A, # 90
             AND_A_B,   AND_A_C,   AND_A_D,     AND_A_E,   AND_A_H,     AND_A_L,   AND_A_atHL, AND_A_A,   XOR_A_B,     XOR_A_C,   XOR_A_D,     XOR_A_E, XOR_A_H,    XOR_A_L,   XOR_A_atHL, XOR_A_A, # A0
@@ -60,11 +59,14 @@ cdef class GBCPU:
         self.log = open("trace.log", "w+")
 
     cdef void interrupt(GBCPU self) nogil:
-        if not self.IME:
-            return
+        # printf("attempting interrupt %02x & %02x (%d)\n", self.mem.IO.IF_, self.mem.IO.IE, self.IME)
         cdef unsigned char ack = self.mem.IO.IF_ & self.mem.IO.IE
         if not ack:
             return 
+        self.halted = 0
+        
+        if not self.IME:
+            return
 
         cdef unsigned char INT = 1
         cdef unsigned short vector = 0x40
@@ -74,6 +76,7 @@ cdef class GBCPU:
                 self.mem.IO.IF_ = self.mem.IO.IF_ & ~INT  # clear requested interrupt
                 self.PUSH_PC()
                 self.PC = vector
+                self.halted = 0
                 return
             vector += 8
             INT <<= 1

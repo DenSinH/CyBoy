@@ -30,6 +30,7 @@ cdef int DAA(GBCPU cpu) nogil
 cdef int SCF(GBCPU cpu) nogil
 cdef int CCF(GBCPU cpu) nogil
 cdef int CPL(GBCPU cpu) nogil
+cdef int HALT(GBCPU cpu) nogil
 
 cdef int POP_AF(GBCPU cpu) nogil  # special case
 cdef int LD_u16_SP(GBCPU cpu) nogil
