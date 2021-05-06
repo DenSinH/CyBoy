@@ -10,6 +10,14 @@ cdef void write_unimpIO(MEM mem, unsigned short address, unsigned char value) no
     # printf("Unimplemented write %02x to address %04x\n", value, address)
     pass
 
+cdef unsigned char read_JOYP(MEM mem, unsigned short address) nogil:
+    cdef unsigned char value = mem.IO.JOYP & 0x30
+    if value & 0x20:    # direction buttons
+        return value | ~(mem.IO.JOYPAD & 0xf)
+    elif value & 0x10:  # action buttons
+        return value | ~(mem.IO.JOYPAD >> 4)
+    return value | 0xf
+
 cdef void write_SB(MEM mem, unsigned short address, unsigned char value) nogil:
     # printf("%c", value)
     pass

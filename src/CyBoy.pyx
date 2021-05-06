@@ -51,6 +51,7 @@ cdef class GB:
             &self.cpu.shutdown,
             <unsigned char*>&self.ppu.display[0], 
             b"GB",
+            &self.mem.IO.JOYPAD,
             &self.ppu.frame,
             160,
             144,
@@ -58,6 +59,23 @@ cdef class GB:
         )
 
         self.frontend.bind_callback(ord('v'), <frontend_callback>&GB.dump_vram, <void*>self)
+        self.bind_keyboard_input('w', JOYPAD_UP)
+        self.bind_keyboard_input('a', JOYPAD_LEFT)
+        self.bind_keyboard_input('s', JOYPAD_DOWN)
+        self.bind_keyboard_input('d', JOYPAD_RIGHT)
+        self.bind_keyboard_input(',', JOYPAD_A)
+        self.bind_keyboard_input('.', JOYPAD_B)
+        self.bind_keyboard_input('k', JOYPAD_START)
+        self.bind_keyboard_input('l', JOYPAD_SELECT)
+
+        self.bind_controller_input(11, JOYPAD_UP)
+        self.bind_controller_input(13, JOYPAD_LEFT)
+        self.bind_controller_input(12, JOYPAD_DOWN)
+        self.bind_controller_input(14, JOYPAD_RIGHT)
+        self.bind_controller_input(0, JOYPAD_A)
+        self.bind_controller_input(1, JOYPAD_B)
+        self.bind_controller_input(4, JOYPAD_START)
+        self.bind_controller_input(6, JOYPAD_SELECT)
         self.frontend.run()
 
     cpdef public void close_frontend(GB self):
@@ -65,7 +83,8 @@ cdef class GB:
         del self.frontend
 
     cpdef public int run(GB self):
-        self.spawn_frontend()
+        if self.frontend is NULL:
+            self.spawn_frontend()
 
         cdef unsigned int timer = 0
         with nogil:
@@ -104,6 +123,12 @@ cdef class GB:
                     self.mem.IO.LY = 0
 
         self.close_frontend()
+
+    cpdef public void bind_keyboard_input(GB self, str key, unsigned char mask):
+        self.frontend.bind_keyboard_input(ord(key), mask)
+
+    cpdef public void bind_controller_input(GB self, char button, unsigned char mask):
+        self.frontend.bind_controller_input(button, mask)
 
     cdef void dump_vram(GB self) nogil:
         cdef FILE *dump 

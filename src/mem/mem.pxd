@@ -30,6 +30,9 @@ cdef MemoryEntry MakeIO(read_callback read, write_callback write) nogil
 
 
 cdef struct IO_REGS:
+    unsigned char JOYPAD  # note: not the register, just a mask!
+    unsigned char JOYP
+
     unsigned char LY
     unsigned char LCDC
     unsigned char STAT

@@ -14,6 +14,15 @@ void Frontend::bind_callback(char key, void (*callback)(void* data), void* data)
     callbacks[key] = {  .callback=callback, .data=data };
 }
 
+void Frontend::bind_keyboard_input(char key, unsigned char mask){
+    keyboard_input[key] = mask;
+}
+
+void Frontend::bind_controller_input(char button, unsigned char mask){
+    button_input[button] = mask;
+}
+
+
 void DLLEXPORT Frontend::init() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER)) {
         printf("Error initializing SDL2: %s\n", SDL_GetError());
@@ -30,6 +39,26 @@ void DLLEXPORT Frontend::init() {
     texture = SDL_CreateTexture(
             renderer, SDL_PIXELFORMAT_RGBX8888, SDL_TEXTUREACCESS_STREAMING, width, height
     );
+
+    if (SDL_NumJoysticks() < 0) {
+        printf("No gamepads detected\n");
+    }
+    else {
+        for (int i = 0; i < SDL_NumJoysticks(); i++) {
+            if (SDL_IsGameController(i)) {
+                controller = SDL_GameControllerOpen(i);
+
+                if (!controller) {
+                    printf("Failed to connect to gamecontroller at index %d\n", i);
+                    continue;
+                }
+
+                printf("Connected game controller at index %d\n", i);
+                return;
+            }
+        }
+    }
+    printf("No gamepads detected (only joysticks)\n");
 }
 
 void DLLEXPORT Frontend::_run() {
@@ -44,11 +73,41 @@ void DLLEXPORT Frontend::_run() {
                     *shutdown = 1;
                     quit();
                     return;
+                case SDL_CONTROLLERDEVICEADDED:
+                    controller =  SDL_GameControllerOpen(event.cdevice.which);
+                    if (controller == nullptr) {
+                        printf("Error with connected gamepad\n");
+                    }
+                    break;
                 case SDL_KEYDOWN: {
                     char key = SDL_GetKeyFromScancode(event.key.keysym.scancode);
                     if (callbacks.contains(key)) {
                         key_callback callback = callbacks[key];
                         callback.callback(callback.data);
+                    }
+                    if (keyboard_input.contains(key)) {
+                        *joypad |= keyboard_input[key];
+                    }
+                    break;
+                }
+                case SDL_KEYUP: {
+                    char key = SDL_GetKeyFromScancode(event.key.keysym.scancode);
+                    if (keyboard_input.contains(key)) {
+                        *joypad &= ~keyboard_input[key];
+                    }
+                    break;
+                }
+                case SDL_CONTROLLERBUTTONDOWN: {
+                    char button = event.cbutton.button;
+                    if (button_input.contains(button)) {
+                        *joypad |= button_input[button];
+                    }
+                    break;
+                }
+                case SDL_CONTROLLERBUTTONUP: {
+                    char button = event.cbutton.button;
+                    if (button_input.contains(button)) {
+                        *joypad &= ~button_input[button];
                     }
                     break;
                 }

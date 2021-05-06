@@ -3,7 +3,7 @@ project(frontend CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_FLAGS -m64)
+set(CMAKE_CXX_FLAGS "-m64 -static-libgcc -static-libstdc++ -static")
 set(CMAKE_C_FLAGS -m64)
 set(${PROJECT} PROPERTIES LINK_FLAGS /MACHINE:X64)
 
@@ -28,7 +28,7 @@ if (NOT WIN32)
     target_link_libraries(frontend PRIVATE -ldl -lpthread)
 endif()
 
-target_link_libraries(frontend PRIVATE -static-libgcc -static-libstdc++)
+target_link_libraries(frontend PRIVATE)
 target_include_directories(frontend PRIVATE
         ${SDL2_INCLUDE_DIR}
 )

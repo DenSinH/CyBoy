@@ -20,5 +20,7 @@ cdef class GB:
     cpdef public int run(GB self)
     cpdef public void spawn_frontend(GB self)
     cpdef public void close_frontend(GB self)
+    cpdef public void bind_keyboard_input(GB self, str key, unsigned char mask)
+    cpdef public void bind_controller_input(GB self, char key, unsigned char mask)
 
     cdef void dump_vram(GB self) nogil

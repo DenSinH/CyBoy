@@ -66,6 +66,15 @@ cdef inline MemoryEntry MakeComplexWrite(unsigned char* data, write_callback wri
     entry.write = False
     return entry
 
+cdef inline MemoryEntry MakeComplexRead(read_callback read, unsigned char* data):
+    cdef MemoryEntry entry 
+    entry.read_ptr.callback = read
+    entry.read = False
+    entry.write_ptr.data = data
+    entry.write = True
+    return entry
+
+
 
 cdef class MEM:
     
@@ -106,6 +115,7 @@ cdef class MEM:
         for i in range(0x80):   # IO
             self.MMAP[0xff00 + i] = MakeUnimpIO()
 
+        self.MMAP[0xff00] = MakeComplexRead(read_JOYP, &self.IO.JOYP)
         self.MMAP[0xff01] = MakeIO(NULL, write_SB)
         self.MMAP[0xff02] = MakeIO(NULL, NULL)  # todo
         self.MMAP[0xff07] = MakeUnimpIO()
