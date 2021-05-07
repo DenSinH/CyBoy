@@ -32,11 +32,9 @@ cdef void write_TAC(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.TIMA_limit = TAC_SETTINGS[value & 3]
     if (value & TIMA_ENABLED):
         if not (old & TIMA_ENABLED):
+            # printf("Start timer %02x %02x\n", mem.IO.TMA, mem.IO.TIMA_limit)
             mem.IO.TIMA_timer = 0
-        else:
-            # we don't want the timer to overflow multiple times in a row
-            if mem.IO.TIMA_timer > mem.IO.TIMA_limit:
-                mem.IO.TIMA_timer = mem.IO.TIMA_limit
+            mem.IO.TIMA = mem.IO.TMA
 
 cdef void write_SB(MEM mem, unsigned short address, unsigned char value) nogil:
     # printf("%c", value)

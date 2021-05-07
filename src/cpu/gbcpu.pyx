@@ -56,15 +56,16 @@ cdef class GBCPU:
         self.PC = 0
         self.SP = 0
 
-        self.log = open("trace.log", "w+")
+        self.log = fopen("trace.log", "w+")
 
     cdef void interrupt(GBCPU self) nogil:
         # printf("attempting interrupt %02x & %02x (%d)\n", self.mem.IO.IF_, self.mem.IO.IE, self.IME)
         cdef unsigned char ack = self.mem.IO.IF_ & self.mem.IO.IE
+        # printf("Checking interrupt %02x & %02x\n", self.mem.IO.IF_, self.mem.IO.IE)
         if not ack:
             return 
         self.halted = 0
-        
+
         if not self.IME:
             return
 

@@ -108,10 +108,8 @@ cdef int RET_C(GBCPU cpu) nogil:
     return 8
 
 cdef int RET_(GBCPU cpu) nogil:
-    if True:
-        cpu.POP_PC()
-        return 20
-    return 8
+    cpu.POP_PC()
+    return 16
 
 cdef int JP_NZ_u16(GBCPU cpu) nogil:
     cdef unsigned short addr = cpu.mem.read16(cpu.PC)

@@ -56,8 +56,7 @@ cdef int XOR_A_atHL(GBCPU cpu) nogil:
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     
-    cpu.mem.write8(HL, value)
-    return 12
+    return 8
 
 cdef int OR_A_B(GBCPU cpu) nogil:
     cpu.registers[REG_A] |= cpu.registers[REG_B]
@@ -117,8 +116,7 @@ cdef int OR_A_atHL(GBCPU cpu) nogil:
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     
-    cpu.mem.write8(HL, value)
-    return 12
+    return 8
 
 cdef int AND_A_B(GBCPU cpu) nogil:
     cpu.registers[REG_A] &= cpu.registers[REG_B]
@@ -186,8 +184,7 @@ cdef int AND_A_atHL(GBCPU cpu) nogil:
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     
-    cpu.mem.write8(HL, value)
-    return 12
+    return 8
 
 cdef int SUB_A_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
@@ -287,8 +284,7 @@ cdef int SUB_A_atHL(GBCPU cpu) nogil:
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     
-    cpu.mem.write8(HL, value)
-    return 12
+    return 8
 
 cdef int ADD_A_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
@@ -380,8 +376,7 @@ cdef int ADD_A_atHL(GBCPU cpu) nogil:
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     
-    cpu.mem.write8(HL, value)
-    return 12
+    return 8
 
 cdef int ADC_A_B(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
@@ -481,8 +476,7 @@ cdef int ADC_A_atHL(GBCPU cpu) nogil:
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     
-    cpu.mem.write8(HL, value)
-    return 12
+    return 8
 
 cdef int SBC_A_B(GBCPU cpu) nogil:
     cdef unsigned char old_carry = (cpu.F & FLAG_C) >> 4
@@ -590,8 +584,7 @@ cdef int SBC_A_atHL(GBCPU cpu) nogil:
     if cpu.registers[REG_A] == 0:
         cpu.F |= FLAG_Z
     
-    cpu.mem.write8(HL, value)
-    return 12
+    return 8
 
 cdef int CP_A_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
@@ -683,8 +676,7 @@ cdef int CP_A_atHL(GBCPU cpu) nogil:
     if cpu.registers[REG_A] == value:
         cpu.F |= FLAG_Z
     
-    cpu.mem.write8(HL, value)
-    return 12
+    return 8
 
 cdef int INC_B(GBCPU cpu) nogil:
     cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H)

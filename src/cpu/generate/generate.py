@@ -8,7 +8,7 @@ cpu.registers[REG_A] ^= cpu.registers[REG_{r8}]
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-""", 4)
+""", 4, HL_cycles=8, HL_writeback=False)
 
     g.generate_r8(
         "OR_A_{r8}",
@@ -17,7 +17,7 @@ cpu.registers[REG_A] |= cpu.registers[REG_{r8}]
 cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-""", 4)
+""", 4, HL_cycles=8, HL_writeback=False)
 
     g.generate_r8(
         "AND_A_{r8}",
@@ -27,7 +27,7 @@ cpu.F &= ~(FLAG_Z | FLAG_N | FLAG_H | FLAG_C)
 cpu.F |= FLAG_H
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-""", 4)
+""", 4, HL_cycles=8, HL_writeback=False)
 
     g.generate_r8(
         "SUB_A_{r8}",
@@ -41,7 +41,7 @@ if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_{r8}]) < 0:
 cpu.registers[REG_A] -= cpu.registers[REG_{r8}]
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-""", 4)
+""", 4, HL_cycles=8, HL_writeback=False)
 
     g.generate_r8(
         "ADD_A_{r8}",
@@ -54,7 +54,7 @@ if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_{r8}]) > 0xff:
 cpu.registers[REG_A] += cpu.registers[REG_{r8}]
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-""", 4)
+""", 4, HL_cycles=8, HL_writeback=False)
 
     g.generate_r8(
         "ADC_A_{r8}",
@@ -68,7 +68,7 @@ if (<int>cpu.registers[REG_A]) + (<int>cpu.registers[REG_{r8}]) + old_carry > 0x
 cpu.registers[REG_A] += cpu.registers[REG_{r8}] + old_carry
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-""", 4)
+""", 4, HL_cycles=8, HL_writeback=False)
 
     g.generate_r8(
         "SBC_A_{r8}",
@@ -83,7 +83,7 @@ if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_{r8}]) - old_carry < 0:
 cpu.registers[REG_A] -= cpu.registers[REG_{r8}] + old_carry
 if cpu.registers[REG_A] == 0:
     cpu.F |= FLAG_Z
-""", 4)
+""", 4, HL_cycles=8, HL_writeback=False)
 
     g.generate_r8(
         "CP_A_{r8}",
@@ -96,7 +96,7 @@ if (<int>cpu.registers[REG_A]) - (<int>cpu.registers[REG_{r8}]) < 0:
     cpu.F |= FLAG_C
 if cpu.registers[REG_A] == cpu.registers[REG_{r8}]:
     cpu.F |= FLAG_Z
-""", 4)
+""", 4, HL_cycles=8, HL_writeback=False)
 
     g.generate_r8(
         "INC_{r8}",
@@ -334,7 +334,14 @@ return 12
     return 20
 return 8
 """,
-    "NZ", "NC", "Z", "C", "")
+    "NZ", "NC", "Z", "C")
+    g.generate_manual(
+        "RET_",
+        """
+cpu.POP_PC()
+return 16
+"""
+    )
 
     g.generate_cond(
         "JP_{cond}_u16",
@@ -389,7 +396,7 @@ return 8
             "LD_{r8}_atHL",
             """
 cpu.registers[REG_{r8}] = cpu.mem.read8(cpu.get_HL())
-    """, 4, HL=False)
+    """, 8, HL=False)
 
     g.generate_r16(
         "LD_{r16}_u16",

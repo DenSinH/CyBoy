@@ -1,7 +1,7 @@
 cimport cython
 from src.mem.mem cimport MEM
 from libcpp cimport bool
-from libc.stdio cimport printf
+from libc.stdio cimport fopen, fclose, FILE, fread, fwrite, snprintf, printf
 from libc.stdlib cimport exit
 
 include "../generic/macros.pxi"
@@ -37,13 +37,28 @@ cdef class GBCPU:
         unsigned char IME
 
         MEM mem
+        FILE* log
 
     cdef instruction[0x100] instructions
     cdef instruction[0x100] extended_instructions
 
-    cdef public object log
+    cdef inline void log_line(self) nogil:
+        cdef char[100] line
+        cdef int length = snprintf(line, 100, 
+            "A: %02X F: %02X B: %02X C: %02X D: %02X E: %02X H: %02X L: %02X SP: %04X PC: 00:%04X\n",
+            self.registers[REG_A], self.F, 
+            self.registers[REG_B], self.registers[REG_C], 
+            self.registers[REG_D], self.registers[REG_E], 
+            self.registers[REG_H], self.registers[REG_L], 
+            self.SP, self.PC
+        )
+        fwrite(line, length, 1, self.log)
 
     cdef inline int step(self) nogil:
+        # self.log_line()
+        # if self.PC == 0xc8b0:
+        #     exit(0)
+
         if self.halted:
             return 4
 

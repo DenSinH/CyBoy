@@ -264,31 +264,31 @@ cdef int LD_atHL_A(GBCPU cpu) nogil:
 
 cdef int LD_B_atHL(GBCPU cpu) nogil:
     cpu.registers[REG_B] = cpu.mem.read8(cpu.get_HL())
-    return 4
+    return 8
 
 cdef int LD_C_atHL(GBCPU cpu) nogil:
     cpu.registers[REG_C] = cpu.mem.read8(cpu.get_HL())
-    return 4
+    return 8
 
 cdef int LD_D_atHL(GBCPU cpu) nogil:
     cpu.registers[REG_D] = cpu.mem.read8(cpu.get_HL())
-    return 4
+    return 8
 
 cdef int LD_E_atHL(GBCPU cpu) nogil:
     cpu.registers[REG_E] = cpu.mem.read8(cpu.get_HL())
-    return 4
+    return 8
 
 cdef int LD_H_atHL(GBCPU cpu) nogil:
     cpu.registers[REG_H] = cpu.mem.read8(cpu.get_HL())
-    return 4
+    return 8
 
 cdef int LD_L_atHL(GBCPU cpu) nogil:
     cpu.registers[REG_L] = cpu.mem.read8(cpu.get_HL())
-    return 4
+    return 8
 
 cdef int LD_A_atHL(GBCPU cpu) nogil:
     cpu.registers[REG_A] = cpu.mem.read8(cpu.get_HL())
-    return 4
+    return 8
 
 cdef int LD_BC_u16(GBCPU cpu) nogil:
     cpu.set_BC(cpu.mem.read16(cpu.PC))

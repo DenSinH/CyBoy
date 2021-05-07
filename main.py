@@ -17,7 +17,8 @@ if __name__ == "__main__":
 
     from src.CyBoy import GB
     gb = GB()
-    gb.load_rom("files/blargg/cpu_instrs/individual/02-interrupts.gb")
+    gb.load_rom("files/blargg/instr_timing/instr_timing.gb")
+    # gb.load_rom("files/gekkio/tim10.gb")
     # gb.load_rom("files/Tetris.gb")
     # gb.load_rom("files/dmg-acid2.gb")
     gb.load_bootrom("files/DMG_ROM.bin")

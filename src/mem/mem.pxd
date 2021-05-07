@@ -34,7 +34,7 @@ cdef struct IO_REGS:
     unsigned char JOYPAD  # note: not the register, just a mask!
     unsigned char JOYP
 
-    unsigned char DIV
+    unsigned short DIV
     unsigned char TIMA
     unsigned char TMA
     unsigned char TAC
@@ -81,12 +81,13 @@ cdef class MEM:
         self.IO.DIV += cycles
         if self.IO.TAC & TIMA_ENABLED:
             self.IO.TIMA_timer += cycles
-            if self.IO.TIMA_timer > self.IO.TIMA_limit:
+            while self.IO.TIMA_timer >= self.IO.TIMA_limit:
                 self.IO.TIMA_timer -= self.IO.TIMA_limit
                 self.IO.TIMA += 1
                 if self.IO.TIMA == 0:
                     self.IO.TIMA = self.IO.TMA
                     self.IO.IF_ |= INTERRUPT_TIMER
+                    # printf("timer overflow\n")
                     self.interrupt_cpu(self.cpu)
 
     cdef inline unsigned char read8(MEM self, unsigned short address) nogil:

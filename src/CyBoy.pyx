@@ -122,8 +122,8 @@ cdef class GB:
                     timer -= LINE_CYCLES * 4
 
                 self.mem.IO.LY = self.mem.IO.LY + 1
-                if self.mem.IO.LY < 144:
-                    self.ppu.draw_line(self.mem.IO.LY)
+                if self.mem.IO.LY - 1 < 144:
+                    self.ppu.draw_line(self.mem.IO.LY - 1)
                 elif self.mem.IO.LY == 144:
                     self.mem.set_STAT_mode(1)
                     self.mem.IO.IF_ = self.mem.IO.IF_ | INTERRUPT_VBLANK

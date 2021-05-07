@@ -119,8 +119,8 @@ cdef class MEM:
         self.MMAP[0xff00] = MakeComplexRead(read_JOYP, &self.IO.JOYP)
         self.MMAP[0xff01] = MakeIO(NULL, write_SB)
         self.MMAP[0xff02] = MakeIO(NULL, NULL)  # todo
-        self.MMAP[0xff04] = MakeComplexWrite(&self.IO.DIV, write_DIV)
-        self.MMAP[0xff05] = MakeROM(&self.IO.TIMA)
+        self.MMAP[0xff04] = MakeComplexWrite((<unsigned char*>&self.IO.DIV) + 1, write_DIV)
+        self.MMAP[0xff05] = MakeRW(&self.IO.TIMA)
         self.MMAP[0xff06] = MakeRW(&self.IO.TMA)
         self.MMAP[0xff07] = MakeComplexWrite(&self.IO.TAC, write_TAC)
         self.MMAP[0xff0f] = MakeComplexWrite(&self.IO.IF_, write_IF)
