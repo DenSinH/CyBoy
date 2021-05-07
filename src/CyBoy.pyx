@@ -89,6 +89,7 @@ cdef class GB:
 
         cdef unsigned int timer = 0
         cdef unsigned int cycles = 0
+        cdef unsigned char line = 0
         with nogil:
             while not self.cpu.shutdown:
                 if self.mem.IO.LY < 144:
@@ -121,15 +122,15 @@ cdef class GB:
                         timer += cycles
                     timer -= LINE_CYCLES * 4
 
-                self.mem.IO.LY = self.mem.IO.LY + 1
-                if self.mem.IO.LY - 1 < 144:
-                    self.ppu.draw_line(self.mem.IO.LY - 1)
+                if self.mem.IO.LY < 144:
+                    self.ppu.draw_line(self.mem.IO.LY)
                 elif self.mem.IO.LY == 144:
                     self.mem.set_STAT_mode(1)
                     self.mem.IO.IF_ = self.mem.IO.IF_ | INTERRUPT_VBLANK
                     self.cpu.interrupt()
-                elif self.mem.IO.LY == 154:
-                    # send frame to screen
+
+                self.mem.IO.LY = self.mem.IO.LY + 1
+                if self.mem.IO.LY == 154:
                     self.mem.IO.LY = 0
                 
                 if self.mem.IO.LYC == self.mem.IO.LY:
