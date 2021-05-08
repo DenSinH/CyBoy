@@ -129,7 +129,12 @@ cdef class MEM:
         self.MMAP[0xff42] = MakeRW(&self.IO.SCY)
         self.MMAP[0xff43] = MakeRW(&self.IO.SCX)
         self.MMAP[0xff44] = MakeROM(&self.IO.LY)
-        self.MMAP[0xff45] = MakeROM(&self.IO.LYC)
+        self.MMAP[0xff45] = MakeRW(&self.IO.LYC)
+        self.MMAP[0xff47] = MakeRW(&self.IO.BGP)
+        self.MMAP[0xff48] = MakeRW(&self.IO.OBP[0])
+        self.MMAP[0xff49] = MakeRW(&self.IO.OBP[1])
+        self.MMAP[0xff4a] = MakeRW(&self.IO.WY)
+        self.MMAP[0xff4b] = MakeRW(&self.IO.WX)
         self.MMAP[0xff50] = MakeIO(NULL, write_UnmapBoot)
 
         for i in range(0x7f):

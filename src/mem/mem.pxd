@@ -42,9 +42,12 @@ cdef struct IO_REGS:
     unsigned int TIMA_limit
 
     unsigned char LY, LYC
+    unsigned char WY, WX
     unsigned char LCDC
     unsigned char STAT
     unsigned char SCY, SCX
+    unsigned char BGP
+    unsigned char[2] OBP
     unsigned char IE, IF_  # IF is a reserved keyword in cython
 
 @cython.final

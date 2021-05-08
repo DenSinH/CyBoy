@@ -50,7 +50,7 @@ cdef void write_IE(MEM mem, unsigned short address, unsigned char value) nogil:
 
 cdef void write_STAT(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.STAT = (mem.IO.STAT & 0x3) | (value & 0xfc)
-
+    
 cdef void write_UnmapBoot(MEM mem, unsigned short address, unsigned char value) nogil:
     if value == 0:
         return
