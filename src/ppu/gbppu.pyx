@@ -26,9 +26,9 @@ cdef class GBPPU:
 
     cdef void draw_bg(GBPPU self, unsigned char y) nogil:
         cdef unsigned char LCDC = self.mem.IO.LCDC
-        cdef unsigned short tile_id_address = 0x1800
+        cdef unsigned short tile_map_address = 0x1800
         if LCDC & LCDC_BG_TILE_MAP:
-            tile_id_address = 0x1c00
+            tile_map_address = 0x1c00
 
         cdef unsigned short tile_data = 0x1000
         if LCDC & LCDC_TILE_DATA:
@@ -38,24 +38,26 @@ cdef class GBPPU:
         cdef unsigned char x        = self.mem.IO.SCX               # scrolling
         cdef unsigned char screen_x = 0
         tile_data                  += (y_eff & 7) * 2               # vertical offset in bytes
-        tile_id_address            += (x >> 3) + 32 * (y_eff >> 3)  # offset for leftmost tile
-        tile_id_address            -= 1                             # correct for first loop iteration
-        cdef unsigned char tile_id  = self.mem.VRAM[tile_id_address]
+        cdef unsigned short tile_id_base_address, tile_id_offset
+        tile_id_base_address        = tile_map_address
+        tile_id_base_address       += 32 * (y_eff >> 3)             # offset for leftmost tile
+        tile_id_offset              = (x >> 3) - 1                  # correct for first loop iteration
+        cdef unsigned char tile_id  = self.mem.VRAM[tile_id_base_address + tile_id_offset]
         cdef unsigned short current_data_ptr
         cdef unsigned short data_lo
         cdef unsigned short data_hi
 
-        # if y >= 128:
-        #     printf("%d/%d  + %d %02x\n", y, y_eff, self.mem.IO.SCY, tile_id_address)
+        #if y >= 128:
+        #    printf("%d/%d  + %d %02x\n", y, y_eff, self.mem.IO.SCY, tile_id_address)
 
         cdef unsigned char x_shift, pixel
         for screen_x in range(160):
             x_shift = x & 7
             if x_shift == 0:
                 # advance to next tile
-                tile_id_address += 1
-                # printf("id %x\n", tile_id_address)
-                tile_id = self.mem.VRAM[tile_id_address]
+                tile_id_offset += 1
+                tile_id_offset &= 31
+                tile_id = self.mem.VRAM[tile_id_base_address + tile_id_offset]
                 if LCDC & LCDC_TILE_DATA:
                     # unsigned addressing
                     current_data_ptr = tile_data + tile_id * 16
@@ -92,9 +94,9 @@ cdef class GBPPU:
             self.window_ly += 1
             
         # window visible
-        cdef unsigned short tile_id_address = 0x1800
+        cdef unsigned short tile_map_address = 0x1800
         if LCDC & LCDC_WINDOW_TILE_MAP:
-            tile_id_address = 0x1c00
+            tile_map_address = 0x1c00
 
         cdef unsigned short tile_data = 0x1000
         if LCDC & LCDC_TILE_DATA:
@@ -103,9 +105,11 @@ cdef class GBPPU:
         cdef unsigned char x        = 0                             # scrolling
         cdef unsigned char screen_x = self.mem.IO.WX - 7
         tile_data                  += (y_eff & 7) * 2               # vertical offset in bytes
-        tile_id_address            += (x >> 3) + 32 * (y_eff >> 3)  # offset for leftmost tile
-        tile_id_address            -= 1                             # correct for first loop iteration
-        cdef unsigned char tile_id  = self.mem.VRAM[tile_id_address]
+        cdef unsigned short tile_id_base_address, tile_id_offset
+        tile_id_base_address        = tile_map_address
+        tile_id_base_address       += 32 * (y_eff >> 3)             # offset for leftmost tile
+        tile_id_offset              = (x >> 3) - 1                  # correct for first loop iteration
+        cdef unsigned char tile_id  = self.mem.VRAM[tile_id_base_address + tile_id_offset]
         cdef unsigned short current_data_ptr
         cdef unsigned short data_lo
         cdef unsigned short data_hi
@@ -115,9 +119,9 @@ cdef class GBPPU:
             x_shift = x & 7
             if x_shift == 0:
                 # advance to next tile
-                tile_id_address += 1
-                # printf("id %x\n", tile_id_address)
-                tile_id = self.mem.VRAM[tile_id_address]
+                tile_id_offset += 1
+                tile_id_offset &= 31
+                tile_id = self.mem.VRAM[tile_id_base_address + tile_id_offset]
                 if LCDC & LCDC_TILE_DATA:
                     # unsigned addressing
                     current_data_ptr = tile_data + tile_id * 16
