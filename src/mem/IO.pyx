@@ -40,6 +40,14 @@ cdef void write_SB(MEM mem, unsigned short address, unsigned char value) nogil:
     # printf("%c", value)
     pass
 
+cdef void write_DMA(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.DMA = value
+    cdef unsigned short src     = <unsigned short>value << 8
+    cdef unsigned short offset  = 0
+    if value < 0xe0:
+        for offset in range(0x100):
+            mem.write8(0xfe00 + offset, mem.read8(src + offset))
+
 cdef void write_IF(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.IF_ = value & 0x1f
     mem.interrupt_cpu(mem.cpu)

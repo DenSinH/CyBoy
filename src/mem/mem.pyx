@@ -130,6 +130,7 @@ cdef class MEM:
         self.MMAP[0xff43] = MakeRW(&self.IO.SCX)
         self.MMAP[0xff44] = MakeROM(&self.IO.LY)
         self.MMAP[0xff45] = MakeRW(&self.IO.LYC)
+        self.MMAP[0xff46] = MakeComplexWrite(&self.IO.DMA, write_DMA)
         self.MMAP[0xff47] = MakeRW(&self.IO.BGP)
         self.MMAP[0xff48] = MakeRW(&self.IO.OBP[0])
         self.MMAP[0xff49] = MakeRW(&self.IO.OBP[1])

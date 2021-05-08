@@ -215,7 +215,6 @@ cdef class GBPPU:
         cdef unsigned int x
         cdef unsigned int color
         for x in range(160):
-            self.framebuffer[y][x] = palette[(self.mem.IO.BGP >> (self.bg_pixels[x] << 1)) & 3]
             if self.obj_pixels[x] != -1 and (self.bg_pixels[x] == 0 or not (self.obj_attrs[x] & OBJ_PRIORITY)):
                 self.framebuffer[y][x] = palette[
                     (self.mem.IO.OBP[(self.obj_attrs[x] & 0x10) >> 4] >> (self.obj_pixels[x] << 1)) & 3

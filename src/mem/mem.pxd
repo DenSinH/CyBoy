@@ -47,6 +47,7 @@ cdef struct IO_REGS:
     unsigned char STAT
     unsigned char SCY, SCX
     unsigned char BGP
+    unsigned char DMA
     unsigned char[2] OBP
     unsigned char IE, IF_  # IF is a reserved keyword in cython
 

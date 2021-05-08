@@ -11,6 +11,7 @@ cdef void write_DIV(MEM mem, unsigned short address, unsigned char value) nogil
 cdef void write_TAC(MEM mem, unsigned short address, unsigned char value) nogil
 
 cdef void write_SB(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_DMA(MEM mem, unsigned short address, unsigned char value) nogil
 
 cdef void write_IF(MEM mem, unsigned short address, unsigned char value) nogil
 cdef void write_IE(MEM mem, unsigned short address, unsigned char value) nogil
