@@ -1,4 +1,3 @@
-
 import os
 import shutil
 
@@ -19,8 +18,8 @@ if __name__ == "__main__":
     gb = GB()
     # gb.load_rom("files/blargg/cpu_instrs/individual/01-special.gb")
     # gb.load_rom("files/gekkio/tim10.gb")
-    # gb.load_rom("files/Tetris.gb")
-    gb.load_rom("files/dmg-acid2.gb")
+    gb.load_rom("files/Dr. Mario.gb")
+    # gb.load_rom("files/dmg-acid2.gb")
     gb.load_bootrom("files/DMG_ROM.bin")
     # gb.skip_bootrom()
 

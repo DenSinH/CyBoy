@@ -1,6 +1,7 @@
 from src.mem.IO cimport *
 from libc.stdio cimport printf
 from libc.stdlib cimport exit
+from libc.stdio cimport fopen, fclose, FILE, fread, fwrite, fseek, printf, SEEK_END, SEEK_SET, ftell
 
 
 cdef MemoryEntry MakeRW(unsigned char* data) nogil:
@@ -35,6 +36,14 @@ cdef MemoryEntry MakeIO(read_callback read, write_callback write) nogil:
     entry.write = False
     return entry
 
+cdef MemoryEntry MakeComplexWrite(unsigned char* data, write_callback write) nogil:
+    cdef MemoryEntry entry 
+    entry.read_ptr.data = data
+    entry.read = True
+    entry.write_ptr.callback = write
+    entry.write = False
+    return entry
+
 cdef unsigned char read_unimplemented(MEM mem, unsigned short address) nogil:
     printf("read from unimplemented address %04x\n", address)
     exit(-1)
@@ -43,7 +52,7 @@ cdef void write_unimplemented(MEM mem, unsigned short address, unsigned char val
     printf("write %02x to unimplemented address %04x\n", value, address)
     exit(-2)
 
-cdef inline MemoryEntry MakeUnimplemented() nogil:
+cdef MemoryEntry MakeUnimplemented() nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.callback = read_unimplemented
     entry.read = False
@@ -51,7 +60,7 @@ cdef inline MemoryEntry MakeUnimplemented() nogil:
     entry.write = False
     return entry
 
-cdef inline MemoryEntry MakeUnimpIO() nogil:
+cdef MemoryEntry MakeUnimpIO() nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.callback = read_unimpIO
     entry.read = False
@@ -59,15 +68,7 @@ cdef inline MemoryEntry MakeUnimpIO() nogil:
     entry.write = False
     return entry
 
-cdef inline MemoryEntry MakeComplexWrite(unsigned char* data, write_callback write):
-    cdef MemoryEntry entry 
-    entry.read_ptr.data = data
-    entry.read = True
-    entry.write_ptr.callback = write
-    entry.write = False
-    return entry
-
-cdef inline MemoryEntry MakeComplexRead(read_callback read, unsigned char* data):
+cdef MemoryEntry MakeComplexRead(read_callback read, unsigned char* data) nogil:
     cdef MemoryEntry entry 
     entry.read_ptr.callback = read
     entry.read = False
@@ -76,20 +77,50 @@ cdef inline MemoryEntry MakeComplexRead(read_callback read, unsigned char* data)
     return entry
 
 
+cdef class MAPPER:
+
+    def __cinit__(MAPPER self, MEM mem):
+        self.mem = mem
+    
+    cdef void write8(MAPPER self, unsigned short address, unsigned char value) nogil:
+        return
+    
+    cdef void init_mmap(MAPPER self) nogil:
+        cdef unsigned int i
+        # default no mapper ROM
+        for i in range(0x4000):
+            self.mem.MMAP[i] = MakeROM(&self.ROM[0][i])
+
+        for i in range(0x4000):
+            self.mem.MMAP[0x4000 + i] = MakeROM(&self.ROM[1][i])
+    
+    cdef void load_rom(MAPPER self, str file_name):
+        cdef FILE *rom 
+        rom = fopen(file_name.encode("UTF-8"), "rb")
+        if rom is NULL:
+            raise FileNotFoundError(f"File {file_name} does not exist")
+
+        fseek(rom, 0, SEEK_END)
+        cdef unsigned long long rom_size = ftell(rom)
+        fseek(rom, 0, SEEK_SET)
+        fread(&self.ROM, rom_size, 1, rom)
+        fclose(rom)
+
+        self.init_mmap()
 
 cdef class MEM:
     
     def __cinit__(self):
         cdef unsigned int i
         for i in range(0x4000):
-            self.MMAP[i] = MakeROM(&self.ROM0[i])
+            self.MMAP[i] = MakeROM(&self.mapper.ROM[0][i])
         
         # if we want to use the boot rom
         for i in range(0x100):
             self.MMAP[i] = MakeROM(&self.BOOT[i])
 
         for i in range(0x4000):
-            self.MMAP[0x4000 + i] = MakeROM(&self.ROM1[i])
+            self.MMAP[0x4000 + i] = MakeROM(&self.mapper.ROM[1][i])
 
         for i in range(0x2000):
             self.MMAP[0x8000 + i] = MakeRW(&self.VRAM[i])

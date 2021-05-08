@@ -62,6 +62,5 @@ cdef void write_STAT(MEM mem, unsigned short address, unsigned char value) nogil
 cdef void write_UnmapBoot(MEM mem, unsigned short address, unsigned char value) nogil:
     if value == 0:
         return
-    cdef unsigned int i
-    for i in range(0x100):
-        mem.MMAP[i] = MakeROM(&mem.ROM0[i])
+        
+    mem.mapper.init_mmap()

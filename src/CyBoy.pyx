@@ -38,13 +38,7 @@ cdef class GB:
         self.cpu.PC = 0x0100
 
     cpdef public void load_rom(GB self, str file_name):
-        cdef FILE *rom 
-        rom = fopen(file_name.encode("UTF-8"), "rb")
-        if rom is NULL:
-            raise FileNotFoundError(f"File {file_name} does not exist")
-        fread(&self.mem.ROM0, 0x4000, 1, rom)
-        fread(&self.mem.ROM1, 0x4000, 1, rom)
-        fclose(rom)
+        self.mem.load_rom(file_name)
 
     cpdef public void spawn_frontend(GB self):
         self.frontend = new Frontend(

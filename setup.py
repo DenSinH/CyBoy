@@ -12,10 +12,10 @@ os.environ["LDSHARED"] = "clang -shared"
 
 Options.fast_fail = True
 
-def make_ext(name, source):
+def make_ext(name, *sources):
     return Extension(
         name,
-        [source],
+        [*sources],
         language="c++",
         libraries=["frontend"],
         library_dirs=["./src/frontend/lib"],
