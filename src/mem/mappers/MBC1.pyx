@@ -45,12 +45,12 @@ cdef class MBC1(MAPPER):
                 self.ROM_bank &= ((self.ROM_amount << 1) - 1)  # mask to maximum ROM banks
 
                 for i in range(0x4000):
-                    self.mem.MMAP[0x4000 + i] = MakeRW(&self.ROM[self.ROM_bank][i])
+                    self.mem.MMAP[0x4000 + i].read_ptr.data = &self.ROM[self.ROM_bank][i]
 
                 if self.banking_mode:
                     # if we are in banking mode 1, also switch 0000-3fff
                     for i in range(0x4000):
-                        self.mem.MMAP[i] = MakeRW(&self.ROM[self.ROM_bank & 0x60][i])  # lower bank always 0x00, 0x20, 0x40, ...
+                        self.mem.MMAP[i].read_ptr.data = &self.ROM[self.ROM_bank & 0x60][i]  # lower bank always 0x00, 0x20, 0x40, ...
         elif region == 6 or region == 7:
             bank = self.banking_mode
             self.banking_mode = value & 1
@@ -67,8 +67,8 @@ cdef class MBC1(MAPPER):
             if bank and not self.banking_mode and self.ROM_bank >= 0x20:
                 # banking mode disabled, switch back 0x0000 - 0x3fff area
                 for i in range(0x4000):
-                    self.mem.MMAP[i] = MakeRW(&self.ROM[0][i])
+                    self.mem.MMAP[i].read_ptr.data = &self.ROM[0][i]
             elif self.banking_mode and not bank and self.ROM_bank >= 0x20:
                 # switch 0x0000 - 0x3fff area if banking mode is enabled
                 for i in range(0x4000):
-                    self.mem.MMAP[i] = MakeRW(&self.ROM[self.ROM_bank & 0x60][i])  # lower bank always 0x00, 0x20, 0x40, ...
+                    self.mem.MMAP[i].read_ptr.data = &self.ROM[self.ROM_bank & 0x60][i]  # lower bank always 0x00, 0x20, 0x40, ...
