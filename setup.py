@@ -27,6 +27,7 @@ ext_modules = [
     make_ext(file.removesuffix(".pyx").replace("/", "."), file) for file in [
             "src/cpu/gbcpu.pyx",
             "src/mem/mem.pyx",
+            "src/mem/mappers/MBC1.pyx",
             "src/mem/IO.pyx",
             "src/ppu/gbppu.pyx",
             "src/CyBoy.pyx"

@@ -12,3 +12,4 @@ cmake-*/
 !CyBoyFront.cpp
 src/*.dll
 *.dump
+*.s

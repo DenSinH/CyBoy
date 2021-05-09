@@ -41,7 +41,9 @@ cdef class MAPPER:
     cdef:
         unsigned char[128][0x4000] ROM  # support at most 128 banks (2MB)
         unsigned char[16][0x2000] RAM
+        unsigned char ROM_amount, RAM_amount  # amount of banks
         unsigned char ROM_bank, RAM_bank
+        unsigned char banking_mode
 
         MEM mem
 
@@ -76,8 +78,7 @@ cdef struct IO_REGS:
 cdef class MEM:
     cdef:
         unsigned char[0x100]  BOOT 
-        unsigned char[0x2000] VRAM 
-        unsigned char[0x2000] ERAM 
+        unsigned char[0x2000] VRAM
         unsigned char[0x1000] WRAMlo 
         unsigned char[0x1000] WRAMhi 
 
@@ -91,9 +92,7 @@ cdef class MEM:
         void (*interrupt_cpu)(void* cpu) nogil
         void* cpu
 
-    cdef inline void load_rom(MEM self, str file_name):
-        self.mapper = MAPPER(self)
-        self.mapper.load_rom(file_name)
+    cdef void load_rom(MEM self, str file_name)
 
     cdef inline void bind_cpu(MEM self, void (*interrupt_cpu)(void* cpu) nogil, void* cpu):
         self.interrupt_cpu = interrupt_cpu
@@ -124,7 +123,7 @@ cdef class MEM:
         if entry.read:
             return entry.read_ptr.data[0]
         elif entry.read_ptr.callback is not NULL:
-            return entry.read_ptr.callback(self, address)  # todo: address is for debugging
+            return entry.read_ptr.callback(self, address)
         return 0xff  # default for bad reads
 
     cdef inline unsigned short read16(MEM self, unsigned short address) nogil:
@@ -139,7 +138,7 @@ cdef class MEM:
         if entry.write:
             entry.write_ptr.data[0] = value
         elif entry.write_ptr.callback is not NULL:
-            entry.write_ptr.callback(self, address, value)  # todo: address is for debugging
+            entry.write_ptr.callback(self, address, value)
 
     cdef inline void write16(MEM self, unsigned short address, unsigned short value) nogil:
         self.write8(address, <unsigned char>value)

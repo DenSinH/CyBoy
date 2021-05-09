@@ -16,12 +16,12 @@ if __name__ == "__main__":
 
     from src.CyBoy import GB
     gb = GB()
-    # gb.load_rom("files/blargg/cpu_instrs/individual/01-special.gb")
-    # gb.load_rom("files/gekkio/tim10.gb")
-    gb.load_rom("files/Dr. Mario.gb")
+    # gb.load_rom("files/blargg/cpu_instrs/cpu_instrs.gb")
+    gb.load_rom("files/gekkio/mbc1/rom_2Mb.gb")
+    # gb.load_rom("files/Dr. Mario.gb")
     # gb.load_rom("files/dmg-acid2.gb")
-    gb.load_bootrom("files/DMG_ROM.bin")
-    # gb.skip_bootrom()
+    # gb.load_bootrom("files/DMG_ROM.bin")
+    gb.skip_bootrom()
 
     print("Starting")
     gb.run()

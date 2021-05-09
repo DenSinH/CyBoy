@@ -2,6 +2,8 @@ from src.mem.IO cimport *
 from libc.stdio cimport printf
 from libc.stdlib cimport exit
 from libc.stdio cimport fopen, fclose, FILE, fread, fwrite, fseek, printf, SEEK_END, SEEK_SET, ftell
+from src.mem.mappers.MBC1 cimport MBC1
+
 
 
 cdef MemoryEntry MakeRW(unsigned char* data) nogil:
@@ -77,10 +79,17 @@ cdef MemoryEntry MakeComplexRead(read_callback read, unsigned char* data) nogil:
     return entry
 
 
+cdef inline void write_ROM(MEM mem, unsigned short address, unsigned char value) nogil:
+    # printf("MBC1 write %02x to %04x\n", value, address)
+    mem.mapper.write8(address, value)
+
 cdef class MAPPER:
 
-    def __cinit__(MAPPER self, MEM mem):
+    def __cinit__(MAPPER self, MEM mem, unsigned char ROM_amount, unsigned char RAM_amount):
         self.mem = mem
+        self.ROM_amount = ROM_amount
+        self.RAM_amount = RAM_amount
+        self.ROM_bank = 1
     
     cdef void write8(MAPPER self, unsigned short address, unsigned char value) nogil:
         return
@@ -89,10 +98,10 @@ cdef class MAPPER:
         cdef unsigned int i
         # default no mapper ROM
         for i in range(0x4000):
-            self.mem.MMAP[i] = MakeROM(&self.ROM[0][i])
+            self.mem.MMAP[i] = MakeComplexWrite(&self.ROM[0][i], write_ROM)
 
         for i in range(0x4000):
-            self.mem.MMAP[0x4000 + i] = MakeROM(&self.ROM[1][i])
+            self.mem.MMAP[0x4000 + i] = MakeComplexWrite(&self.ROM[1][i], write_ROM)
     
     cdef void load_rom(MAPPER self, str file_name):
         cdef FILE *rom 
@@ -107,6 +116,7 @@ cdef class MAPPER:
         fclose(rom)
 
         self.init_mmap()
+
 
 cdef class MEM:
     
@@ -126,7 +136,7 @@ cdef class MEM:
             self.MMAP[0x8000 + i] = MakeRW(&self.VRAM[i])
 
         for i in range(0x2000):
-            self.MMAP[0xa000 + i] = MakeRW(&self.ERAM[i])
+            self.MMAP[0xa000 + i] = MakeUnused()
 
         for i in range(0x1000):
             self.MMAP[0xc000 + i] = MakeRW(&self.WRAMlo[i])
@@ -173,3 +183,42 @@ cdef class MEM:
             self.MMAP[0xff80 + i] = MakeRW(&self.HRAM[i])
 
         self.MMAP[0xffff] = MakeComplexWrite(&self.IO.IE, write_IE)  # IE
+
+    cdef void load_rom(MEM self, str file_name):
+        cdef FILE *rom 
+        rom = fopen(file_name.encode("UTF-8"), "rb")
+        if rom is NULL:
+            raise FileNotFoundError(f"File {file_name} does not exist")
+
+        fseek(rom, 0x147, SEEK_SET)
+        cdef unsigned char cartridge_type
+        cdef unsigned char ROM_size, RAM_size
+        fread(&cartridge_type, 1, 1, rom)
+        fread(&ROM_size, 1, 1, rom)
+        fread(&RAM_size, 1, 1, rom)
+        fclose(rom)
+
+        printf("cartridge_type %x, ROM size %x, RAM size %x\n", cartridge_type, ROM_size, RAM_size)
+
+        if RAM_size == 0:
+            RAM_size = 0
+        elif RAM_size == 1:
+            RAM_size = 0
+        elif RAM_size == 2:
+            RAM_size = 1
+        elif RAM_size == 3:
+            RAM_size = 4
+        elif RAM_size == 4:
+            RAM_size = 16
+        elif RAM_size == 5:
+            RAM_size = 8
+        
+        if cartridge_type == 0:
+            self.mapper = MAPPER(self, 0, 0)  # no MBC
+        elif cartridge_type == 1:
+            self.mapper = MBC1(self, 2 << ROM_size, 0)
+        elif cartridge_type == 2 or cartridge_type == 3:
+            self.mapper = MBC1(self, 2 << ROM_size, RAM_size)
+        else:
+            raise Exception(f"Unimplemented mapper: {cartridge_type}")
+        self.mapper.load_rom(file_name)
