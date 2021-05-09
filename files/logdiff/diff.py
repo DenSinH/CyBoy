@@ -3,7 +3,7 @@ with open("files/logdiff/trace.log", "r") as f:
         while True:
             mine = f.readline()
             true = g.readline()
-            if not true.startswith(mine.strip()):
+            if not true.strip().startswith(mine.strip()):
                 print(mine)
                 print(true)
                 input()

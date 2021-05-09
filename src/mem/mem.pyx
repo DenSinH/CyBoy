@@ -3,7 +3,9 @@ from libc.stdio cimport printf
 from libc.stdlib cimport exit
 from libc.stdio cimport fopen, fclose, FILE, fread, fwrite, fseek, printf, SEEK_END, SEEK_SET, ftell
 from src.mem.mappers.MBC1 cimport MBC1
-
+from src.mem.mappers.MBC2 cimport MBC2
+from src.mem.mappers.MBC3 cimport MBC3
+from src.mem.mappers.MBC5 cimport MBC5
 
 
 cdef MemoryEntry MakeRW(unsigned char* data) nogil:
@@ -80,7 +82,7 @@ cdef MemoryEntry MakeComplexRead(read_callback read, unsigned char* data) nogil:
 
 
 cdef inline void write_ROM(MEM mem, unsigned short address, unsigned char value) nogil:
-    # printf("MBC1 write %02x to %04x\n", value, address)
+    # printf("MBC write %02x to %04x\n", value, address)
     mem.mapper.write8(address, value)
 
 cdef class MAPPER:
@@ -219,6 +221,30 @@ cdef class MEM:
             self.mapper = MBC1(self, 2 << ROM_size, 0)
         elif cartridge_type == 2 or cartridge_type == 3:
             self.mapper = MBC1(self, 2 << ROM_size, RAM_size)
+        elif cartridge_type == 5 or cartridge_type == 6:
+            self.mapper = MBC2(self, 2 << ROM_size, 0)
+        elif cartridge_type == 0xf:
+            self.mapper = MBC3(self, 2 << ROM_size, 0)
+        elif cartridge_type == 0x10:
+            self.mapper = MBC3(self, 2 << ROM_size, RAM_size)
+        elif cartridge_type == 0x11:
+            self.mapper = MBC3(self, 2 << ROM_size, 0)
+        elif cartridge_type == 0x12:
+            self.mapper = MBC3(self, 2 << ROM_size, RAM_size)
+        elif cartridge_type == 0x13:
+            self.mapper = MBC3(self, 2 << ROM_size, RAM_size)
+        elif cartridge_type == 0x19:
+            self.mapper = MBC5(self, 2 << ROM_size, 0)
+        elif cartridge_type == 0x1a:
+            self.mapper = MBC5(self, 2 << ROM_size, RAM_size)
+        elif cartridge_type == 0x1b:
+            self.mapper = MBC5(self, 2 << ROM_size, RAM_size)
+        elif cartridge_type == 0x1c:
+            self.mapper = MBC5(self, 2 << ROM_size, 0)
+        elif cartridge_type == 0x1d:
+            self.mapper = MBC5(self, 2 << ROM_size, RAM_size)
+        elif cartridge_type == 0x1e:
+            self.mapper = MBC5(self, 2 << ROM_size, RAM_size)
         else:
-            raise Exception(f"Unimplemented mapper: {cartridge_type}")
+            raise Exception(f"Unimplemented mapper: {cartridge_type:x}")
         self.mapper.load_rom(file_name)

@@ -28,6 +28,9 @@ ext_modules = [
             "src/cpu/gbcpu.pyx",
             "src/mem/mem.pyx",
             "src/mem/mappers/MBC1.pyx",
+            "src/mem/mappers/MBC2.pyx",
+            "src/mem/mappers/MBC3.pyx",
+            "src/mem/mappers/MBC5.pyx",
             "src/mem/IO.pyx",
             "src/ppu/gbppu.pyx",
             "src/CyBoy.pyx"

@@ -44,19 +44,24 @@ cdef class GBCPU:
 
     cdef inline void log_line(self) nogil:
         cdef char[100] line
+        # cdef int length = snprintf(line, 100, 
+        #     "A: %02X F: %02X B: %02X C: %02X D: %02X E: %02X H: %02X L: %02X SP: %04X PC: 00:%04X\n",
+        #     self.registers[REG_A], self.F, 
+        #     self.registers[REG_B], self.registers[REG_C], 
+        #     self.registers[REG_D], self.registers[REG_E], 
+        #     self.registers[REG_H], self.registers[REG_L], 
+        #     self.SP, self.PC
+        # )
         cdef int length = snprintf(line, 100, 
-            "A: %02X F: %02X B: %02X C: %02X D: %02X E: %02X H: %02X L: %02X SP: %04X PC: 00:%04X\n",
-            self.registers[REG_A], self.F, 
-            self.registers[REG_B], self.registers[REG_C], 
-            self.registers[REG_D], self.registers[REG_E], 
-            self.registers[REG_H], self.registers[REG_L], 
+            "BC=%04X DE=%04X HL=%04X AF=%04X SP=%04X PC=%04X\n",
+            self.get_BC(), self.get_DE(), self.get_HL(), self.get_AF(),
             self.SP, self.PC
         )
         fwrite(line, length, 1, self.log)
 
     cdef inline int step(self) nogil:
         # self.log_line()
-        # if self.PC == 0xc8b0:
+        # if self.PC == 0xC067:
         #     exit(0)
 
         if self.halted:

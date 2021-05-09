@@ -1,0 +1,53 @@
+from src.mem.mem cimport MAPPER, MEM, MakeUnused, MakeRW
+from libc.stdio cimport printf
+
+include "../../generic/macros.pxi"
+
+cdef class MBC3(MAPPER):
+
+    cdef void write8(MBC3 self, unsigned short address, unsigned char value) nogil:
+        cdef unsigned char region = address >> 12
+        cdef unsigned short i
+        cdef unsigned char bank
+        if region == 0 or region == 1:
+            if not self.RAM_amount:
+                # no ram in cart
+                return
+
+            if value & 0xf == 0xa:
+                # enable RAM
+                for i in range(ERAM_LENGTH):
+                    self.mem.MMAP[ERAM_START + i] = MakeRW(&self.RAM[self.RAM_bank][i])
+            else:
+                # disable RAM
+                for i in range(ERAM_LENGTH):
+                    self.mem.MMAP[ERAM_START + i] = MakeUnused()
+        elif region == 2 or region == 3:
+            # mask to maximum of ROM_amount banks
+            bank = value & 0x7f
+
+            self.ROM_bank = ((self.ROM_bank & 0xe0) | bank) & (self.ROM_amount - 1)
+            if not self.ROM_bank:
+                # only adjust bank 0 if actual bank 0 is selected
+                for i in range(ROM1_LENGTH):
+                    self.mem.MMAP[ROM1_START + i].read_ptr.data = &self.ROM[1][i]
+            else:
+                for i in range(ROM1_LENGTH):
+                    self.mem.MMAP[ROM1_START + i].read_ptr.data = &self.ROM[self.ROM_bank][i]
+            # this does not affect the upper 2 bits selecting the ROM0 bank
+        elif region == 4 or region == 5:
+            if value < 4:
+                if self.RAM_amount >= 4:  # at least 4 ram banks
+                    self.RAM_bank = value & (self.RAM_amount - 1)
+
+                    # check if RAM is enabled at all
+                    if self.mem.MMAP[ERAM_START].read:
+                        for i in range(ERAM_LENGTH):
+                            self.mem.MMAP[ERAM_START + i] = MakeRW(&self.RAM[self.RAM_bank][i])
+            elif 0x8 <= value < 0xc:
+                for i in range(ERAM_LENGTH):
+                    self.mem.MMAP[ERAM_START + i] = MakeUnused()
+                # enable RTC registers
+        elif region == 6 or region == 7:
+            # latch clock
+            pass
