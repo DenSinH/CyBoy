@@ -2,6 +2,18 @@
 #include <SDL.h>
 #include <string>
 
+Frontend::Frontend(unsigned char *shutdown, const unsigned char *data, const char *name, unsigned char *joypad,
+                   unsigned int *frame_counter, unsigned int width, unsigned int height, unsigned int scale) :
+        width(width),
+        height(height),
+        scale(scale) {
+    this->joypad = joypad;
+    this->shutdown = shutdown;
+    this->data = data;
+    this->name = name;
+    this->frame_counter = frame_counter;
+}
+
 void DLLEXPORT Frontend::run() {
     thread = std::thread(&Frontend::_run, this);
 }
@@ -41,11 +53,45 @@ void Frontend::wait_for_frame() {
     }
 }
 
+void Frontend::provide_sample(float left, float right) {
+    float samples[2] = { left, right };
+    audio_buffer_mutex.lock();
+    SDL_AudioStreamPut(stream, samples, 2 * sizeof(float));
+    audio_buffer_mutex.unlock();
+}
+
+void Frontend::audio_callback(void* _frontend, unsigned char* stream, int length) {
+    auto frontend = (Frontend*)_frontend;
+    frontend->audio_buffer_mutex.lock();
+    int gotten = 0;
+    if (SDL_AudioStreamAvailable(frontend->stream)) {
+        // buffer samples we provided
+        gotten = SDL_AudioStreamGet(frontend->stream, stream, length);
+    }
+    frontend->audio_buffer_mutex.unlock();
+
+    if (gotten < length) {
+        int gotten_samples = gotten / sizeof(float);
+        float* out = ((float*)stream) + gotten_samples;
+
+        float sample = 0;
+        if (gotten) {
+            // last sample the APU generated
+            sample = *(((float*)stream) + gotten_samples - 1);
+        }
+
+        for (int i = gotten_samples; i < length / sizeof(float); i++) {
+            *out++ = sample;
+        }
+    }
+}
+
 void DLLEXPORT Frontend::init() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER)) {
         printf("Error initializing SDL2: %s\n", SDL_GetError());
     }
 
+    // video initialization
     window = SDL_CreateWindow(
             this->name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
             scale * width, scale * height,
@@ -58,6 +104,27 @@ void DLLEXPORT Frontend::init() {
             renderer, SDL_PIXELFORMAT_RGBX8888, SDL_TEXTUREACCESS_STREAMING, width, height
     );
 
+    // audio initialization
+    SDL_AudioSpec gb_spec = {
+            .freq     = 44100,
+            .format   = AUDIO_F32SYS,
+            .channels = 2,
+            .samples  = AUDIO_BUFFER_SIZE,
+            .callback = &Frontend::audio_callback,
+            .userdata = this,
+    };
+
+    device = SDL_OpenAudioDevice(nullptr, 0, &gb_spec, nullptr, 0);
+    if (!device) {
+        printf("Unable to open an audio device: %s\n", SDL_GetError());
+    }
+    stream = SDL_NewAudioStream(
+            AUDIO_F32SYS, 2, 32768,
+            AUDIO_F32SYS, 2, 44100
+    );
+    SDL_PauseAudioDevice(device, false);
+
+    // joypad initialization
     if (SDL_NumJoysticks() < 0) {
         printf("No gamepads detected\n");
     }
@@ -157,6 +224,13 @@ void DLLEXPORT Frontend::_run() {
 
 void DLLEXPORT Frontend::quit() {
     SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER);
+    if (stream) {
+        SDL_FreeAudioStream(stream);
+    }
+    if (device) {
+        SDL_CloseAudioDevice(device);
+    }
+    SDL_CloseAudio();
     SDL_DestroyWindow(window);
     SDL_Quit();
 }

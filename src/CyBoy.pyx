@@ -88,6 +88,7 @@ cdef class GB:
         if self.frontend is NULL:
             self.spawn_frontend(True)  # video sync is on by default
 
+        cdef unsigned int i
         cdef unsigned int timer = 0
         cdef unsigned int cycles = 0
         cdef unsigned char line = 0

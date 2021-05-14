@@ -19,5 +19,6 @@ cdef extern from "CyBoyFront.h":
         void bind_controller_input(char key, unsigned char mask)
         void set_video_sync(bool value)
         void wait_for_frame() nogil
+        void provide_sample(float left, float right) nogil
         
 ctypedef void (*frontend_callback)(void* data) nogil
