@@ -23,7 +23,7 @@ void Frontend::bind_controller_input(char button, unsigned char mask){
 }
 
 void Frontend::wait_for_frame() {
-    if (!*shutdown && !frame_skip)
+    if (!*shutdown && video_sync)
     {
         frame_shown = false;
         std::unique_lock<std::mutex> lock(mutex);

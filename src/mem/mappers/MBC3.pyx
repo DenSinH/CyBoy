@@ -17,12 +17,10 @@ cdef class MBC3(MAPPER):
 
             if value & 0xf == 0xa:
                 # enable RAM
-                for i in range(ERAM_LENGTH):
-                    self.mem.MMAP[ERAM_START + i] = MakeRW(&self.RAM[self.RAM_bank][i])
+                self.enable_RAM()
             else:
                 # disable RAM
-                for i in range(ERAM_LENGTH):
-                    self.mem.MMAP[ERAM_START + i] = MakeUnused()
+                self.disable_RAM()
         elif region == 2 or region == 3:
             # mask to maximum of ROM_amount banks
             bank = value & 0x7f
@@ -30,23 +28,21 @@ cdef class MBC3(MAPPER):
             self.ROM_bank = bank & (self.ROM_amount - 1)
             if not self.ROM_bank:
                 # only adjust bank 0 if actual bank 0 is selected
-                for i in range(ROM1_LENGTH):
-                    self.mem.MMAP[ROM1_START + i].read_ptr.data = &self.ROM[1][i]
+                for i in range(4):
+                    self.mem.fast_read_MMAP[4 + i] = &self.ROM[1][i << 12]
             else:
-                for i in range(ROM1_LENGTH):
-                    self.mem.MMAP[ROM1_START + i].read_ptr.data = &self.ROM[self.ROM_bank][i]
+                for i in range(4):
+                    self.mem.fast_read_MMAP[4 + i] = &self.ROM[self.ROM_bank][i << 12]
             # this does not affect the upper 2 bits selecting the ROM0 bank
         elif region == 4 or region == 5:
             if value < 4:
                 self.RAM_bank = value & (self.RAM_amount - 1)
 
                 # check if RAM is enabled at all
-                if self.mem.MMAP[ERAM_START].read:
-                    for i in range(ERAM_LENGTH):
-                        self.mem.MMAP[ERAM_START + i] = MakeRW(&self.RAM[self.RAM_bank][i])
+                if self.mem.fast_read_MMAP[0xa]:
+                    self.enable_RAM()
             elif 0x8 <= value < 0xc:
-                for i in range(ERAM_LENGTH):
-                    self.mem.MMAP[ERAM_START + i] = MakeUnused()
+                    self.disable_RAM()
                 # enable RTC registers
         elif region == 6 or region == 7:
             # latch clock

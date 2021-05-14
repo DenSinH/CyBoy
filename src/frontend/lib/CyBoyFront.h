@@ -45,7 +45,7 @@ public:
     void bind_callback(char key, void (*callback)(void* data), void* data);
     void bind_keyboard_input(char key, unsigned char mask);
     void bind_controller_input(char button, unsigned char mask);
-    void set_frame_skip(bool value) { frame_skip = value; }
+    void set_video_sync(bool value) { video_sync = value; }
     void wait_for_frame();
 
 private:
@@ -66,7 +66,7 @@ private:
 
     std::mutex mutex;
     std::condition_variable frame_shown_var;
-    volatile bool frame_skip = false;
+    volatile bool video_sync = false;
     volatile bool frame_shown = false;
 
     void init();

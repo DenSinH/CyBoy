@@ -69,6 +69,8 @@ cdef class MEM:
         unsigned char[0xa0] OAM
         unsigned char[0x7f] HRAM
 
+        unsigned char* fast_read_MMAP[0x10]  # NULL if not fast, otherwise a pointer to a 0x1000 page
+        unsigned char* fast_write_MMAP[0x10]  # NULL if not fast, otherwise a pointer to a 0x1000 page
         MemoryEntry[0x10000] MMAP
 
         IO_REGS IO
@@ -102,6 +104,9 @@ cdef class MEM:
                     self.interrupt_cpu(self.cpu)
 
     cdef inline unsigned char read8(MEM self, unsigned short address) nogil:
+        if self.fast_read_MMAP[address >> 12]:
+            return self.fast_read_MMAP[address >> 12][address & 0xfff]
+
         cdef MemoryEntry entry = self.MMAP[address]
 
         if entry.read:
@@ -117,6 +122,10 @@ cdef class MEM:
         return value
 
     cdef inline void write8(MEM self, unsigned short address, unsigned char value) nogil:
+        if self.fast_write_MMAP[address >> 12]:
+            self.fast_write_MMAP[address >> 12][address & 0xfff] = value
+            return
+
         cdef MemoryEntry entry = self.MMAP[address]
 
         if entry.write:

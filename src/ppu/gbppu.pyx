@@ -154,7 +154,7 @@ cdef class GBPPU:
         cdef unsigned char[10] sprites
         cdef char sprites_amount = 0
         cdef unsigned char obj_y
-        for i in range(0, 0x80, 4):
+        for i in range(0, 0xa0, 4):
             obj_y = self.mem.OAM[i] - 16
             if obj_y > y or obj_y + height <= y:
                 continue

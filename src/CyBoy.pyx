@@ -44,7 +44,7 @@ cdef class GB:
     cpdef public void load_rom(GB self, str file_name):
         self.mem.load_rom(file_name)
 
-    cpdef public void spawn_frontend(GB self):
+    cpdef public void spawn_frontend(GB self, bool video_sync):
         self.frontend = new Frontend(
             &self.cpu.shutdown,
             <unsigned char*>&self.ppu.display[0], 
@@ -57,6 +57,7 @@ cdef class GB:
         )
 
         self.frontend.bind_callback(ord('v'), <frontend_callback>&GB.dump_vram, <void*>self)
+        self.frontend.bind_callback(ord('o'), <frontend_callback>&GB.dump_oam, <void*>self)
         self.frontend.bind_callback(ord('p'), <frontend_callback>&GB.print_status, <void*>self)
         self.bind_keyboard_input('w', JOYPAD_UP)
         self.bind_keyboard_input('a', JOYPAD_LEFT)
@@ -76,7 +77,7 @@ cdef class GB:
         self.bind_controller_input(4, JOYPAD_START)
         self.bind_controller_input(6, JOYPAD_SELECT)
 
-        self.frontend.set_frame_skip(False)
+        self.frontend.set_video_sync(video_sync)
         self.frontend.run()
 
     cpdef public void close_frontend(GB self):
@@ -85,7 +86,7 @@ cdef class GB:
 
     cpdef public int run(GB self):
         if self.frontend is NULL:
-            self.spawn_frontend()
+            self.spawn_frontend(True)  # video sync is on by default
 
         cdef unsigned int timer = 0
         cdef unsigned int cycles = 0
@@ -154,6 +155,14 @@ cdef class GB:
         if dump is NULL:
             return
         fwrite(self.mem.VRAM, 0x2000, 1, dump)
+        fclose(dump)
+
+    cdef void dump_oam(GB self) nogil:
+        cdef FILE *dump 
+        dump = fopen(b"OAM.dump", "wb+")
+        if dump is NULL:
+            return
+        fwrite(self.mem.OAM, 0xa0, 1, dump)
         fclose(dump)
 
     cdef void print_status(GB self) nogil:

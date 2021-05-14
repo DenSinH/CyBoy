@@ -86,24 +86,28 @@ cdef class MEM:
     def __cinit__(self):
         cdef unsigned int i
         for i in range(0x4000):
-            self.MMAP[i] = MakeROM(&self.mapper.ROM[0][i])
+            # handled by mapper
+            self.MMAP[i] = MakeUnused()
 
         for i in range(0x4000):
-            self.MMAP[0x4000 + i] = MakeROM(&self.mapper.ROM[1][i])
+            # handled by mapper
+            self.MMAP[0x4000 + i] = MakeUnused()
+
+        for i in range(0x2):
+            self.fast_read_MMAP[0x8 + i] = &self.VRAM[i << 12]
+            self.fast_write_MMAP[0x8 + i] = &self.VRAM[i << 12]
 
         for i in range(0x2000):
-            self.MMAP[0x8000 + i] = MakeRW(&self.VRAM[i])
-
-        for i in range(0x2000):
+            # handled by mapper
             self.MMAP[0xa000 + i] = MakeUnused()
 
-        for i in range(0x1000):
-            self.MMAP[0xc000 + i] = MakeRW(&self.WRAMlo[i])
-        for i in range(0x1000):
-            self.MMAP[0xd000 + i] = MakeRW(&self.WRAMhi[i])
+        self.fast_read_MMAP[0xc] = &self.WRAMlo[0]
+        self.fast_write_MMAP[0xc] = &self.WRAMlo[0]
+        self.fast_read_MMAP[0xd] = &self.WRAMhi[0]
+        self.fast_write_MMAP[0xd] = &self.WRAMhi[0]
+        self.fast_read_MMAP[0xe] = &self.WRAMlo[0]  # ECHO RAM
+        self.fast_write_MMAP[0xe] = &self.WRAMlo[0]  # ECHO RAM
 
-        for i in range(0x1000):  # ECHO RAM
-            self.MMAP[0xe000 + i] = MakeRW(&self.WRAMlo[i])
         for i in range(0xe00):   # ECHO RAM
             self.MMAP[0xf000 + i] = MakeRW(&self.WRAMhi[i])
 

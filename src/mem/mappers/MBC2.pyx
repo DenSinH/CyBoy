@@ -16,8 +16,8 @@ cdef class MBC2(MAPPER):
             if not self.ROM_bank:
                 self.ROM_bank = 1
             self.ROM_bank &= (self.ROM_amount - 1)
-            for i in range(ROM1_LENGTH):
-                    self.mem.MMAP[ROM1_START + i].read_ptr.data = &self.ROM[self.ROM_bank][i]
+            for i in range(4):
+                self.mem.fast_read_MMAP[4 + i] = &self.ROM[self.ROM_bank][i << 12]
         else:
             # control RAM enable
             if (value & 0xf) == 0xa:

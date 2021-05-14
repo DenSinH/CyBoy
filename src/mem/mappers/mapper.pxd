@@ -17,3 +17,7 @@ cdef class MAPPER:
     cdef void init_mmap(MAPPER self) nogil
 
     cdef void load_rom(MAPPER self, str file_name)
+
+    cdef void enable_RAM(MAPPER self) nogil
+
+    cdef void disable_RAM(MAPPER self) nogil
