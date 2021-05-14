@@ -1,4 +1,4 @@
-from src.mem.mem cimport MAPPER
+from src.mem.mappers.mapper cimport MAPPER
 
 
 cdef class MBC3(MAPPER):
