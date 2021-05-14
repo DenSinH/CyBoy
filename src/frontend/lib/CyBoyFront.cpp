@@ -22,6 +22,24 @@ void Frontend::bind_controller_input(char button, unsigned char mask){
     button_input[button] = mask;
 }
 
+void Frontend::wait_for_frame() {
+    if (!*shutdown && !frame_skip)
+    {
+        frame_shown = false;
+        std::unique_lock<std::mutex> lock(mutex);
+
+        // prevent deadlocks on shutdown
+        while (!frame_shown_var.wait_for(
+                lock,
+                std::chrono::milliseconds(16),
+                [&]{ return frame_shown; }
+                )) {
+            if (*shutdown) {
+                return;
+            }
+        }
+    }
+}
 
 void DLLEXPORT Frontend::init() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER)) {
@@ -122,11 +140,19 @@ void DLLEXPORT Frontend::_run() {
             *frame_counter = 0;
         }
 
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            frame_shown = true;
+        }
+        frame_shown_var.notify_one();
+
         SDL_RenderClear(renderer);
         SDL_UpdateTexture(texture, nullptr, (const void *) data, 4 * width);
         SDL_RenderCopy(renderer, texture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
     }
+    frame_shown = true;
+    frame_shown_var.notify_one();
 }
 
 void DLLEXPORT Frontend::quit() {

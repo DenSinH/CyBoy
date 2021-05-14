@@ -10,6 +10,7 @@ typedef struct _SDL_GameController SDL_GameController;
 
 #include <thread>
 #include <map>
+#include <condition_variable>
 
 
 struct key_callback {
@@ -44,6 +45,8 @@ public:
     void bind_callback(char key, void (*callback)(void* data), void* data);
     void bind_keyboard_input(char key, unsigned char mask);
     void bind_controller_input(char button, unsigned char mask);
+    void set_frame_skip(bool value) { frame_skip = value; }
+    void wait_for_frame();
 
 private:
     volatile unsigned char* shutdown;    // shutdown
@@ -60,6 +63,11 @@ private:
     SDL_Texture* texture   = nullptr;
     SDL_Renderer* renderer = nullptr;
     std::thread thread;
+
+    std::mutex mutex;
+    std::condition_variable frame_shown_var;
+    volatile bool frame_skip = false;
+    volatile bool frame_shown = false;
 
     void init();
     void _run();

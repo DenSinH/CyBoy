@@ -1,4 +1,5 @@
 from libc.stdio cimport fopen, fclose, FILE, fread, fwrite, printf
+from src.mem.mem cimport MakeROM
 
 include "./generic/macros.pxi"
 include "./mem/IO.pxi"
@@ -21,6 +22,9 @@ cdef class GB:
             raise FileNotFoundError(f"File {file_name} does not exist")
         fread(&self.mem.BOOT, 0x100, 1, bootrom)
         fclose(bootrom)
+
+        for i in range(0x100):
+            self.mem.MMAP[i] = MakeROM(&self.mem.BOOT[i])
 
     cpdef public void skip_bootrom(GB self):
         # A: 01 F: E0 B: 00 C: 13 D: 00 E: D8 H: 01 L: 4D SP: FFFE PC: 00:0100
@@ -71,6 +75,8 @@ cdef class GB:
         self.bind_controller_input(1, JOYPAD_B)
         self.bind_controller_input(4, JOYPAD_START)
         self.bind_controller_input(6, JOYPAD_SELECT)
+
+        self.frontend.set_frame_skip(False)
         self.frontend.run()
 
     cpdef public void close_frontend(GB self):
@@ -125,6 +131,7 @@ cdef class GB:
 
                 self.mem.IO.LY = self.mem.IO.LY + 1
                 if self.mem.IO.LY == 154:
+                    self.frontend.wait_for_frame()
                     self.mem.IO.LY = 0
                 
                 if self.mem.IO.LYC == self.mem.IO.LY:

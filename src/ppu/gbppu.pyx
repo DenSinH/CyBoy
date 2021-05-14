@@ -47,13 +47,10 @@ cdef class GBPPU:
         cdef unsigned short data_lo
         cdef unsigned short data_hi
 
-        #if y >= 128:
-        #    printf("%d/%d  + %d %02x\n", y, y_eff, self.mem.IO.SCY, tile_id_address)
-
         cdef unsigned char x_shift, pixel
         for screen_x in range(160):
             x_shift = x & 7
-            if x_shift == 0:
+            if x_shift == 0 or screen_x == 0:
                 # advance to next tile
                 tile_id_offset += 1
                 tile_id_offset &= 31
@@ -72,7 +69,7 @@ cdef class GBPPU:
             pixel  = ((data_lo << x_shift) & 0x80) >> 7  # lower bit
             pixel |= ((data_hi << x_shift) & 0x80) >> 6  # upper bit
 
-            self.bg_pixels[x] = pixel
+            self.bg_pixels[screen_x] = pixel
 
             x += 1
 
@@ -102,7 +99,7 @@ cdef class GBPPU:
         if LCDC & LCDC_TILE_DATA:
             tile_data = 0x0000
 
-        cdef unsigned char x        = 0                             # scrolling
+        cdef unsigned char x        = 0
         cdef unsigned char screen_x = self.mem.IO.WX - 7
         tile_data                  += (y_eff & 7) * 2               # vertical offset in bytes
         cdef unsigned short tile_id_base_address, tile_id_offset
@@ -117,7 +114,7 @@ cdef class GBPPU:
         cdef unsigned char x_shift, pixel
         while screen_x < 160:
             x_shift = x & 7
-            if x_shift == 0:
+            if x_shift == 0 or screen_x == 0:
                 # advance to next tile
                 tile_id_offset += 1
                 tile_id_offset &= 31
@@ -136,8 +133,7 @@ cdef class GBPPU:
             pixel  = ((data_lo << x_shift) & 0x80) >> 7  # lower bit
             pixel |= ((data_hi << x_shift) & 0x80) >> 6  # upper bit
 
-            if pixel != 0:
-                self.bg_pixels[screen_x] = pixel
+            self.bg_pixels[screen_x] = pixel
 
             x += 1
             screen_x += 1

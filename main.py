@@ -19,9 +19,10 @@ if __name__ == "__main__":
     # gb.load_rom("files/blargg/cpu_instrs/cpu_instrs.gb")
     # gb.load_rom("files/gekkio/mbc5/rom_16Mb.gb")
     # gb.load_rom("files/Dr. Mario.gb")
+    gb.load_rom("files/Metroid II.gb")
     # gb.load_rom("files/dmg-acid2.gb")
+    # gb.load_rom("files/Pokemon Blue.gb")
     # gb.load_bootrom("files/DMG_ROM.bin")
-    gb.load_rom("files/Pokemon Blue.gb")
     gb.skip_bootrom()
 
     print("Starting")

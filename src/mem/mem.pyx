@@ -126,10 +126,6 @@ cdef class MEM:
         cdef unsigned int i
         for i in range(0x4000):
             self.MMAP[i] = MakeROM(&self.mapper.ROM[0][i])
-        
-        # if we want to use the boot rom
-        for i in range(0x100):
-            self.MMAP[i] = MakeROM(&self.BOOT[i])
 
         for i in range(0x4000):
             self.MMAP[0x4000 + i] = MakeROM(&self.mapper.ROM[1][i])
