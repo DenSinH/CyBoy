@@ -1,4 +1,5 @@
 from src.apu.channels.square cimport SQUARE
+from src.apu.channels.wave cimport WAVE
 from src.apu.channels.noise cimport NOISE
 from src.frontend.frontend cimport Frontend
 from libcpp.list cimport list as cpplist
@@ -33,6 +34,7 @@ cdef class GBAPU:
 
         SQUARE square1
         SQUARE square2
+        WAVE wave
         NOISE noise
 
         Frontend* frontend

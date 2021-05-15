@@ -11,6 +11,7 @@ cdef class GBAPU:
         # scheduler must be non-empty when we add the channel events
         self.square1 = SQUARE(self)
         self.square2 = SQUARE(self)
+        self.wave    = WAVE(self)
         self.noise   = NOISE(self)
 
     cdef int tick_frame_sequencer(GBAPU self) nogil:
@@ -22,6 +23,7 @@ cdef class GBAPU:
                 self.square1.do_sweep()
             self.square1.tick_length_counter()
             self.square2.tick_length_counter()
+            self.wave.tick_length_counter()
             self.noise.tick_length_counter()
         elif self.frame_sequencer == 7:
             self.square1.do_envelope()
@@ -44,6 +46,11 @@ cdef class GBAPU:
                 right += self.square2.current_sample
             if self.NR51 & 0x20:
                 left += self.square2.current_sample
+
+            if self.NR51 & 0x04:
+                right += self.wave.current_sample
+            if self.NR51 & 0x40:
+                left += self.wave.current_sample
 
             if self.NR51 & 0x08:
                 right += self.noise.current_sample

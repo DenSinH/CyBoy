@@ -29,6 +29,12 @@ cdef void write_NR22(MEM mem, unsigned short address, unsigned char value) nogil
 cdef void write_NR23(MEM mem, unsigned short address, unsigned char value) nogil
 cdef void write_NR24(MEM mem, unsigned short address, unsigned char value) nogil
 
+cdef void write_NR30(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_NR31(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_NR32(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_NR33(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_NR34(MEM mem, unsigned short address, unsigned char value) nogil
+
 cdef void write_NR41(MEM mem, unsigned short address, unsigned char value) nogil
 cdef void write_NR42(MEM mem, unsigned short address, unsigned char value) nogil
 cdef void write_NR43(MEM mem, unsigned short address, unsigned char value) nogil

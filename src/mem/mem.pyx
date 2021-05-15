@@ -142,6 +142,15 @@ cdef class MEM:
         self.MMAP[0xff18] = MakeComplexWrite(&self.IO.NR23, write_NR23)
         self.MMAP[0xff19] = MakeComplexWrite(&self.IO.NR24, write_NR24)
 
+        self.MMAP[0xff1a] = MakeComplexWrite(&self.IO.NR30, write_NR30)
+        self.MMAP[0xff1b] = MakeComplexWrite(&self.IO.NR31, write_NR31)
+        self.MMAP[0xff1c] = MakeComplexWrite(&self.IO.NR32, write_NR32)
+        self.MMAP[0xff1d] = MakeComplexWrite(&self.IO.NR33, write_NR33)
+        self.MMAP[0xff1e] = MakeComplexWrite(&self.IO.NR34, write_NR34)
+
+        for i in range(0x10):
+            self.MMAP[0xff30 + i] = MakeRW(&self.apu.wave.wave_ram[i])
+
         self.MMAP[0xff20] = MakeComplexWrite(&self.IO.NR41, write_NR41)
         self.MMAP[0xff21] = MakeComplexWrite(&self.IO.NR42, write_NR42)
         self.MMAP[0xff22] = MakeComplexWrite(&self.IO.NR43, write_NR43)

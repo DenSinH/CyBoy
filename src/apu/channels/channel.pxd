@@ -20,9 +20,10 @@ cdef class APU_CHANNEL:
             self.length_counter -= 1
 
     cdef inline void trigger(self) nogil:
-        self.enabled = True
-        if self.length_counter == 0:
-            self.length_counter = 64
+        if not self.enabled:
+            self.enabled = True
+            if self.length_counter == 0:
+                self.length_counter = 64
 
     cdef inline bool sound_on(self) nogil:
         if not self.enabled:

@@ -118,6 +118,39 @@ cdef void write_NR24(MEM mem, unsigned short address, unsigned char value) nogil
     mem.apu.square2.frequency = (mem.apu.square2.frequency & 0xff) | (<unsigned short>(value & 0x7) << 8)
     mem.apu.square2.period = 4 * (2048 - mem.apu.square2.frequency)
 
+cdef void write_NR30(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR30 = value
+    mem.apu.wave.DAC_power = (value & 0x80) > 0
+
+cdef void write_NR31(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR31 = value
+    mem.apu.wave.length_counter = 256 - value
+
+cdef void write_NR32(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR32 = value
+    cdef unsigned char volume = (value >> 5) & 3
+    if volume == 0:
+        mem.apu.wave.volume = 0
+    elif volume == 1:
+        mem.apu.wave.volume = 0x10
+    elif volume == 2:
+        mem.apu.wave.volume = 0x08
+    elif volume == 3:
+        mem.apu.wave.volume = 0x04
+
+cdef void write_NR33(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR33 = value
+    mem.apu.wave.frequency = (mem.apu.wave.frequency & 0x0700) | value
+    mem.apu.wave.period    = 2 * (2048 - mem.apu.wave.frequency)
+
+cdef void write_NR34(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR34 = value
+    if value & 0x80:
+        mem.apu.wave.trigger()
+    mem.apu.wave.length_flag = (value & 0x40) > 0
+    mem.apu.wave.frequency = (mem.apu.wave.frequency & 0xff) | (<unsigned short>(value & 0x7) << 8)
+    mem.apu.wave.period    = 2 * (2048 - mem.apu.wave.frequency)
+
 cdef void write_NR41(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.NR41 = value
     mem.apu.noise.length_counter = 64 - (value & 0x3f)

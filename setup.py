@@ -37,6 +37,7 @@ ext_modules = [
             "src/apu/gbapu.pyx",
             "src/apu/channels/channel.pyx",
             "src/apu/channels/square.pyx",
+            "src/apu/channels/wave.pyx",
             "src/apu/channels/noise.pyx",
             "src/CyBoy.pyx"
     ]
