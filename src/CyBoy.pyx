@@ -11,7 +11,8 @@ DEF LINE_CYCLES = 456
 
 cdef class GB:
     def __cinit__(self):
-        self.mem = MEM()
+        self.apu = GBAPU()
+        self.mem = MEM(self.apu)
         self.cpu = GBCPU(self.mem)
         self.ppu = GBPPU(self.mem)
 
@@ -25,11 +26,44 @@ cdef class GB:
 
         for i in range(0x100):
             self.mem.MMAP[i] = MakeROM(&self.mem.BOOT[i])
+        self.mem.fast_read_MMAP[0] = NULL
 
     cpdef public void skip_bootrom(GB self):
         # A: 01 F: E0 B: 00 C: 13 D: 00 E: D8 H: 01 L: 4D SP: FFFE PC: 00:0100
         # todo: other IO writes
-        self.mem.write8(0xff50, 1)  # unmap boot rom
+        # self.mem.write8(0xff05, 0x00)
+        self.mem.write8(0xff05, 0x00)  # TIMA
+        self.mem.write8(0xff06, 0x00)  # TMA
+        self.mem.write8(0xff07, 0x00)  # TAC
+        self.mem.write8(0xff10, 0x80)  # NR10
+        self.mem.write8(0xff11, 0xbf)  # NR11
+        self.mem.write8(0xff12, 0xF3)  # NR12
+        self.mem.write8(0xff14, 0xbf)  # NR14
+        self.mem.write8(0xff16, 0x3f)  # NR21
+        self.mem.write8(0xff17, 0x00)  # NR22
+        self.mem.write8(0xff19, 0xbf)  # NR24
+        self.mem.write8(0xff1A, 0x7f)  # NR30
+        self.mem.write8(0xff1B, 0xff)  # NR31
+        self.mem.write8(0xff1C, 0x9f)  # NR32
+        self.mem.write8(0xff1E, 0xbf)  # NR34
+        self.mem.write8(0xff20, 0xff)  # NR41
+        self.mem.write8(0xff21, 0x00)  # NR42
+        self.mem.write8(0xff22, 0x00)  # NR43
+        self.mem.write8(0xff23, 0xbf)  # NR44
+        self.mem.write8(0xff24, 0x77)  # NR50
+        self.mem.write8(0xff25, 0xf3)  # NR51
+        self.mem.write8(0xff26, 0xf1)  # NR52
+        self.mem.write8(0xff40, 0x91)  # LCDC
+        self.mem.write8(0xff42, 0x00)  # SCY
+        self.mem.write8(0xff43, 0x00)  # SCX
+        self.mem.write8(0xff45, 0x00)  # LYC
+        self.mem.write8(0xff47, 0xfc)  # BGP
+        self.mem.write8(0xff48, 0xff)  # OBP0
+        self.mem.write8(0xff49, 0xff)  # OBP1
+        self.mem.write8(0xff4a, 0x00)  # WY
+        self.mem.write8(0xff4b, 0x00)  # WX
+        self.mem.write8(0xffff, 0x00)  # IE
+        self.mem.write8(0xff50, 0x01)  # unmap boot rom
         self.cpu.registers[REG_A] = 1
         self.cpu.F = 0xb0
         self.cpu.registers[REG_B] = 0x00
@@ -44,17 +78,18 @@ cdef class GB:
     cpdef public void load_rom(GB self, str file_name):
         self.mem.load_rom(file_name)
 
-    cpdef public void spawn_frontend(GB self, bool video_sync):
+    cpdef public void spawn_frontend(GB self, bool video_sync, bool audio_sync):
         self.frontend = new Frontend(
             &self.cpu.shutdown,
             <unsigned char*>&self.ppu.display[0], 
-            b"GB",
+            b"CyBoy",
             &self.mem.IO.JOYPAD,
             &self.ppu.frame,
             160,
             144,
             2
         )
+        self.apu.frontend = self.frontend
 
         self.frontend.bind_callback(ord('v'), <frontend_callback>&GB.dump_vram, <void*>self)
         self.frontend.bind_callback(ord('o'), <frontend_callback>&GB.dump_oam, <void*>self)
@@ -78,6 +113,7 @@ cdef class GB:
         self.bind_controller_input(6, JOYPAD_SELECT)
 
         self.frontend.set_video_sync(video_sync)
+        self.frontend.set_audio_sync(audio_sync)
         self.frontend.run()
 
     cpdef public void close_frontend(GB self):
@@ -86,7 +122,7 @@ cdef class GB:
 
     cpdef public int run(GB self):
         if self.frontend is NULL:
-            self.spawn_frontend(True)  # video sync is on by default
+            self.spawn_frontend(True, True)  # video/audio sync is on by default
 
         cdef unsigned int i
         cdef unsigned int timer = 0
@@ -123,6 +159,8 @@ cdef class GB:
                         self.mem.tick(cycles)
                         timer += cycles
                     timer -= LINE_CYCLES * 4
+
+                self.apu.tick(LINE_CYCLES)
 
                 if self.mem.IO.LY < 144:
                     self.ppu.draw_line(self.mem.IO.LY)

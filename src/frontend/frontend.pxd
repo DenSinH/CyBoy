@@ -18,6 +18,7 @@ cdef extern from "CyBoyFront.h":
         void bind_keyboard_input(char key, unsigned char mask)
         void bind_controller_input(char key, unsigned char mask)
         void set_video_sync(bool value)
+        void set_audio_sync(bool value)
         void wait_for_frame() nogil
         void provide_sample(float left, float right) nogil
         

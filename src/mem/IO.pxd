@@ -18,4 +18,9 @@ cdef void write_IE(MEM mem, unsigned short address, unsigned char value) nogil
 
 cdef void write_STAT(MEM mem, unsigned short address, unsigned char value) nogil
 
+cdef void write_NR11(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_NR12(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_NR13(MEM mem, unsigned short address, unsigned char value) nogil
+cdef void write_NR14(MEM mem, unsigned short address, unsigned char value) nogil
+
 cdef void write_UnmapBoot(MEM mem, unsigned short address, unsigned char value) nogil

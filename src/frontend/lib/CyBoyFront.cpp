@@ -54,6 +54,13 @@ void Frontend::wait_for_frame() {
 }
 
 void Frontend::provide_sample(float left, float right) {
+    if (!stream) return;
+    while (stream && (SDL_AudioStreamAvailable(stream) > 0.5 * 32768 * sizeof(float))) {
+        // more than half a second of audio available, stop providing samples
+        // stream might have been destroyed
+        if (!audio_sync) return;
+    }
+
     float samples[2] = { left, right };
     audio_buffer_mutex.lock();
     SDL_AudioStreamPut(stream, samples, 2 * sizeof(float));
@@ -226,6 +233,7 @@ void DLLEXPORT Frontend::quit() {
     SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER);
     if (stream) {
         SDL_FreeAudioStream(stream);
+        stream = nullptr;
     }
     if (device) {
         SDL_CloseAudioDevice(device);

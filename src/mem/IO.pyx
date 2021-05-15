@@ -1,4 +1,6 @@
 from src.mem.mem cimport *
+from src.apu.channels.square cimport SQUARE
+from src.apu.gbapu cimport GBAPU
 from libc.stdio cimport printf
 
 include "./IO.pxi"
@@ -59,6 +61,28 @@ cdef void write_IE(MEM mem, unsigned short address, unsigned char value) nogil:
 cdef void write_STAT(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.STAT = (mem.IO.STAT & 0x3) | (value & 0xfc)
     
+cdef void write_NR11(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR11 = value
+    mem.apu.square1.length_counter = 64 - (value & 0x3f)
+    mem.apu.square1.set_duty(value >> 6)
+
+cdef void write_NR12(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR12 = value
+    mem.apu.square1.volume = value >> 4
+
+cdef void write_NR13(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR13 = value
+    mem.apu.square1.frequency = (mem.apu.square1.frequency & 0x0700) | value
+    mem.apu.square1.period = 4 * (2048 - mem.apu.square1.frequency)
+
+cdef void write_NR14(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR14 = value
+    if value & 0x80:
+        mem.apu.square1.trigger()
+    mem.apu.square1.length_flag = (value & 0x40) > 0
+    mem.apu.square1.frequency = (mem.apu.square1.frequency & 0xff) | (<unsigned short>(value & 0x7) << 8)
+    mem.apu.square1.period = 4 * (2048 - mem.apu.square1.frequency)
+
 cdef void write_UnmapBoot(MEM mem, unsigned short address, unsigned char value) nogil:
     if value == 0:
         return

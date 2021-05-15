@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     from src.CyBoy import GB
     gb = GB()
-    gb.spawn_frontend(True)  # video sync on/off
+    gb.spawn_frontend(True, True)  # video sync on/off
     # gb.load_rom("files/blargg/cpu_instrs/cpu_instrs.gb")
     # gb.load_rom("files/gekkio/mbc1/ram_256kb.gb")
     # gb.load_rom("files/Dr. Mario.gb")

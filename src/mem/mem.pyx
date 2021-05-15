@@ -83,7 +83,9 @@ cdef MemoryEntry MakeComplexRead(read_callback read, unsigned char* data) nogil:
 
 cdef class MEM:
     
-    def __cinit__(self):
+    def __cinit__(self, GBAPU apu):
+        self.apu = apu
+
         cdef unsigned int i
         for i in range(0x4000):
             # handled by mapper
@@ -128,6 +130,12 @@ cdef class MEM:
         self.MMAP[0xff06] = MakeRW(&self.IO.TMA)
         self.MMAP[0xff07] = MakeComplexWrite(&self.IO.TAC, write_TAC)
         self.MMAP[0xff0f] = MakeComplexWrite(&self.IO.IF_, write_IF)
+
+        self.MMAP[0xff11] = MakeComplexWrite(&self.IO.NR11, write_NR11)
+        self.MMAP[0xff12] = MakeComplexWrite(&self.IO.NR12, write_NR12)
+        self.MMAP[0xff13] = MakeComplexWrite(&self.IO.NR13, write_NR13)
+        self.MMAP[0xff14] = MakeComplexWrite(&self.IO.NR14, write_NR14)
+        
         self.MMAP[0xff40] = MakeRW(&self.IO.LCDC)
         self.MMAP[0xff41] = MakeComplexWrite(&self.IO.STAT, write_STAT)
         self.MMAP[0xff42] = MakeRW(&self.IO.SCY)

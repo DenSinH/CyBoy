@@ -34,6 +34,9 @@ ext_modules = [
             "src/mem/mappers/MBC5.pyx",
             "src/mem/IO.pyx",
             "src/ppu/gbppu.pyx",
+            "src/apu/gbapu.pyx",
+            "src/apu/channels/channel.pyx",
+            "src/apu/channels/square.pyx",
             "src/CyBoy.pyx"
     ]
 ]

@@ -45,6 +45,7 @@ public:
     void bind_keyboard_input(char key, unsigned char mask);
     void bind_controller_input(char button, unsigned char mask);
     void set_video_sync(bool value) { video_sync = value; }
+    void set_audio_sync(bool value) { audio_sync = value; }
     void wait_for_frame();
     void provide_sample(float left, float right);
 
@@ -74,6 +75,7 @@ private:
     volatile bool frame_shown = false;
 
     // audio stuff
+    volatile bool audio_sync = false;
     std::mutex audio_buffer_mutex;  // SDL is not thread safe apparently
     static void audio_callback(void* frontend, unsigned char* stream, int length);
     SDL_AudioDeviceID device;

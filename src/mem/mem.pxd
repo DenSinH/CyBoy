@@ -1,4 +1,5 @@
 cimport cython
+from src.apu.gbapu cimport GBAPU
 from src.mem.mappers.mapper cimport MAPPER
 from libc.stdio cimport printf
 from libcpp cimport bool
@@ -48,6 +49,8 @@ cdef struct IO_REGS:
     unsigned int TIMA_timer
     unsigned int TIMA_limit
 
+    unsigned char NR10, NR11, NR12, NR13, NR14
+
     unsigned char LY, LYC
     unsigned char WY, WX
     unsigned char LCDC
@@ -77,6 +80,7 @@ cdef class MEM:
         MAPPER mapper
         void (*interrupt_cpu)(void* cpu) nogil
         void* cpu
+        GBAPU apu
 
     cdef void load_rom(MEM self, str file_name)
 
