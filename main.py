@@ -19,7 +19,7 @@ if __name__ == "__main__":
     gb.spawn_frontend(True, True)  # video sync on/off
     # gb.load_rom("files/blargg/cpu_instrs/cpu_instrs.gb")
     # gb.load_rom("files/gekkio/mbc1/ram_256kb.gb")
-    # gb.load_rom("files/Dr. Mario.gb")
+    # gb.load_rom("files/Tetris.gb")
     # gb.load_rom("files/Metroid II.gb")
     # gb.load_rom("files/dmg-acid2.gb")
     gb.load_rom("files/Pokemon Blue.gb")

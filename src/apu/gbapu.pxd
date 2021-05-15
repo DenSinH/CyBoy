@@ -1,4 +1,5 @@
 from src.apu.channels.square cimport SQUARE
+from src.apu.channels.noise cimport NOISE
 from src.frontend.frontend cimport Frontend
 from libcpp.list cimport list as cpplist
 from cython.operator import dereference, preincrement
@@ -28,8 +29,11 @@ cdef class GBAPU:
 
         unsigned char frame_sequencer
 
+        unsigned char NR50, NR51, NR52
+
         SQUARE square1
         SQUARE square2
+        NOISE noise
 
         Frontend* frontend
 

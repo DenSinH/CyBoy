@@ -5,7 +5,6 @@ from libc.stdio cimport printf
 cdef class APU_CHANNEL:
     cdef:
         int length_counter
-        unsigned int current_period
         unsigned int period
         unsigned int volume
         float current_sample
@@ -31,7 +30,7 @@ cdef class APU_CHANNEL:
 
         if self.length_flag and (self.length_counter == 0):
             return False
-        
+
         if self.volume == 0:
             return False
         return True

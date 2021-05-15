@@ -131,11 +131,26 @@ cdef class MEM:
         self.MMAP[0xff07] = MakeComplexWrite(&self.IO.TAC, write_TAC)
         self.MMAP[0xff0f] = MakeComplexWrite(&self.IO.IF_, write_IF)
 
+        self.MMAP[0xff10] = MakeComplexWrite(&self.IO.NR10, write_NR10)
         self.MMAP[0xff11] = MakeComplexWrite(&self.IO.NR11, write_NR11)
         self.MMAP[0xff12] = MakeComplexWrite(&self.IO.NR12, write_NR12)
         self.MMAP[0xff13] = MakeComplexWrite(&self.IO.NR13, write_NR13)
         self.MMAP[0xff14] = MakeComplexWrite(&self.IO.NR14, write_NR14)
-        
+
+        self.MMAP[0xff16] = MakeComplexWrite(&self.IO.NR21, write_NR21)
+        self.MMAP[0xff17] = MakeComplexWrite(&self.IO.NR22, write_NR22)
+        self.MMAP[0xff18] = MakeComplexWrite(&self.IO.NR23, write_NR23)
+        self.MMAP[0xff19] = MakeComplexWrite(&self.IO.NR24, write_NR24)
+
+        self.MMAP[0xff20] = MakeComplexWrite(&self.IO.NR41, write_NR41)
+        self.MMAP[0xff21] = MakeComplexWrite(&self.IO.NR42, write_NR42)
+        self.MMAP[0xff22] = MakeComplexWrite(&self.IO.NR43, write_NR43)
+        self.MMAP[0xff23] = MakeComplexWrite(&self.IO.NR44, write_NR44)
+
+        self.MMAP[0xff24] = MakeRW(&self.apu.NR50)
+        self.MMAP[0xff25] = MakeRW(&self.apu.NR51)
+        self.MMAP[0xff26] = MakeRW(&self.apu.NR52)
+
         self.MMAP[0xff40] = MakeRW(&self.IO.LCDC)
         self.MMAP[0xff41] = MakeComplexWrite(&self.IO.STAT, write_STAT)
         self.MMAP[0xff42] = MakeRW(&self.IO.SCY)

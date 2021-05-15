@@ -50,6 +50,8 @@ cdef struct IO_REGS:
     unsigned int TIMA_limit
 
     unsigned char NR10, NR11, NR12, NR13, NR14
+    unsigned char NR21, NR22, NR23, NR24
+    unsigned char NR41, NR42, NR43, NR44
 
     unsigned char LY, LYC
     unsigned char WY, WX

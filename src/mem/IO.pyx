@@ -61,6 +61,13 @@ cdef void write_IE(MEM mem, unsigned short address, unsigned char value) nogil:
 cdef void write_STAT(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.STAT = (mem.IO.STAT & 0x3) | (value & 0xfc)
     
+cdef void write_NR10(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR10 = value
+    mem.apu.square1.sweep_number = value & 7
+    mem.apu.square1.sweep_up = (value & 8) > 0
+    mem.apu.square1.sweep_period = (value >> 4) & 7
+    mem.apu.square1.sweep_reload()
+
 cdef void write_NR11(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.NR11 = value
     mem.apu.square1.length_counter = 64 - (value & 0x3f)
@@ -69,6 +76,9 @@ cdef void write_NR11(MEM mem, unsigned short address, unsigned char value) nogil
 cdef void write_NR12(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.NR12 = value
     mem.apu.square1.volume = value >> 4
+    mem.apu.square1.envelope_up = (value & 8) > 0
+    mem.apu.square1.envelope_period = value & 7
+    mem.apu.square1.reset_envelope()
 
 cdef void write_NR13(MEM mem, unsigned short address, unsigned char value) nogil:
     mem.IO.NR13 = value
@@ -82,6 +92,60 @@ cdef void write_NR14(MEM mem, unsigned short address, unsigned char value) nogil
     mem.apu.square1.length_flag = (value & 0x40) > 0
     mem.apu.square1.frequency = (mem.apu.square1.frequency & 0xff) | (<unsigned short>(value & 0x7) << 8)
     mem.apu.square1.period = 4 * (2048 - mem.apu.square1.frequency)
+
+cdef void write_NR21(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR21 = value
+    mem.apu.square2.length_counter = 64 - (value & 0x3f)
+    mem.apu.square2.set_duty(value >> 6)
+
+cdef void write_NR22(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR22 = value
+    mem.apu.square2.volume = value >> 4
+    mem.apu.square2.envelope_up = (value & 8) > 0
+    mem.apu.square2.envelope_period = value & 7
+    mem.apu.square2.reset_envelope()
+
+cdef void write_NR23(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR23 = value
+    mem.apu.square2.frequency = (mem.apu.square2.frequency & 0x0700) | value
+    mem.apu.square2.period = 4 * (2048 - mem.apu.square2.frequency)
+
+cdef void write_NR24(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR24 = value
+    if value & 0x80:
+        mem.apu.square2.trigger()
+    mem.apu.square2.length_flag = (value & 0x40) > 0
+    mem.apu.square2.frequency = (mem.apu.square2.frequency & 0xff) | (<unsigned short>(value & 0x7) << 8)
+    mem.apu.square2.period = 4 * (2048 - mem.apu.square2.frequency)
+
+cdef void write_NR41(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR41 = value
+    mem.apu.noise.length_counter = 64 - (value & 0x3f)
+
+cdef void write_NR42(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR42 = value
+    mem.apu.noise.volume = value >> 4
+    mem.apu.noise.envelope_up = (value & 8) > 0
+    mem.apu.noise.envelope_period = value & 7
+    mem.apu.noise.reset_envelope()
+
+cdef void write_NR43(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR43 = value
+    mem.apu.noise.counter_step_width = (value & 8) > 0
+    cdef unsigned int s = (value & 0xf0) >> 4
+    cdef unsigned int r = value & 7
+    if r == 0:
+        mem.apu.noise.period = 8 * 2 * (2 << s)
+    else:
+        mem.apu.noise.period = 8 * r * (2 << s)
+
+cdef void write_NR44(MEM mem, unsigned short address, unsigned char value) nogil:
+    mem.IO.NR44 = value
+    if value & 0x80:
+        mem.apu.noise.trigger()
+        mem.apu.noise.reset_shift_register()
+    mem.apu.noise.length_flag = (value & 0x40) > 0
+
 
 cdef void write_UnmapBoot(MEM mem, unsigned short address, unsigned char value) nogil:
     if value == 0:
