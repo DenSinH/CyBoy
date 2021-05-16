@@ -7,3 +7,5 @@ I get framerates of about 3000fps on my machine. I think the biggest performance
 I could have optimized it more, especially the TIMA register, but I got higher framerates than I expected already, so I didn't mind too much. To edit the controls, take a look at `src/CyBoy.pyx` in the function `spawn_frontend`. Also supports controllers through SDL2.
 
 It was very fun to figure out what Cython is like, and to know how to link C/C++ to python with it.
+
+To run the emulator, I created a virtual python 3.9 environment, and installed Cython on it. Then `run.bat` would setup the cython extension, and `main.py` would import it and run it. To run it yourself, simply install the Cython module, and run the commands similar to those in `run.bat`. It will generate `.cpp` and `.pyd` files (in place) that python can import. `main.py` will load the ROM you tell it to, and start the emulator.
