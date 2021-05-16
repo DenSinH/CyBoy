@@ -1,5 +1,6 @@
 from src.mem.mem cimport MakeComplexWrite, MakeUnused
 from libc.stdio cimport fopen, fclose, FILE, fread, fwrite, fseek, printf, SEEK_END, SEEK_SET, ftell
+from libcpp cimport bool
 
 
 cdef inline void write_ROM(MEM mem, unsigned short address, unsigned char value) nogil:
@@ -8,7 +9,18 @@ cdef inline void write_ROM(MEM mem, unsigned short address, unsigned char value)
 
 cdef class MAPPER:
 
-    def __cinit__(MAPPER self, MEM mem, unsigned char ROM_amount, unsigned char RAM_amount):
+    def __cinit__(MAPPER self, char* file_name, MEM mem, unsigned char ROM_amount, unsigned char RAM_amount, bool battery_backed):
+        if battery_backed:
+            self.save_file = fopen(file_name, "rb")
+            if self.save_file:
+                # load save data
+                printf("Loading %x bytes of save data\n", RAM_amount * 0x2000)
+                fseek(self.save_file, 0, SEEK_SET)
+                fread(self.RAM, RAM_amount * 0x2000, 1, self.save_file)
+                fclose(self.save_file)
+            self.save_file = fopen(file_name, "wb+")  # open file for dumping
+        else:
+            self.save_file = NULL
         self.mem = mem
         self.ROM_amount = ROM_amount
         self.RAM_amount = RAM_amount
@@ -47,6 +59,17 @@ cdef class MAPPER:
         fclose(rom)
 
         self.init_mmap()
+
+    cdef void dump_save(MAPPER self) nogil:
+        if self.save_file:
+            printf("Dumping save\n")
+            fseek(self.save_file, 0, SEEK_SET)
+            fwrite(self.RAM, self.RAM_amount * 0x2000, 1, self.save_file)
+
+    cdef void close(MAPPER self) nogil:
+        self.dump_save()
+        if self.save_file:
+            fclose(self.save_file)
 
     cdef void enable_RAM(MAPPER self) nogil:
         self.mem.fast_read_MMAP[0xa]  = &self.RAM[self.RAM_bank][0]

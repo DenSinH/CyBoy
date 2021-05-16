@@ -128,6 +128,7 @@ cdef class GB:
         cdef unsigned int timer = 0
         cdef unsigned int cycles = 0
         cdef unsigned char line = 0
+        cdef unsigned int frame = 0
         with nogil:
             while not self.cpu.shutdown:
                 if self.mem.IO.LY < 144:
@@ -171,6 +172,10 @@ cdef class GB:
 
                 self.mem.IO.LY = self.mem.IO.LY + 1
                 if self.mem.IO.LY == 154:
+                    frame += 1
+                    if frame == 600:
+                        self.mem.mapper.dump_save()
+                        frame = 0
                     self.frontend.wait_for_frame()
                     self.mem.IO.LY = 0
                 
@@ -180,6 +185,7 @@ cdef class GB:
                         self.mem.IO.IF_ = self.mem.IO.IF_ | INTERRUPT_STAT
                         self.cpu.interrupt()
 
+        self.mem.mapper.close()
         self.close_frontend()
 
     cpdef public void bind_keyboard_input(GB self, str key, unsigned char mask):

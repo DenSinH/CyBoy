@@ -85,6 +85,7 @@ cdef class MEM:
     
     def __cinit__(self, GBAPU apu):
         self.apu = apu
+        self.mapper = None
 
         cdef unsigned int i
         for i in range(0x4000):
@@ -180,6 +181,11 @@ cdef class MEM:
         self.MMAP[0xffff] = MakeComplexWrite(&self.IO.IE, write_IE)  # IE
 
     cdef void load_rom(MEM self, str file_name):
+        if self.mapper:
+            self.mapper.close()
+
+        if not file_name.endswith(".gb"):
+            raise Exception("Invalid GameBoy ROM (must end in .gb)")
         cdef FILE *rom 
         rom = fopen(file_name.encode("UTF-8"), "rb")
         if rom is NULL:
@@ -194,6 +200,7 @@ cdef class MEM:
         fclose(rom)
 
         printf("cartridge_type %x, ROM size %x, RAM size %x\n", cartridge_type, ROM_size, RAM_size)
+        save_name = (file_name.removesuffix(".gb") + ".cb").encode("UTF-8")
 
         if RAM_size == 0:
             RAM_size = 0
@@ -209,35 +216,39 @@ cdef class MEM:
             RAM_size = 8
         
         if cartridge_type == 0:
-            self.mapper = MAPPER(self, 0, 0)  # no MBC
+            self.mapper = MAPPER(save_name, self, 0, 0, False)  # no MBC
         elif cartridge_type == 1:
-            self.mapper = MBC1(self, 2 << ROM_size, 0)
-        elif cartridge_type == 2 or cartridge_type == 3:
-            self.mapper = MBC1(self, 2 << ROM_size, RAM_size)
-        elif cartridge_type == 5 or cartridge_type == 6:
-            self.mapper = MBC2(self, 2 << ROM_size, 0)
+            self.mapper = MBC1(save_name, self, 2 << ROM_size, 0, False)
+        elif cartridge_type == 2:
+            self.mapper = MBC1(save_name, self, 2 << ROM_size, RAM_size, False)
+        elif cartridge_type == 3:
+            self.mapper = MBC1(save_name, self, 2 << ROM_size, RAM_size, True)
+        elif cartridge_type == 5:
+            self.mapper = MBC2(save_name, self, 2 << ROM_size, 0, False)
+        elif cartridge_type == 6:
+            self.mapper = MBC2(save_name, self, 2 << ROM_size, 1, True)  # RAM size 1 just so that save dumping works
         elif cartridge_type == 0xf:
-            self.mapper = MBC3(self, 2 << ROM_size, 0)
+            self.mapper = MBC3(save_name, self, 2 << ROM_size, 0, True)
         elif cartridge_type == 0x10:
-            self.mapper = MBC3(self, 2 << ROM_size, RAM_size)
+            self.mapper = MBC3(save_name, self, 2 << ROM_size, RAM_size, True)
         elif cartridge_type == 0x11:
-            self.mapper = MBC3(self, 2 << ROM_size, 0)
+            self.mapper = MBC3(save_name, self, 2 << ROM_size, 0, False)
         elif cartridge_type == 0x12:
-            self.mapper = MBC3(self, 2 << ROM_size, RAM_size)
+            self.mapper = MBC3(save_name, self, 2 << ROM_size, RAM_size, False)
         elif cartridge_type == 0x13:
-            self.mapper = MBC3(self, 2 << ROM_size, RAM_size)
+            self.mapper = MBC3(save_name, self, 2 << ROM_size, RAM_size, True)
         elif cartridge_type == 0x19:
-            self.mapper = MBC5(self, 2 << ROM_size, 0)
+            self.mapper = MBC5(save_name, self, 2 << ROM_size, 0, False)
         elif cartridge_type == 0x1a:
-            self.mapper = MBC5(self, 2 << ROM_size, RAM_size)
+            self.mapper = MBC5(save_name, self, 2 << ROM_size, RAM_size, False)
         elif cartridge_type == 0x1b:
-            self.mapper = MBC5(self, 2 << ROM_size, RAM_size)
+            self.mapper = MBC5(save_name, self, 2 << ROM_size, RAM_size, True)
         elif cartridge_type == 0x1c:
-            self.mapper = MBC5(self, 2 << ROM_size, 0)
+            self.mapper = MBC5(save_name, self, 2 << ROM_size, 0, False)
         elif cartridge_type == 0x1d:
-            self.mapper = MBC5(self, 2 << ROM_size, RAM_size)
+            self.mapper = MBC5(save_name, self, 2 << ROM_size, RAM_size, False)
         elif cartridge_type == 0x1e:
-            self.mapper = MBC5(self, 2 << ROM_size, RAM_size)
+            self.mapper = MBC5(save_name, self, 2 << ROM_size, RAM_size, True)
         else:
             raise Exception(f"Unimplemented mapper: {cartridge_type:x}")
         self.mapper.load_rom(file_name)

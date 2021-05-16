@@ -1,9 +1,11 @@
 from src.mem.mem cimport MEM
+from libc.stdio cimport FILE
 
 
 cdef class MAPPER:
     # parent class for all mappers
     cdef:
+        FILE* save_file
         unsigned char[128][0x4000] ROM  # support at most 128 banks (2MB)
         unsigned char[16][0x2000] RAM
         unsigned char ROM_amount, RAM_amount  # amount of banks
@@ -17,6 +19,8 @@ cdef class MAPPER:
     cdef void init_mmap(MAPPER self) nogil
 
     cdef void load_rom(MAPPER self, str file_name)
+    cdef void dump_save(MAPPER self) nogil
+    cdef void close(MAPPER self) nogil
 
     cdef void enable_RAM(MAPPER self) nogil
 

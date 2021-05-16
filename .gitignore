@@ -13,3 +13,4 @@ cmake-*/
 src/*.dll
 *.dump
 *.s
+*.cb

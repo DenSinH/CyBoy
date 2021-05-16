@@ -22,7 +22,7 @@ if __name__ == "__main__":
     # gb.load_rom("files/Tetris.gb")
     # gb.load_rom("files/Metroid II.gb")
     # gb.load_rom("files/dmg-acid2.gb")
-    gb.load_rom("files/Pokemon Blue.gb")
+    gb.load_rom("files/Pokemon Yellow.gb")
     # gb.load_bootrom("files/DMG_ROM.bin")
     gb.skip_bootrom()
 
